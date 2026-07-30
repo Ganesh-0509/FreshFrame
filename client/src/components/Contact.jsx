@@ -95,7 +95,11 @@ export default function Contact() {
           Needs: form.need,
           Message: form.message.trim() || '—',
 
-          botcheck: form.botcheck ? true : '',
+          /* Only send botcheck when it's actually filled. An unchecked HTML
+             checkbox is absent from the payload entirely, so mirroring that
+             avoids any risk of an empty string being read as "checked" —
+             Web3Forms rejects a tripped honeypot with a 400. */
+          ...(form.botcheck ? { botcheck: true } : {}),
         }),
       })
 
