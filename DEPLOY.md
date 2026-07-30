@@ -77,13 +77,29 @@ swap the secret in step 3b.
 
 ## 3. Configure the repo
 
-**a. Turn Pages on**
+**a. Turn Pages on — DO THIS FIRST, the build fails without it**
 
 Repo → **Settings → Pages** → under *Build and deployment*, set
 **Source** to **GitHub Actions**.
 
 Do *not* pick "Deploy from a branch" — the workflow in
 `.github/workflows/deploy.yml` uses the Actions path.
+
+Until you do this, every push fails with:
+
+```
+Get Pages site failed. Please verify that the repository has Pages
+enabled and configured to build using GitHub Actions
+```
+
+That message comes from the `configure-pages` step and is the *only* thing
+wrong — the site itself builds fine before it. The workflow can't turn Pages on
+for you: `configure-pages` has an `enablement` option, but it needs a Personal
+Access Token rather than the built-in `GITHUB_TOKEN`, which is more setup than
+the three clicks above.
+
+After enabling, re-run from **Actions → Deploy to GitHub Pages → Re-run jobs**.
+No new push needed.
 
 **b. Add the access key**
 
@@ -165,6 +181,18 @@ to the domain root and 404s on a project-repo URL.
 `VITE_WEB3FORMS_KEY` wasn't set at build time, or Web3Forms returned an error —
 the console logs which. A 429 means their rate limit; the free plan allows 250
 submissions a month.
+
+**"Get Pages site failed."** Pages isn't enabled, or isn't set to *GitHub
+Actions* as the source. Step 3a. This is the most common first-deploy failure
+and the error doesn't say what to click.
+
+**Site 404s but the workflow is green.** Give it a minute on the very first
+deploy. If it persists, check the path case — `/FreshFrame/` is case-sensitive
+and must match the repo name exactly.
+
+**"Node.js 20 is deprecated" warning.** Harmless. It refers to the runtime the
+GitHub-provided actions use, not the Node that builds your site, and GitHub
+migrates them automatically. Ignore it.
 
 **Workflow fails on install.** There's no root lockfile covering `client/`, so
 the workflow uses `npm install` rather than `npm ci`. If you add a root lockfile,
