@@ -2,7 +2,7 @@
 
 **Static React (Vite) site, deployed to GitHub Pages.**
 
-Enquiries from the contact form are emailed to **ganesh957kumar@gmail.com** via
+Enquiries from the contact form are emailed to **vinoism1703@gmail.com** via
 [Web3Forms](https://web3forms.com). Nothing is stored anywhere.
 
 **Status:** built and ready to deploy. Repo, remote and link-preview URLs are all set
@@ -19,8 +19,8 @@ rather than done for you.
 > it**; it's an escape hatch, explained at the top of `server/index.js`.
 >
 > The free plan delivers to **one inbox**, which is all this needs — enquiries go to
-> Ganesh. A second recipient (`ccemail`) is a PRO feature; if you want Vinothini on it
-> later, a Gmail forwarding filter does it free.
+> Vinothini, who handles client engagement. A second recipient (`ccemail`) is a PRO
+> feature; if you want Ganesh on it later, a Gmail forwarding filter does it free.
 
 ---
 
@@ -81,8 +81,9 @@ VITE_WEB3FORMS_KEY=your-access-key-here
    `VITE_WEB3FORMS_KEY` (DEPLOY.md step 3b)
 
 **Where enquiries land is set by the key, not by the code.** Register the key to
-`ganesh957kumar@gmail.com` and that's where they go. Nothing in `site.js` or anywhere
-else controls it. To change it, get a new key for the other inbox and swap the secret.
+`vinoism1703@gmail.com` and that's where they go. Nothing in `site.js` or anywhere
+else controls it — there is no setting in this repo for it. To change the destination
+you get a new key for the other inbox and swap the secret. Editing files does nothing.
 
 > **On the key being public.** It ends up readable in the built JavaScript. That's
 > how Web3Forms works and it isn't a leak — the key is write-only, it can only submit
@@ -338,13 +339,13 @@ hop. That's why it isn't on the Work section.
 
 ### Blocking — before anyone sees this
 
-- [ ] **Web3Forms access key.** Go to web3forms.com, enter `ganesh957kumar@gmail.com`,
+- [ ] **Web3Forms access key.** Go to web3forms.com, enter `vinoism1703@gmail.com`,
       and they email you a key. Put it in `client/.env` for local dev, and add it as the
       repo secret `VITE_WEB3FORMS_KEY` for the Pages build. **This is the only thing
       standing between you and a working site.** Until then the form shows an error,
       which is deliberate — see below.
-- [x] **Recipient.** Enquiries go to `ganesh957kumar@gmail.com` — register the key to
-      that inbox. One recipient fits the free plan exactly.
+- [x] **Recipient.** Enquiries go to `vinoism1703@gmail.com` — the key must be
+      registered to that inbox. One recipient fits the free plan exactly.
 - [x] **Link-preview URLs** set to `https://Vino1705.github.io/FreshFrame/`.
 - [x] **Public email address.** `ganesh957kumar@gmail.com`.
 - [x] **WhatsApp number.** `+91 90427 85843`.

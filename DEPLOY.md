@@ -22,12 +22,17 @@ posts directly to **Web3Forms**, which takes the submission and emails it to you
 Browser ──POST──> api.web3forms.com ──email──> your inbox
 ```
 
-Enquiries go to **ganesh957kumar@gmail.com** only. That fits the free plan
-exactly — it delivers to one inbox, and a second recipient (`ccemail`) is a PRO
-feature. Nothing to work around.
+Enquiries go to **vinoism1703@gmail.com** only. That fits the free plan exactly
+— it delivers to one inbox, and a second recipient (`ccemail`) is a PRO feature.
+Nothing to work around.
 
-If you later want Vinothini's inbox on it too, the free route is a Gmail
-forwarding filter on `no-reply@web3forms.com` rather than paying for PRO.
+> **Which inbox is decided by the KEY, not by the code.** Whatever address you
+> typed at web3forms.com is where enquiries land. There is no setting in this
+> repo that changes it. If your key was created with a different address, the
+> only fix is a new key — see step 2.
+
+If you later want Ganesh's inbox on it too, the free route is a Gmail forwarding
+filter on `no-reply@web3forms.com` rather than paying for PRO.
 
 `server/` still contains a complete, working Node mail server. Nothing deploys
 it and nothing runs it. It's kept as an escape hatch — see the note at the top
@@ -37,12 +42,12 @@ of `server/index.js` if you ever want to move to Render or Railway.
 
 ## 1. Push to GitHub
 
-**The repo already exists and the remote is already configured** —
-https://github.com/Vino1705/FreshFrame (public, currently empty). So this is
-just the push:
+**Already done** — the repo exists, the remote is configured, and all commits
+are pushed to https://github.com/Vino1705/FreshFrame (public). Future changes
+are just:
 
 ```
-git push -u origin main
+git push
 ```
 
 Git will open a browser to sign in. If it asks for a password in the terminal
@@ -59,11 +64,11 @@ Personal access tokens → Tokens (classic) → Generate new token → tick `rep
 
 ## 2. Get a Web3Forms access key
 
-This is the one step that can't be done for you — it needs access to Ganesh's
-inbox to receive the key.
+This is the one step that can't be done for you — it needs access to the inbox
+that receives the key.
 
 1. Go to **https://web3forms.com**
-2. Enter **`ganesh957kumar@gmail.com`** and submit
+2. Enter **`vinoism1703@gmail.com`** and submit
 3. Web3Forms emails an **access key** to that inbox — copy it (check spam)
 
 That's it. No account, no password, no card. Free plan is 250 submissions/month,
@@ -141,8 +146,9 @@ https://Vino1705.github.io/FreshFrame/
 - **Site loads, images appear.** If the page is unstyled or images are broken,
   the base path is wrong — see the troubleshooting note below.
 - **Submit the contact form.** The enquiry should reach
-  **ganesh957kumar@gmail.com** within a few seconds. Check spam the first time —
-  Gmail often filters the first message from a new sender.
+  **vinoism1703@gmail.com** within a few seconds. Check spam the first time —
+  Gmail often filters the first message from a new sender. If it arrives at a
+  different address, the key is registered to that one; get a new key.
 - **Reply to the email.** It should address the enquirer, not yourself — the form
   sets `replyto`, but only when they typed an actual email address rather than a
   phone number.

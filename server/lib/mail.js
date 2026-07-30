@@ -8,9 +8,9 @@
 
 import nodemailer from 'nodemailer'
 
-/* Comma-separated. Defaults to Ganesh only, matching the live site —
-   the Web3Forms key there is registered to that inbox. */
-export const RECIPIENTS = (process.env.MAIL_TO || 'ganesh957kumar@gmail.com')
+/* Comma-separated. Defaults to Vinothini only, matching the live site —
+   she handles client engagement, so enquiries route to her. */
+export const RECIPIENTS = (process.env.MAIL_TO || 'vinoism1703@gmail.com')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean)
