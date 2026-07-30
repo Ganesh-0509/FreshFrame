@@ -1,13 +1,38 @@
 import { useState } from 'react'
 import { contact, contactSection } from '../data/site.js'
 
+/* ══════════════════════════════════════════════════════════
+   The form posts to Web3Forms, not to our own server.
+
+   GitHub Pages serves static files only — it cannot run Node, so the
+   old POST /api/contact would just hit the 404 page. Web3Forms takes
+   the submission and emails it on, which needs no backend at all.
+
+   The access key is PUBLIC by design — it's write-only (it can submit
+   to your form, nothing else) and is visible in the page source of
+   every Web3Forms site. It's in an env var so it isn't committed, not
+   because exposing it is dangerous.
+
+   Set VITE_WEB3FORMS_KEY at BUILD time. Vite inlines VITE_* vars into
+   the bundle, so it must be present when `vite build` runs — see the
+   GitHub Actions workflow.
+   ══════════════════════════════════════════════════════════ */
+const ENDPOINT = 'https://api.web3forms.com/submit'
+const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY
+
+const looksLikeEmail = (s = '') => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s).trim())
+
+/* Shown on every failure path. Names the real channels from site.js so a
+   visitor who can't submit still leaves with a way to reach us. */
+const FALLBACK = `Could not send that — WhatsApp us on ${contact.whatsappDisplay} or email ${contact.email}.`
+
 const EMPTY = {
   name: '',
   contact: '',
   business: '',
   need: contactSection.needs[0],
   message: '',
-  _gotcha: '', // honeypot
+  botcheck: '', // Web3Forms' own honeypot field name
 }
 
 export default function Contact() {
@@ -34,26 +59,60 @@ export default function Contact() {
       return
     }
 
+    /* No key means no email can possibly be sent. Fail loudly rather than
+       showing a success message for a submission that goes nowhere. */
+    if (!ACCESS_KEY) {
+      console.error(
+        'VITE_WEB3FORMS_KEY is not set, so the contact form cannot send. ' +
+          'Add it to client/.env for local dev, or as a repo secret for the Pages build.'
+      )
+      setStatus({ text: FALLBACK, kind: 'err' })
+      return
+    }
+
     setSending(true)
     setStatus({ text: 'Sending…', kind: '' })
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: ACCESS_KEY,
+          subject: `New enquiry: ${form.name.trim()}${
+            form.business.trim() ? ` — ${form.business.trim()}` : ''
+          }`,
+          from_name: 'Fresh Frame website',
+          /* Only set reply-to when they gave an actual email. The contact
+             field also accepts a WhatsApp number, which would make the
+             reply-to header invalid and can get the mail rejected. */
+          ...(looksLikeEmail(form.contact) ? { replyto: form.contact.trim() } : {}),
+
+          // Everything below is forwarded into the email body as-is.
+          Name: form.name.trim(),
+          Contact: form.contact.trim(),
+          Business: form.business.trim() || '—',
+          Needs: form.need,
+          Message: form.message.trim() || '—',
+
+          botcheck: form.botcheck ? true : '',
+        }),
       })
+
       const data = await res.json().catch(() => ({}))
 
-      if (!res.ok) throw new Error(data.error || 'Request failed')
+      /* Web3Forms signals failure in the BODY as success:false, and can
+         still return a non-2xx (400 bad key, 429 rate limited). Check both,
+         so we never report a send that didn't happen. */
+      if (!res.ok || data.success !== true) {
+        throw new Error(data.message || data?.body?.message || `HTTP ${res.status}`)
+      }
 
       setStatus({ text: "Got it — we'll reply today with next steps.", kind: 'ok' })
       setForm(EMPTY)
     } catch (err) {
-      setStatus({
-        text: 'Could not send that. Message us on WhatsApp instead?',
-        kind: 'err',
-      })
+      console.error('Contact form submit failed:', err?.message)
+      setStatus({ text: FALLBACK, kind: 'err' })
     } finally {
       setSending(false)
     }
@@ -149,10 +208,12 @@ export default function Contact() {
             />
           </div>
 
-          {/* honeypot — hidden from people, catches naive bots */}
+          {/* honeypot — hidden from people, catches naive bots.
+              Must be named "botcheck": Web3Forms rejects the submission
+              server-side when it arrives filled in. */}
           <div className="hp" aria-hidden="true">
-            <label htmlFor="cf-gotcha">Leave this empty</label>
-            <input id="cf-gotcha" tabIndex={-1} value={form._gotcha} onChange={set('_gotcha')} />
+            <label htmlFor="cf-botcheck">Leave this empty</label>
+            <input id="cf-botcheck" name="botcheck" tabIndex={-1} value={form.botcheck} onChange={set('botcheck')} />
           </div>
 
           <button type="submit" className="btn btn-primary btn-block" disabled={sending}>

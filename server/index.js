@@ -1,12 +1,20 @@
 /* ══════════════════════════════════════════════════════════
-   FRESH FRAME — local development mail server
+   FRESH FRAME — self-hosted mail server  ⚠ NOT CURRENTLY IN USE
 
-   In PRODUCTION on Vercel this file does not run. Vercel has no
-   long-lived processes, so api/contact.js handles it there.
+   The live site is a static build on GitHub Pages, and Pages cannot
+   run Node. The contact form therefore posts directly to Web3Forms
+   (see client/src/components/Contact.jsx) and nothing here runs.
 
-   This exists so `npm run dev` works without the Vercel CLI, and
-   so the project can also be hosted on Render/Railway if you ever
-   move off Vercel. Both paths share api/_lib/mail.js.
+   This is kept as a working escape hatch. It's a complete Express app
+   that serves BOTH the built client and the mail API on one port, so
+   if you ever outgrow Web3Forms — you want the enquiry to hit both
+   inboxes without paying for PRO, or you want to store submissions —
+   you can deploy this to Render or Railway unchanged:
+
+       npm --prefix client run build && npm start
+
+   Then point the form back at POST /api/contact and set CORS_ORIGIN
+   to the site's domain.
 
    Needs server/.env — copy .env.example and fill it in.
    ══════════════════════════════════════════════════════════ */
@@ -23,7 +31,7 @@ import {
   deliver,
   smtpConfigured,
   RECIPIENTS,
-} from '../api/_lib/mail.js'
+} from './lib/mail.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 5000
@@ -53,6 +61,15 @@ app.post('/api/contact', async (req, res) => {
 
   try {
     const { delivered } = await deliver(req.body)
+
+    /* Same rule as the serverless handler: a submission that wasn't
+       emailed is a failure, not a success. The body was logged above so
+       it isn't lost locally, but the form must not claim it was sent. */
+    if (!delivered) {
+      console.error('  ⚠  Not delivered — set SMTP_PASS in server/.env. Logged above instead.')
+      return res.status(503).json({ error: 'Email is not configured on the server.' })
+    }
+
     res.json({ ok: true, delivered })
   } catch (err) {
     console.error('sendMail failed:', err.message)

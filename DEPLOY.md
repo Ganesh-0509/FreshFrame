@@ -1,9 +1,10 @@
-# Deploying — push to GitHub, then Vercel
+# Deploying — GitHub + GitHub Pages
 
-The repo is committed and ready. Everything below needs a browser login,
-which is why it's a list for you to run rather than something already done.
+The site is a static React build published to GitHub Pages by a GitHub Actions
+workflow. Every push to `main` rebuilds and redeploys automatically.
 
-Run all of these from the project folder:
+Everything below needs a browser login, which is why it's a list for you to run
+rather than something already done. Run the commands from:
 
 ```
 f:\PROJECT\New folder\Website-freelance
@@ -11,149 +12,160 @@ f:\PROJECT\New folder\Website-freelance
 
 ---
 
-## 1. Push to GitHub
+## Read this first: what Pages can and can't do
 
-You don't have the GitHub CLI installed, so the simplest route is the website.
-
-**a. Create the empty repo**
-
-Go to **https://github.com/new**
-
-- Repository name: `freshframe-website` (or whatever you like)
-- **Private** is fine — Vercel can still deploy from a private repo
-- **Do not** tick "Add a README", "Add .gitignore" or "Add a license".
-  The repo already has all three, and ticking them causes a conflict on
-  first push.
-
-**b. Push**
-
-Copy the URL GitHub shows you, then:
+GitHub Pages serves **static files only**. It cannot run Node, so it cannot run
+a mail server. That's why the contact form no longer posts to our own API — it
+posts directly to **Web3Forms**, which takes the submission and emails it to you.
 
 ```
-git remote add origin https://github.com/YOUR-USERNAME/freshframe-website.git
+Browser ──POST──> api.web3forms.com ──email──> your inbox
+```
+
+Enquiries go to **ganesh957kumar@gmail.com** only. That fits the free plan
+exactly — it delivers to one inbox, and a second recipient (`ccemail`) is a PRO
+feature. Nothing to work around.
+
+If you later want Vinothini's inbox on it too, the free route is a Gmail
+forwarding filter on `no-reply@web3forms.com` rather than paying for PRO.
+
+`server/` still contains a complete, working Node mail server. Nothing deploys
+it and nothing runs it. It's kept as an escape hatch — see the note at the top
+of `server/index.js` if you ever want to move to Render or Railway.
+
+---
+
+## 1. Push to GitHub
+
+**The repo already exists and the remote is already configured** —
+https://github.com/Vino1705/FreshFrame (public, currently empty). So this is
+just the push:
+
+```
 git push -u origin main
 ```
 
-Git will ask you to sign in — a browser window opens, approve it there.
-If it asks for a password in the terminal instead, that won't work: GitHub
-removed password auth. Use a **Personal Access Token** as the password
-(github.com → Settings → Developer settings → Personal access tokens →
-Tokens (classic) → Generate new token → tick `repo`).
+Git will open a browser to sign in. If it asks for a password in the terminal
+instead, that won't work — GitHub removed password auth. Use a **Personal
+Access Token** as the password (github.com → Settings → Developer settings →
+Personal access tokens → Tokens (classic) → Generate new token → tick `repo`).
 
-**Optional but easier next time:** install the GitHub CLI
-(`winget install GitHub.cli`), then `gh auth login` once and step (a)
-collapses into a single `gh repo create freshframe-website --private --source=. --push`.
+> The repo is **public**, which is what free Pages requires — Pages on a private
+> repo needs GitHub Pro. Everything you push is publicly readable, so keep
+> credentials out of it. `client/.env` and `server/.env` are gitignored for
+> exactly this reason; the `.env.example` files are the ones that get committed.
 
 ---
 
-## 2. Deploy on Vercel
+## 2. Get a Web3Forms access key
 
-**a. Import the repo**
+This is the one step that can't be done for you — it needs access to Ganesh's
+inbox to receive the key.
 
-1. Go to **https://vercel.com/new**
-2. Sign in with GitHub
-3. Pick `freshframe-website`
+1. Go to **https://web3forms.com**
+2. Enter **`ganesh957kumar@gmail.com`** and submit
+3. Web3Forms emails an **access key** to that inbox — copy it (check spam)
 
-**b. Leave every build setting alone**
+That's it. No account, no password, no card. Free plan is 250 submissions/month,
+which is far more than this site will see.
 
-`vercel.json` already sets them:
+Whichever address you enter here is where enquiries land — it is **not** set
+anywhere in the code. To change it later, get a new key for the other inbox and
+swap the secret in step 3b.
 
-| Setting | Value | Where it comes from |
-|---|---|---|
-| Build command | `npm run build` | `vercel.json` |
-| Output directory | `client/dist` | `vercel.json` |
-| Install command | `npm install` | Vercel default |
+---
 
-If Vercel guesses a framework preset, set **Framework Preset → Other**.
-Don't let it set the root directory to `client/` — the API functions live at
-the project root and would be left out.
+## 3. Configure the repo
 
-**c. Add the environment variables — do this BEFORE the first deploy**
+**a. Turn Pages on**
 
-In the import screen, expand **Environment Variables** and add:
+Repo → **Settings → Pages** → under *Build and deployment*, set
+**Source** to **GitHub Actions**.
+
+Do *not* pick "Deploy from a branch" — the workflow in
+`.github/workflows/deploy.yml` uses the Actions path.
+
+**b. Add the access key**
+
+Repo → **Settings → Secrets and variables → Actions** → *New repository secret*
 
 | Name | Value |
 |---|---|
-| `SMTP_HOST` | `smtp.gmail.com` |
-| `SMTP_PORT` | `465` |
-| `SMTP_SECURE` | `true` |
-| `SMTP_USER` | `vinoism1703@gmail.com` |
-| `SMTP_PASS` | *your 16-character Google App Password* |
-| `MAIL_TO` | `vinoism1703@gmail.com,ganesh957kumar@gmail.com` |
+| `VITE_WEB3FORMS_KEY` | your Web3Forms access key |
 
-Getting the App Password (Gmail rejects normal passwords):
+The name must match exactly. Vite inlines `VITE_*` variables **at build time**,
+so if this is missing when the workflow runs, the form ships unable to send —
+the build will still succeed, but Actions logs a warning and the form shows its
+fallback message. Add the secret, then re-run the workflow.
 
-1. The account needs **2-Step Verification** on
-   → myaccount.google.com → Security → 2-Step Verification
-2. Then **myaccount.google.com/apppasswords**
-3. Create one named "Fresh Frame website", copy the 16 characters, no spaces
+> The key ends up readable in the published JavaScript. That's normal for
+> Web3Forms and not a leak: the key is write-only, it can only submit to your
+> own form. It's a secret here so it isn't committed to a public repo.
 
-**Type it straight into Vercel.** Don't paste it into a chat, a file, or a
-commit — it grants full send-as access to that Gmail account.
+**c. Link-preview URLs — already done**
+
+`client/index.html` has the `og:`/`twitter:` URLs set to
+`https://Vino1705.github.io/FreshFrame/`. Nothing to change unless you rename
+the repo or move to a custom domain, in which case update all three — they must
+be absolute, because link scrapers don't resolve relative paths.
 
 **d. Deploy**
 
-Click Deploy. First build takes about a minute.
+Push, or re-run from the **Actions** tab. First build takes about a minute.
+Your site lands at:
+
+```
+https://Vino1705.github.io/FreshFrame/
+```
 
 ---
 
-## 3. Check it actually worked
+## 4. Check it actually worked
 
-Once you have your `*.vercel.app` URL:
-
-**Is SMTP wired up?** Open:
-
-```
-https://YOUR-SITE.vercel.app/api/health
-```
-
-You want `{"ok":true,"smtp":true,"recipients":2}`.
-
-If `smtp` is `false`, the env vars didn't land — add them under
-Settings → Environment Variables, then **Deployments → ⋯ → Redeploy**.
-Environment variables are only read at deploy time; adding them does not
-affect the build already running.
-
-**Does mail arrive?** Fill in the contact form on the live site. Both
-inboxes should get it within a few seconds. Check spam the first time —
-Gmail sometimes filters the first message a new sender sends.
-
-Then reply to it. The reply should go to whatever address the enquirer
-typed, not back to yourselves.
+- **Site loads, images appear.** If the page is unstyled or images are broken,
+  the base path is wrong — see the troubleshooting note below.
+- **Submit the contact form.** The enquiry should reach
+  **ganesh957kumar@gmail.com** within a few seconds. Check spam the first time —
+  Gmail often filters the first message from a new sender.
+- **Reply to the email.** It should address the enquirer, not yourself — the form
+  sets `replyto`, but only when they typed an actual email address rather than a
+  phone number.
+- **Test the failure path** by submitting from a blocked network or with the
+  secret removed: you should see *"Could not send that — WhatsApp us on…"*, never
+  a false success. That's deliberate.
 
 ---
 
-## 4. After that
+## 5. Optional — a custom domain
 
-- **Custom domain** — Vercel → Settings → Domains. Add the domain, then
-  point the nameservers or add the CNAME it shows you.
-- **Lock down CORS** — once the domain is live, add
-  `CORS_ORIGIN=https://yourdomain.com` as an env var.
-- **Every `git push` to `main` redeploys automatically.** No further steps.
+Pages → Settings → Pages → **Custom domain**. Add the domain, create a
+`client/public/CNAME` file containing just the domain, and point your DNS at
+GitHub. Then update the `og:` URLs again to the new domain.
+
+A custom domain serves from the root rather than a subfolder. The build handles
+that automatically — `vite.config.js` uses a relative base, so no path changes
+are needed either way.
 
 ---
 
-## Why the Express server isn't what runs in production
+## Troubleshooting
 
-Worth knowing so it doesn't confuse you later.
+**Blank page, or CSS and images missing.** Almost always the base path.
+`client/vite.config.js` sets `base: './'`, which makes every URL relative so the
+build works at any subfolder without hardcoding the repo name. If you ever add
+client-side routing (React Router), relative base stops being safe and you must
+set `base: '/your-repo-name/'` explicitly.
 
-Vercel is serverless — it has no long-running processes, so `app.listen()`
-in `server/index.js` is never called there. If the contact form relied on
-that file, it would 404 on the live site.
+**Images 404 but CSS loads.** An image path lost its `asset()` wrapper. Every
+reference to `client/public/` from JSX must go through
+`asset()` in `client/src/lib/asset.js` — a bare `src="/assets/x.png"` resolves
+to the domain root and 404s on a project-repo URL.
 
-So there are two entry points sharing one piece of logic:
+**Form says "Could not send".** Open the browser console. Either
+`VITE_WEB3FORMS_KEY` wasn't set at build time, or Web3Forms returned an error —
+the console logs which. A 429 means their rate limit; the free plan allows 250
+submissions a month.
 
-```
-api/_lib/mail.js       ← validation, rate limit, email building. one copy.
-├── api/contact.js     ← Vercel serverless function. THIS runs in production.
-└── server/index.js    ← Express. Local `npm run dev` only.
-```
-
-`server/` is excluded from deploys via `.vercelignore`. Keep it — it's what
-makes `npm run dev` work without installing the Vercel CLI, and it's your
-escape hatch if you ever move to Render or Railway, where a normal Node
-server *is* what you want.
-
-One caveat: the in-memory rate limiter only covers a single warm serverless
-instance on Vercel, so it's best-effort there. The honeypot does the real
-spam filtering.
+**Workflow fails on install.** There's no root lockfile covering `client/`, so
+the workflow uses `npm install` rather than `npm ci`. If you add a root lockfile,
+switch it back for reproducible builds.

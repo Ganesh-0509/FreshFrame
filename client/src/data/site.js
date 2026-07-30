@@ -7,10 +7,13 @@
    ══════════════════════════════════════════════════════════ */
 
 export const contact = {
-  email: 'hello@freshframe.in',            // TODO: confirm — see README
-  emails: ['vinoism1703@gmail.com', 'ganesh957kumar@gmail.com'],
-  whatsapp: '910000000000',                // TODO: real number, format: 91 + 10 digits
-  whatsappDisplay: '+91 00000 00000',      // TODO
+  // The address shown on the page and used by the mailto: link.
+  // NOTE: this does NOT control where contact-form submissions go. That's
+  // decided by whichever inbox the Web3Forms access key is registered to —
+  // change it at web3forms.com, not here. See README.
+  email: 'ganesh957kumar@gmail.com',
+  whatsapp: '919042785843',                // wa.me format: 91 + 10 digits, no spaces
+  whatsappDisplay: '+91 90427 85843',      // what's shown to the visitor
   location: 'Chennai, India · working remotely',
 }
 

@@ -3,22 +3,18 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Fresh Frame — website. React client + Node mail API.",
+  "description": "Fresh Frame — website. Static React site deployed to GitHub Pages.",
   "engines": {
     "node": ">=18"
   },
+  "comment": "server/ is NOT part of the Pages deploy — the contact form posts to Web3Forms. The *:server scripts exist only for the Render/Railway escape hatch described at the top of server/index.js. Root deps are gone: nodemailer moved to server/, and concurrently is unneeded now that dev runs one process.",
   "scripts": {
-    "setup": "npm install && npm --prefix client install && npm --prefix server install",
-    "dev": "concurrently -n client,server -c cyan,magenta \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
-    "dev:client": "npm --prefix client run dev",
-    "dev:server": "npm --prefix server run dev",
+    "setup": "npm --prefix client install",
+    "dev": "npm --prefix client run dev",
     "build": "npm --prefix client install --no-audit --no-fund && npm --prefix client run build",
-    "start": "npm --prefix server start"
-  },
-  "dependencies": {
-    "nodemailer": "^6.9.16"
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.0"
+    "preview": "npm --prefix client run preview",
+    "setup:server": "npm --prefix server install",
+    "dev:server": "npm --prefix server run dev",
+    "start:server": "npm --prefix server start"
   }
 }

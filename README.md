@@ -1,21 +1,26 @@
 # Fresh Frame — website
 
-**React (Vite) front end + Node/Express mail server.**
+**Static React (Vite) site, deployed to GitHub Pages.**
 
-Enquiries from the contact form are emailed straight to
-`vinoism1703@gmail.com` and `ganesh957kumar@gmail.com`. Nothing is stored anywhere.
+Enquiries from the contact form are emailed to **ganesh957kumar@gmail.com** via
+[Web3Forms](https://web3forms.com). Nothing is stored anywhere.
 
-**Status:** built, committed, and ready to deploy. What's still placeholder: **the public
-email address and the WhatsApp number**, plus SMTP credentials need adding before mail
-actually sends. See [What's left to do](#whats-left-to-do).
+**Status:** built and ready to deploy. Repo, remote and link-preview URLs are all set
+to https://github.com/Vino1705/FreshFrame. **One thing is outstanding: the Web3Forms
+access key.** See [What's left to do](#whats-left-to-do).
 
-**To put it online:** follow [DEPLOY.md](DEPLOY.md) — GitHub, then Vercel, then the
-environment variables. Both steps need a browser login, so they're written out as
-instructions rather than done for you.
+**To put it online:** follow [DEPLOY.md](DEPLOY.md) — GitHub, then Pages, then the
+access key. Those steps need a browser login, so they're written out as instructions
+rather than done for you.
 
-> **Note on production:** Vercel is serverless and never runs `server/index.js`. The live
-> contact form is `api/contact.js`; the Express server is for local `npm run dev` only.
-> Both share `api/_lib/mail.js`. DEPLOY.md explains why.
+> **Why there's no backend.** GitHub Pages serves static files only — it can't run
+> Node, so it can't run a mail server. The form posts straight to Web3Forms instead.
+> `server/` still holds a complete Express mail server, but **nothing deploys or runs
+> it**; it's an escape hatch, explained at the top of `server/index.js`.
+>
+> The free plan delivers to **one inbox**, which is all this needs — enquiries go to
+> Ganesh. A second recipient (`ccemail`) is a PRO feature; if you want Vinothini on it
+> later, a Gmail forwarding filter does it free.
 
 ---
 
@@ -27,7 +32,11 @@ instructions rather than done for you.
 npm run setup
 ```
 
-That installs the root, client and server dependencies in one go.
+Installs the client dependencies.
+
+Then copy `client/.env.example` to `client/.env` and paste in your Web3Forms access
+key. Without it the site still runs, but the form shows its fallback message instead
+of sending — see [Making the contact form send real email](#making-the-contact-form-send-real-email).
 
 ### Every time after that
 
@@ -35,74 +44,60 @@ That installs the root, client and server dependencies in one go.
 npm run dev
 ```
 
-Two things start together:
-
-| | | |
-|---|---|---|
-| React front end | **http://localhost:5173** | this is the one you open |
-| Express mail server | http://localhost:5000 | runs in the background |
-
-Open **http://localhost:5173**. Edits to any file reload the browser instantly.
+One process now. Open **http://localhost:5173**. Edits reload the browser instantly.
 
 > On Windows, use `localhost` and not `127.0.0.1` — Vite binds to IPv6 by default.
 
-You can also run them separately if you want:
-
-```
-npm run dev:client
-npm run dev:server
-```
+> `VITE_*` variables are inlined at **build** time, not read at run time. After
+> editing `client/.env` you must restart `npm run dev` or the change won't apply.
 
 ### Building for production
 
 ```
-npm run build      # builds the React app into client/dist
-npm start          # Express serves client/dist AND the /api routes on one port
+npm run build      # builds the static site into client/dist
+npm run preview    # serves that build locally so you can check it
 ```
 
-In production it's a single server on one port. In development they're separate, and
-Vite forwards `/api/*` through to Express so the front end never needs to know the port.
+You don't normally need either — pushing to `main` triggers
+`.github/workflows/deploy.yml`, which builds and publishes to Pages automatically.
 
 ---
 
 ## Making the contact form send real email
 
-Until you do this, the form works and confirms on screen, but submissions are only
-**printed to the server console** — nothing is emailed. The server warns you about this
-on startup.
+Until you do this the form shows *"Could not send that — WhatsApp us on…"* on every
+submission. That's deliberate: it never claims to have sent something it hasn't.
 
-Gmail will not accept your normal password. You need an **App Password**:
-
-1. The Google account must have **2-Step Verification** turned on
-   → myaccount.google.com → Security → 2-Step Verification
-2. Then go to **myaccount.google.com/apppasswords**
-3. Create one (name it "Fresh Frame website") and copy the 16-character code
-4. Copy `server/.env.example` to `server/.env`
-5. Put the 16 characters in `SMTP_PASS` — no spaces:
+1. Go to **https://web3forms.com**
+2. Enter the inbox that should receive enquiries. They email you an **access key**
+3. Copy `client/.env.example` to `client/.env` and paste it in:
 
 ```
-SMTP_USER=vinoism1703@gmail.com
-SMTP_PASS=abcdefghijklmnop
-MAIL_TO=vinoism1703@gmail.com,ganesh957kumar@gmail.com
+VITE_WEB3FORMS_KEY=your-access-key-here
 ```
 
-6. Restart the server. `http://localhost:5000/api/health` should now report
-   `"smtp": true`.
+4. Restart `npm run dev` — Vite only reads env vars at startup
+5. For the live site, add the same value as a repo secret named
+   `VITE_WEB3FORMS_KEY` (DEPLOY.md step 3b)
 
-`server/.env` is gitignored. **Never commit it** — an App Password gives full access to
-send mail as that account.
+**Where enquiries land is set by the key, not by the code.** Register the key to
+`ganesh957kumar@gmail.com` and that's where they go. Nothing in `site.js` or anywhere
+else controls it. To change it, get a new key for the other inbox and swap the secret.
 
-Whichever address is in `SMTP_USER` is the one mail is *sent from*. Both addresses in
-`MAIL_TO` receive it. Hitting **Reply** in Gmail replies to the client, not to
-yourselves — the server sets `replyTo` when they gave a valid email address.
+> **On the key being public.** It ends up readable in the built JavaScript. That's
+> how Web3Forms works and it isn't a leak — the key is write-only, it can only submit
+> to your own form. It lives in an env var so it isn't committed to a public repo.
 
 ### What the form already handles
 
 - Name and contact are required; inline errors if they're missing
-- A hidden honeypot field — bots that fill it get a fake success and are dropped
-- Rate limited to **5 submissions per IP per 15 minutes**
-- Length caps so nobody can post a novel
-- HTML-escaped before it goes into the email body
+- A hidden `botcheck` honeypot — Web3Forms drops submissions that arrive with it filled
+- `replyto` set to the enquirer, **but only when they typed an actual email address** —
+  a phone number would make the header invalid and can get the mail rejected. So
+  hitting Reply works when they gave an email, and does nothing surprising when they didn't
+- Rate limiting and spam filtering are handled by Web3Forms (free plan: 250/month)
+- Every failure path — no key, network error, bad key, 429 — shows the WhatsApp and
+  email fallback rather than a false success
 
 ---
 
@@ -110,24 +105,37 @@ yourselves — the server sets `replyTo` when they gave a valid email address.
 
 ```
 Website-freelance/
-├── package.json              root scripts (setup, dev, build, start)
-├── client/                   ── React front end ──
-│   ├── index.html            page shell + font links
-│   ├── vite.config.js        dev server + /api proxy
-│   ├── public/assets/        logo, screenshots, photos
+├── package.json              root scripts (setup, dev, build, preview)
+├── .github/workflows/
+│   └── deploy.yml            builds + publishes to Pages on every push to main
+├── client/                   ── the site. this is what deploys ──
+│   ├── index.html            page shell, font links, link-preview tags
+│   ├── vite.config.js        base:'./' — the Pages subfolder fix
+│   ├── .env.example          copy to .env, add your Web3Forms key
+│   ├── public/
+│   │   ├── .nojekyll         stops Pages running the files through Jekyll
+│   │   └── assets/           logo, screenshots, photos
 │   └── src/
 │       ├── main.jsx
 │       ├── App.jsx           section order
 │       ├── data/site.js      ← ALL CONTENT LIVES HERE
+│       ├── lib/asset.js      resolves public/ paths against the deploy base
 │       ├── styles/global.css theme + layout
 │       ├── hooks/
 │       │   └── useFlightArrow.js   the scroll arrow
 │       └── components/       one file per section
-└── server/                   ── Node/Express ──
-    ├── index.js              /api/contact, /api/health, static serve
-    ├── .env.example          copy to .env and fill in
+└── server/                   ── ⚠ NOT DEPLOYED. escape hatch only ──
+    ├── index.js              Express: /api/contact + serves client/dist
+    ├── lib/mail.js           validation, rate limiting, the email itself
+    ├── .env.example          only needed if you actually host this
     └── package.json
 ```
+
+> **`client/src/lib/asset.js` matters more than it looks.** Pages serves a project
+> repo from `username.github.io/repo-name/`, not the root. Vite rewrites paths it
+> can see at build time, but a plain string like `src="/assets/logo.png"` in JSX is
+> just a runtime string — it stays absolute and 404s. Every reference to
+> `client/public/` from a component must go through `asset()`.
 
 ### Where to change things
 
@@ -137,7 +145,8 @@ Website-freelance/
 | Colours, spacing, layout | `client/src/styles/global.css` |
 | Section order | `client/src/App.jsx` |
 | The big section headings (h2) | the individual component in `client/src/components/` |
-| Where email goes | `server/.env` → `MAIL_TO` |
+| Where email goes | the inbox on your Web3Forms key — change it at web3forms.com |
+| An image | drop it in `client/public/assets/`, reference it via `asset()` |
 
 `site.js` holds all the repeating content — services, automation tiles, projects,
 process steps, team, pricing, FAQ. The one-off `<h2>` headings sit in their components,
@@ -329,13 +338,24 @@ hop. That's why it isn't on the Work section.
 
 ### Blocking — before anyone sees this
 
-- [ ] **SMTP credentials.** Follow the App Password steps above, or the form sends nothing.
-- [ ] **Public email address.** `hello@freshframe.in` in `site.js` is invented. Either
-      register it or put a real Gmail there. (This is the address shown on the page —
-      separate from where submissions are delivered, which is already correct.)
-- [ ] **WhatsApp number.** `contact.whatsapp` and `contact.whatsappDisplay` in `site.js`
-      are both `00000 00000`.
+- [ ] **Web3Forms access key.** Go to web3forms.com, enter `ganesh957kumar@gmail.com`,
+      and they email you a key. Put it in `client/.env` for local dev, and add it as the
+      repo secret `VITE_WEB3FORMS_KEY` for the Pages build. **This is the only thing
+      standing between you and a working site.** Until then the form shows an error,
+      which is deliberate — see below.
+- [x] **Recipient.** Enquiries go to `ganesh957kumar@gmail.com` — register the key to
+      that inbox. One recipient fits the free plan exactly.
+- [x] **Link-preview URLs** set to `https://Vino1705.github.io/FreshFrame/`.
+- [x] **Public email address.** `ganesh957kumar@gmail.com`.
+- [x] **WhatsApp number.** `+91 90427 85843`.
 - [ ] **Read the two project descriptions** and correct anything wrong.
+
+> **Why an unconfigured form errors instead of pretending.** It used to return
+> `200 {ok:true}` when mail wasn't configured, so the visitor was told *"Got it — we'll
+> reply today"* while the enquiry reached nothing but a console. A forgotten setting
+> meant enquiries were lost silently, with the customer believing otherwise. Now every
+> failure path — missing key, network error, rejected key, rate limit — shows the
+> WhatsApp and email fallback. A success message means the email actually sent.
 
 ### Decisions to confirm
 
@@ -356,11 +376,13 @@ hop. That's why it isn't on the Work section.
       mobile data this will crawl. TinyPNG or Squoosh; screenshots should be well under
       300 KB each as `.jpg`.
 - [ ] **Favicon.** Reusing the full logo. A 512×512 square crop looks better in a tab.
-- [ ] **Open Graph tags** in `client/index.html`, so the link previews properly on
-      WhatsApp and LinkedIn. Worth doing before you send it to clients.
-- [ ] **Delete the duplicate `logo.png`** in the project root — the one the site uses is
-      `client/public/assets/logo.png`.
-- [ ] **Set `CORS_ORIGIN`** in `server/.env` to your real domain once deployed.
+- [x] **Open Graph tags** added to `client/index.html`, pointing at the real Pages URL.
+      The share image is the logo as a stand-in; a 1200×630 JPG is better.
+- [x] **Deleted the duplicate `logo.png`** from the project root.
+- [x] **`loading="lazy"`** on the project screenshots, team photos and footer logo. The
+      header logo stays eager on purpose — it's above the fold.
+- [x] **Pages subfolder paths.** `base:'./'` plus `asset()` — verified by serving the
+      build from a subfolder; without it all five images 404'd.
 - [ ] Real device testing on one Android and one iPhone.
 
 ### Deliberately not built
@@ -370,10 +392,11 @@ hop. That's why it isn't on the Work section.
 
 ### Deployment
 
-Configured for Vercel — `vercel.json` sets the build, and `api/` holds the serverless
-contact endpoint. Step-by-step instructions, including the environment variables, are in
+**GitHub Pages**, published by `.github/workflows/deploy.yml` on every push to `main`.
+Step-by-step setup — repo, Pages source, the access key — is in
 **[DEPLOY.md](DEPLOY.md)**.
 
-If you ever move off Vercel, `server/index.js` is a normal Express app that serves both
-the built client and the API on one port (`npm run build && npm start`) — that works on
-Render, Railway, or any plain Node host.
+If you ever outgrow Web3Forms (more than one recipient without paying, or you want to
+store submissions), `server/index.js` is a complete Express app that serves the built
+client and the mail API on one port. Deploy it to Render or Railway unchanged with
+`npm run build && npm run start:server`, and point the form back at `/api/contact`.

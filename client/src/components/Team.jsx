@@ -1,4 +1,5 @@
 import { team } from '../data/site.js'
+import { asset } from '../lib/asset.js'
 import Reveal from './Reveal.jsx'
 
 export default function Team() {
@@ -20,7 +21,7 @@ export default function Team() {
           {team.map((person) => (
             <Reveal as="article" className="person" key={person.name}>
               <div className="person-photo">
-                <img src={person.photo} alt={person.name} />
+                <img src={asset(person.photo)} alt={person.name} loading="lazy" decoding="async" />
               </div>
               <div className="person-body">
                 <h3>{person.name}</h3>

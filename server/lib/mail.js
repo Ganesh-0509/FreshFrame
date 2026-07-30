@@ -1,19 +1,16 @@
 /* ══════════════════════════════════════════════════════════
-   SHARED MAIL LOGIC — one source of truth.
+   MAIL LOGIC — validation, rate limiting, and the email itself.
 
-   Imported by BOTH:
-     • api/contact.js   → the Vercel serverless function (production)
-     • server/index.js  → the local Express server (development)
-
-   Folders starting with "_" are not exposed as routes by Vercel,
-   so this file never becomes a public endpoint.
+   Used only by server/index.js, which is NOT part of the live site.
+   See the note at the top of that file: the GitHub Pages build posts
+   to Web3Forms instead, because Pages can't run Node.
    ══════════════════════════════════════════════════════════ */
 
 import nodemailer from 'nodemailer'
 
-export const RECIPIENTS = (
-  process.env.MAIL_TO || 'vinoism1703@gmail.com,ganesh957kumar@gmail.com'
-)
+/* Comma-separated. Defaults to Ganesh only, matching the live site —
+   the Web3Forms key there is registered to that inbox. */
+export const RECIPIENTS = (process.env.MAIL_TO || 'ganesh957kumar@gmail.com')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean)
@@ -22,8 +19,7 @@ export const smtpConfigured = Boolean(process.env.SMTP_USER && process.env.SMTP_
 
 let cached = null
 
-/* Reused across warm serverless invocations so we're not
-   re-handshaking SMTP on every submission. */
+/* Cached so we don't re-handshake SMTP on every submission. */
 export function getTransporter() {
   if (!smtpConfigured) return null
   if (cached) return cached
@@ -63,8 +59,8 @@ export function validate(body = {}) {
 }
 
 /* ── rate limiting ──
-   In-memory, so on Vercel it only covers a single warm instance.
-   Best-effort by design: the honeypot does the real spam work. */
+   In-memory, so it resets on restart and doesn't span multiple
+   instances. Best-effort by design: the honeypot does the real work. */
 const WINDOW_MS = 15 * 60 * 1000
 const MAX_HITS = 5
 const hits = new Map()

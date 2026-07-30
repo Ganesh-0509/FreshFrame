@@ -1,4 +1,5 @@
 import { work } from '../data/site.js'
+import { asset } from '../lib/asset.js'
 import Reveal from './Reveal.jsx'
 
 export default function Work() {
@@ -29,7 +30,8 @@ export default function Work() {
               rel="noopener noreferrer"
               aria-label={`Open ${p.name} in a new tab`}
             >
-              <img src={p.shot} alt={p.alt} />
+              {/* the heaviest images on the page — never fetch until near view */}
+              <img src={asset(p.shot)} alt={p.alt} loading="lazy" decoding="async" />
               <span className="work-shot-badge">Visit site ↗</span>
             </a>
 

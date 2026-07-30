@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { nav } from '../data/site.js'
+import { asset } from '../lib/asset.js'
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
@@ -16,7 +17,8 @@ export default function Header() {
     <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
       <div className="wrap header-inner">
         <a className="brand" href="#top" onClick={() => setOpen(false)}>
-          <img src="/assets/logo.png" alt="Fresh Frame logo" className="brand-mark" />
+          {/* above the fold — deliberately NOT lazy-loaded */}
+          <img src={asset('assets/logo.png')} alt="Fresh Frame logo" className="brand-mark" />
           <span className="brand-text">
             FRESH<span className="brand-accent">FRAME</span>
           </span>
