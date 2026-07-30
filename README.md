@@ -5,9 +5,17 @@
 Enquiries from the contact form are emailed straight to
 `vinoism1703@gmail.com` and `ganesh957kumar@gmail.com`. Nothing is stored anywhere.
 
-**Status:** built and running. What's still placeholder: **the public email address and
-the WhatsApp number**, plus the SMTP credentials need adding before mail actually sends.
-See [What's left to do](#whats-left-to-do).
+**Status:** built, committed, and ready to deploy. What's still placeholder: **the public
+email address and the WhatsApp number**, plus SMTP credentials need adding before mail
+actually sends. See [What's left to do](#whats-left-to-do).
+
+**To put it online:** follow [DEPLOY.md](DEPLOY.md) — GitHub, then Vercel, then the
+environment variables. Both steps need a browser login, so they're written out as
+instructions rather than done for you.
+
+> **Note on production:** Vercel is serverless and never runs `server/index.js`. The live
+> contact form is `api/contact.js`; the Express server is for local `npm run dev` only.
+> Both share `api/_lib/mail.js`. DEPLOY.md explains why.
 
 ---
 
@@ -360,12 +368,12 @@ hop. That's why it isn't on the Work section.
 - **Testimonials.** Add the section once you have two real quotes from the two clients.
   An invented or empty one costs more trust than it buys.
 
-### Deployment, when you get there
+### Deployment
 
-The client is static and the server is a small Node app, so the usual split is:
+Configured for Vercel — `vercel.json` sets the build, and `api/` holds the serverless
+contact endpoint. Step-by-step instructions, including the environment variables, are in
+**[DEPLOY.md](DEPLOY.md)**.
 
-- **Front end** → Netlify or Vercel (build command `npm run build`, publish `client/dist`)
-- **Server** → Render or Railway free tier (start command `npm start` in `server/`)
-
-Or run `npm start` on a single Node host and let Express serve both — that's already
-wired up, and it's simpler if you only want one thing to deploy.
+If you ever move off Vercel, `server/index.js` is a normal Express app that serves both
+the built client and the API on one port (`npm run build && npm start`) — that works on
+Render, Railway, or any plain Node host.
