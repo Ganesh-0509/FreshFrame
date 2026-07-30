@@ -1,0 +1,24 @@
+{
+  "name": "freshframe",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Fresh Frame — website. React client + Node mail API.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "setup": "npm install && npm --prefix client install && npm --prefix server install",
+    "dev": "concurrently -n client,server -c cyan,magenta \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm --prefix client install --no-audit --no-fund && npm --prefix client run build",
+    "start": "npm --prefix server start"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
