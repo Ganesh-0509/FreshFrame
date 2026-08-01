@@ -8,37 +8,108 @@
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
+/* ── the floating pill ──
+   Per the third reference: the bar is not a full-width strip, it is a
+   rounded capsule floating clear of the page edge, with the nav itself
+   sitting in a second capsule inside it.
+
+   The scroll behaviour is a morph rather than a swap. Every property
+   that changes on .scrolled is on the same transition, so the bar
+   contracts as one object — width, padding, radius, blur and border
+   all move together. That single-object feel is the effect from the
+   reference; animating them at different speeds breaks it. */
 .site-header{
   position:fixed;
-  inset:0 0 auto 0;
-  z-index:100;
-  padding:15px 0;
-  transition:background .3s var(--ease), border-color .3s, padding .3s, box-shadow .3s;
-  border-bottom:1px solid transparent;
+  top:0; left:0; right:0;
+  z-index:60;
+  /* Horizontal padding here, not on .header-inner: that element is also
+     the .wrap, and the pill styles below replace its 28px gutter. Without
+     this the capsule would run edge to edge. */
+  padding:20px 24px;
+  transition:padding .42s var(--ease);
 }
-.site-header.scrolled{
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  gap:20px;
+
+  padding:11px 12px 11px 18px;
+  border-radius:999px;
+  border:1px solid var(--line-soft);
+  background:rgba(11,11,13,.55);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 10px 34px rgba(0,0,0,.34);
+
+  transition:max-width .42s var(--ease), padding .42s var(--ease),
+             background .42s var(--ease), border-color .42s var(--ease),
+             box-shadow .42s var(--ease), backdrop-filter .42s var(--ease);
+}
+
+/* Contracted state. max-width is what does the visible work — the
+   capsule narrows toward the middle of the screen as you scroll. */
+.site-header.scrolled{ padding:11px 24px; }
+.site-header.scrolled .header-inner{
+  max-width:960px;
+  padding:8px 10px 8px 15px;
   background:rgba(11,11,13,.86);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  border-bottom-color:var(--line-soft);
-  box-shadow:var(--shadow-sm);
-  padding:9px 0;
+  border-color:var(--line);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 14px 44px rgba(0,0,0,.55);
 }
-.header-inner{ display:flex; align-items:center; gap:26px; }
 
 .brand{ display:flex; align-items:center; gap:11px; flex-shrink:0; }
 .brand-mark{
-  width:38px; height:38px;
-  border-radius:11px;
+  width:34px; height:34px;
+  border-radius:50%;
   object-fit:cover;
   border:1px solid var(--line);
+  transition:transform .42s var(--ease), border-color .3s;
 }
-.brand-text{ font-weight:900; font-size:1.14rem; letter-spacing:-.02em; }
+.brand:hover .brand-mark{ transform:rotate(-8deg) scale(1.06); border-color:var(--red); }
+.brand-text{ font-weight:900; font-size:1.08rem; letter-spacing:-.02em; }
 .brand-accent{ color:var(--red); }
 
-.nav{ display:flex; gap:28px; margin-left:auto; }
-.nav a{ font-size:.95rem; color:var(--muted); font-weight:500; transition:color .2s; }
-.nav a:hover{ color:var(--red); }
+/* ── the inner nav capsule ──
+   The pill-inside-a-pill from the reference. */
+.nav{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  margin-left:auto;
+  padding:4px;
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line-soft);
+}
+.nav a{
+  position:relative;
+  font-size:.9rem;
+  color:var(--muted);
+  font-weight:500;
+  padding:8px 15px;
+  border-radius:999px;
+  transition:color .25s var(--ease);
+  white-space:nowrap;
+}
+/* The travelling fill. Scaling a pseudo-element rather than animating
+   background-color means it grows out from the middle of the item
+   instead of just fading, which is what reads as "the pill moves". */
+.nav a::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background:var(--red-core);
+  transform:scale(.6);
+  opacity:0;
+  transition:transform .34s var(--ease), opacity .28s var(--ease);
+  z-index:-1;
+}
+.nav a:hover{ color:#fff; }
+.nav a:hover::before{ transform:scale(1); opacity:1; }
 
 .header-cta{ flex-shrink:0; }
 
@@ -72,11 +143,16 @@
 }
 
 @media (max-width:860px){
+  /* The drawer has to undo the pill: full-bleed panel, square corners,
+     no inner capsule padding. */
   .nav{
     position:fixed;
-    inset:62px 0 auto 0;
+    inset:74px 0 auto 0;
     flex-direction:column;
     gap:0;
+    padding:8px 28px 20px;
+    border:0;
+    border-radius:0;
     background:rgba(14,14,17,.98);
     backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
@@ -88,7 +164,10 @@
     transition:opacity .25s var(--ease), transform .25s var(--ease);
   }
   .nav.open{ opacity:1; transform:none; pointer-events:auto; }
-  .nav a{ padding:14px 0; border-bottom:1px solid var(--line-soft); font-size:1rem; }
+  .nav a{ padding:14px 0; border-bottom:1px solid var(--line-soft); font-size:1rem; border-radius:0; }
+  /* the travelling fill makes no sense as a full-width bar */
+  .nav a::before{ display:none; }
+  .nav a:hover{ color:var(--red); }
   .header-cta{ display:none; }
   .nav-toggle{ display:flex; }
 }

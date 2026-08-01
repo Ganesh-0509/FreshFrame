@@ -1,17 +1,40 @@
+import { useRef } from 'react'
 import { hero } from '../data/site.js'
+import useSplitScroll from '../hooks/useSplitScroll.js'
 
 export default function Hero() {
+  const titleRef = useRef(null)
+  useSplitScroll(titleRef)
+
   return (
     <section className="hero">
       <div className="hero-glow" aria-hidden="true" />
-      <div className="wrap hero-grid">
-        <div className="hero-copy">
-          <p className="kicker">{hero.kicker}</p>
-          <h1>
+
+      {/* The oversized word behind everything, as in the reference.
+          aria-hidden and unselectable: it is texture, not content, and
+          it deliberately fails contrast because nothing depends on
+          reading it. The real headline sits on top. */}
+      <div className="hero-ghost" aria-hidden="true">
+        FRESH<span>FRAME</span>
+      </div>
+
+      <div className="wrap hero-inner">
+        <p className="kicker">{hero.kicker}</p>
+
+        <p className="hero-script">Hello, we&rsquo;re</p>
+
+        {/* Each line arrives from the side named here, then the
+            scrollbar drives them apart again — see useSplitScroll. */}
+        <h1 className="hero-title" ref={titleRef}>
+          <span className="hero-line" data-dir="left">
             See your website
-            <br />
-            <em>before</em> you pay for it.
-          </h1>
+          </span>
+          <span className="hero-line" data-dir="right">
+            <em>before</em> you pay
+          </span>
+        </h1>
+
+        <div className="hero-body">
           <p className="lede">{hero.lede}</p>
 
           <div className="hero-actions">
@@ -28,44 +51,6 @@ export default function Hero() {
               <li key={p}>{p}</li>
             ))}
           </ul>
-        </div>
-
-        <div className="hero-visual" aria-hidden="true">
-          <div className="code-window">
-            <div className="cw-bar">
-              <span />
-              <span />
-              <span />
-              <i>freshframe.dev</i>
-            </div>
-            <pre className="cw-body">
-              <code>
-                <span className="c-key">const</span> <span className="c-var">freshFrame</span> ={' '}
-                {'{'}
-                {'\n'}  <span className="c-prop">team</span>: [
-                <span className="c-str">'Ganesh'</span>, <span className="c-str">'Vinothini'</span>],
-                {'\n'}  <span className="c-prop">builds</span>: [
-                <span className="c-str">'websites'</span>, <span className="c-str">'brands'</span>,
-                {'\n'}            <span className="c-str">'automations'</span>],
-                {'\n'}  <span className="c-prop">mockFirst</span>:{' '}
-                <span className="c-bool">true</span>,
-                {'\n'}  <span className="c-prop">advance</span>: <span className="c-num">0</span>,
-                {'\n'}
-                {'}'};
-                {'\n\n'}
-                <span className="c-var">freshFrame</span>.<span className="c-fn">build</span>(
-                <span className="c-str">'your idea'</span>);
-                {'\n'}
-                <span className="c-com">{'// → you grow'}</span>
-              </code>
-            </pre>
-          </div>
-
-          {hero.chips.map((chip, i) => (
-            <div className={`float-chip chip-${i + 1}`} key={chip}>
-              {chip}
-            </div>
-          ))}
         </div>
       </div>
     </section>

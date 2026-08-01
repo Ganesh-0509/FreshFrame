@@ -32,19 +32,31 @@
   --dim:        #8b857f;   /*  4.7:1 */
 
   /* ── the red family ──
-     One accent family, unlike the old blue/violet/teal trio.
-     --red is the workhorse; it is the lightest of the three and the
-     only one used for small text, because the deeper reds do not
-     reach 4.5:1 on the dark surfaces. Keep it that way. */
+     SIZE DECIDES WHICH RED. This is the whole system, and the reason
+     the page can look deep and classic without becoming unreadable:
+
+       large areas  -> --red-core, the classic wine crimson. Giant
+                       display letters, solid panels, filled blocks.
+                       White text on it measures 6.2:1, so it is safe
+                       to fill a panel and put copy on top.
+       small text   -> --red. Deeper reds simply do not reach 4.5:1 on
+                       a card; #c1121f is 2.75:1 there and would fail.
+
+     "More visible" therefore comes from COVERAGE, not brightness:
+     more of the page is red, and the red itself is richer. Making the
+     small-text red darker instead would make the page less readable,
+     not more striking. */
+  --red-core:   #c1121f;   /*  6.2:1 with white on top — LARGE AREAS,
+                               panels and display type. Never small text. */
   --red:        #ee4a57;   /*  4.7:1 — clears AA body, just.
                                The reference crimson (#e63946) sits at
                                4.1:1 on cards and fails, and .kicker is
                                small text, so this is nudged up to the
                                least-bright red that passes.           */
   --red-2:      #ff4d5a;   /*  5.3:1 — hover and emphasis            */
-  --red-deep:   #8f1620;   /*  1.9:1 — LARGE DISPLAY TYPE ONLY, never
-                               body text or small labels. Used by
-                               .ghost-type, which is decorative.       */
+  --red-deep:   #7a0d16;   /*  1.5:1 — the darkest. Ghost layers and
+                               shadows behind the display type only.
+                               Decorative; carries no information.     */
   --rose:       #c9736f;   /*  5.0:1 — soft secondary accent          */
 
   /* The one deliberate non-red in the palette. Signalling a successful
@@ -68,8 +80,8 @@
   --font-mono:    'JetBrains Mono',ui-monospace,monospace;
 
   /* ── gradients ── */
-  --grad:     linear-gradient(115deg, var(--red-deep) 0%, var(--red) 100%);
-  --grad-tri: linear-gradient(100deg, var(--red-deep) 0%, var(--red) 55%, var(--rose) 100%);
+  --grad:     linear-gradient(115deg, var(--red-deep) 0%, var(--red-core) 100%);
+  --grad-tri: linear-gradient(100deg, var(--red-deep) 0%, var(--red-core) 55%, var(--red) 100%);
 
   /* ── depth ──
      Shadows on a dark page read as absence of light, not grey haze,

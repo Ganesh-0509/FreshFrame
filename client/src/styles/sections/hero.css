@@ -1,57 +1,117 @@
 /* ══════════════════════════════════════════════════════════
    HERO
-   ────────────────────────────────────────────────────────
-   First screen: display headline, lede, actions, floating chips.
+   ──────────────────────────────────────────────────────────
+   First screen. Poster layout: an oversized ghost wordmark
+   behind, a script aside, then a two-line display headline
+   whose lines arrive from opposite sides and are pulled apart
+   again by the scrollbar.
+
+   The code window and its floating pills were removed — the
+   reference hero is one full-bleed statement, not a split with
+   a side panel.
 
    Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
    Tokens live in styles/theme.css. Override them per section in the
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
-.hero{ position:relative; padding:178px 0 100px; overflow:hidden; }
+.hero{
+  position:relative;
+  padding:186px 0 104px;
+  overflow:hidden;          /* the ghost word is wider than the page */
+  isolation:isolate;
+}
 
-/* one red family bleeding softly into the top of the page */
+/* The red wash bleeding down from the top. Now on --red-core so the
+   glow reads as the classic crimson rather than the brighter text red. */
 .hero-glow{
   position:absolute;
-  top:-340px; left:50%;
+  top:-380px; left:50%;
   transform:translateX(-50%);
-  width:1300px; height:860px;
+  width:1500px; height:940px;
   background:
-    radial-gradient(closest-side, rgba(238,74,87,.16), transparent 70%),
-    radial-gradient(closest-side at 30% 60%, rgba(201,115,111,.14), transparent 66%),
-    radial-gradient(closest-side at 76% 46%, var(--accent-soft), transparent 62%);
-  filter:blur(20px);
+    radial-gradient(closest-side, rgba(193,18,31,.34), transparent 70%),
+    radial-gradient(closest-side at 28% 62%, rgba(122,13,22,.40), transparent 66%),
+    radial-gradient(closest-side at 78% 44%, rgba(238,74,87,.14), transparent 62%);
+  filter:blur(18px);
   pointer-events:none;
+  z-index:-2;
 }
-.hero-grid{
-  position:relative;
-  display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:66px;
-  align-items:center;
-}
-.hero h1{
+
+/* ── the oversized wordmark ──
+   Sized in vw so it always overflows the viewport slightly, which is
+   what makes it read as a poster rather than a heading. Clipped by
+   .hero's overflow:hidden. */
+.hero-ghost{
+  position:absolute;
+  top:96px; left:50%;
+  transform:translateX(-50%);
+  z-index:-1;
+
   font-family:var(--font-display);
-  font-size:clamp(2.9rem,7.4vw,5.6rem);
-  font-weight:400;
-  line-height:.96;
-  letter-spacing:.005em;
+  font-size:clamp(6rem,21vw,19rem);
+  line-height:.78;
+  letter-spacing:-.01em;
+  white-space:nowrap;
   text-transform:uppercase;
-  margin:0 0 24px;
+
+  color:var(--red-core);
+  opacity:.30;
+  pointer-events:none;
+  user-select:none;
 }
-.hero h1 em{
-  font-style:normal;
-  background:var(--grad-tri);
-  -webkit-background-clip:text;
-  background-clip:text;
+/* Second half outlined rather than filled, so the word has some
+   internal structure instead of one flat slab of red. */
+.hero-ghost span{
   color:transparent;
+  -webkit-text-stroke:2px var(--red-core);
+  opacity:.85;
 }
+
+.hero-inner{ position:relative; }
+
+.hero-script{
+  font-family:var(--font-script);
+  font-size:clamp(1.7rem,3.4vw,2.6rem);
+  font-weight:700;
+  line-height:1;
+  color:var(--red);
+  margin:0 0 6px;
+}
+
+/* ── the display headline ──
+   Lines are block-level so each can be translated on its own axis by
+   useSplitScroll. will-change is set because both the entrance and the
+   scrub animate x on every frame. */
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(2.9rem,9.2vw,7.4rem);
+  font-weight:400;
+  line-height:.92;
+  letter-spacing:.004em;
+  text-transform:uppercase;
+  margin:0 0 30px;
+}
+.hero-line{
+  display:block;
+  will-change:transform;
+}
+/* The one word carrying the whole proposition. Solid --red-core: it is
+   display-sized, so the deep crimson is safe and reads far heavier
+   than the old gradient fill did. */
+.hero-title em{
+  font-style:normal;
+  color:var(--red-core);
+  -webkit-text-stroke:1px var(--red);
+}
+
+.hero-body{ max-width:62ch; }
+
 .lede{ color:var(--muted); font-size:1.1rem; max-width:56ch; margin:0 0 34px; }
 .lede strong{ color:var(--text); font-weight:600; }
 
 .hero-actions{ display:flex; gap:13px; flex-wrap:wrap; margin-bottom:40px; }
 
-/* one dot per point, all in the accent now the palette is monochrome */
 .hero-points{ display:flex; flex-wrap:wrap; gap:12px 26px; }
 .hero-points li{
   font-size:.9rem;
@@ -65,108 +125,45 @@
   width:7px; height:7px;
   border-radius:50%;
   background:var(--red);
-}
-.hero-points li:nth-child(2)::before{ background:var(--rose); }
-.hero-points li:nth-child(3)::before{ background:var(--red-2); }
-
-/* hero code window — the one deliberately dark object on a light page */
-.hero-visual{ position:relative; }
-.code-window{
-  background:var(--ink);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--radius);
-  overflow:hidden;
-  box-shadow:var(--shadow-deep);
-  animation:floaty 7s ease-in-out infinite;
-}
-.cw-bar{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:13px 16px;
-  background:var(--ink);
-  border-bottom:1px solid rgba(255,255,255,.07);
-}
-.cw-bar span{ width:11px; height:11px; border-radius:50%; }
-.cw-bar span:nth-child(1){ background:var(--red); }
-.cw-bar span:nth-child(2){ background:var(--rose); }
-.cw-bar span:nth-child(3){ background:var(--dim); }
-.cw-bar i{
-  font-style:normal;
-  margin-left:14px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:.74rem;
-  color:var(--dim);
-}
-.cw-body{
-  margin:0;
-  padding:24px 22px 28px;
-  font-family:'JetBrains Mono',ui-monospace,monospace;
-  font-size:.84rem;
-  line-height:1.85;
-  color:var(--muted);
-  overflow-x:auto;
-}
-.c-key{ color:var(--rose); }
-.c-var{ color:var(--red-2); }
-.c-prop{ color:var(--text); }
-.c-str{ color:var(--red-2); }
-.c-bool,.c-num{ color:var(--rose); }
-.c-fn{ color:var(--red); }
-.c-com{ color:var(--dim); }
-
-.float-chip{
-  position:absolute;
-  font-family:'JetBrains Mono',monospace;
-  font-size:.73rem;
-  letter-spacing:.05em;
-  padding:8px 15px;
-  border-radius:999px;
-  background:rgba(11,11,13,.92);
-  border:1px solid var(--line);
-  box-shadow:var(--shadow-card);
-  backdrop-filter:blur(8px);
-  white-space:nowrap;
-  animation:floaty 6s ease-in-out infinite;
-}
-/* explicit classes, not nth-child — the code window is a sibling
-   and would throw the counting off by one */
-.chip-1{ top:-20px;   right:24px;  animation-delay:-1s;   color:var(--red); }
-.chip-2{ top:34%;     left:-42px;  animation-delay:-2.5s; color:var(--red-2); }
-.chip-3{ bottom:56px; right:-28px; animation-delay:-4s;   color:var(--rose); }
-.chip-4{ bottom:-22px;left:28px;   animation-delay:-5.5s; color:var(--red); }
-
-@keyframes floaty{
-  0%,100%{ transform:translateY(0); }
-  50%    { transform:translateY(-10px); }
+  flex:none;
 }
 
 
 /* ─────────── RESPONSIVE ─────────── */
 
 @media (max-width:1024px){
-  .hero-grid{ grid-template-columns:1fr; gap:52px; }
-  .hero{ padding:145px 0 84px; }
-  .chip-2{ left:-10px; }
-  .chip-3{ right:-10px; }
+  .hero{ padding:150px 0 84px; }
+  .hero-ghost{ top:112px; }
 }
 
 @media (max-width:520px){
-  .hero{ padding:126px 0 66px; }
+  .hero{ padding:124px 0 66px; }
   .hero-actions .btn{ width:100%; }
-  .float-chip{ display:none; }
+  .hero-ghost{ opacity:.22; }   /* less shouty behind small text */
+  .hero-title em{ -webkit-text-stroke:0; }
 }
+
 
 /* ─────────────────────────────────────────────────────────
    ANIMATION — Hero
-   Nothing here yet. Section-specific motion goes in this block so
-   it stays out of the layout rules above.
 
-   Scroll-in is already handled globally by .reveal in base.css.
-   Anything added here must degrade under the reduced-motion query
-   at the end of base.css, which kills animation for users who ask
-   the OS to reduce motion.
+   The headline is driven from JS, not here: hooks/useSplitScroll.js
+   runs the entrance and hands the same x axis to the scrollbar.
+   Timing lives in that file (travel, drift, duration, ease), because
+   the distances are measured from each line's rendered width and
+   cannot be expressed in CSS.
 
-   e.g.  .hero-title { animation: fade-up .8s var(--ease) both; }
+   That hook also handles prefers-reduced-motion itself — the media
+   query in base.css cannot undo an inline transform GSAP has written.
+
+   Anything purely decorative can still go here.
    ───────────────────────────────────────────────────────── */
 
+/* the ghost wordmark breathing, very slowly */
+@keyframes hero-ghost-drift{
+  from{ transform:translateX(-50%) translateY(0); }
+  to  { transform:translateX(-50%) translateY(-14px); }
+}
+.hero-ghost{
+  animation:hero-ghost-drift 9s var(--ease) infinite alternate;
+}

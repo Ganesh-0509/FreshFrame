@@ -36,7 +36,6 @@ export const hero = {
     "Tell us your idea and we'll build you a real, working mock first. " +
     'Not a PDF, not a template preview. You decide after you’ve seen it.',
   points: ['Free mock, no advance', 'You talk straight to the makers', 'Support after launch'],
-  chips: ['Websites', 'Automation', 'Branding', 'Digital Solutions'],
 }
 
 export const marquee = [
