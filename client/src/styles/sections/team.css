@@ -56,13 +56,24 @@
 }
 .tm-flip .tm-photo{ grid-column:6 / span 7; }
 
+/* ── framing ──
+   TWO KNOBS, both per person below, because the sources differ:
+
+     --zoom            how far in. cover alone shows the whole width of
+                       a 720px-wide portrait in a ~690px box, which is
+                       why the subject looked small and lost.
+     object-position   which part stays in frame. Nudged so each person
+                       sits toward the OUTER edge of their photo, away
+                       from the name breaking across the inner edge.
+
+   transform-origin follows object-position, so zooming pulls in on the
+   subject rather than the middle of the picture. */
 .tm-photo img{
   width:100%; height:100%;
   object-fit:cover;
-  object-position:center 28%;
+  transform:scale(var(--zoom,1));
   transition:transform 1.2s var(--ease), filter .9s var(--ease);
 }
-.tm-band:hover .tm-photo img{ transform:scale(1.045); }
 
 /* Lets the name lie on the photograph and stay readable whatever the
    picture is doing underneath. It has to darken the COPY side, so the
@@ -92,12 +103,18 @@
   display:flex;
   flex-direction:column;
   justify-content:center;
+  /* Hugs the OUTER edge, away from the picture. This was reversed:
+     the body copy was aligned toward the photo, so all 197px of the
+     shared cell was paragraph text lying across the subject. Only the
+     name is meant to cross over. */
+  align-items:flex-end;
+  text-align:right;
   padding:56px 56px 56px 0;
 }
 .tm-flip .tm-copy{
   grid-column:1 / span 7;
-  align-items:flex-end;
-  text-align:right;
+  align-items:flex-start;
+  text-align:left;
   padding:56px 0 56px 56px;
 }
 
@@ -121,11 +138,21 @@
   letter-spacing:.012em;
   text-transform:uppercase;
   margin:0 0 18px;
-  margin-left:-26%;
+  /* The one element that breaks toward the picture, on both bands.
+     align-self opposes the column's own alignment, so the name reaches
+     across while the paragraphs stay pinned to the outer edge. */
+  align-self:flex-start;
+  text-align:left;
+  margin-left:-22%;
   /* holds the type off the picture without a slab of colour behind it */
   text-shadow:0 4px 26px rgba(0,0,0,.8), 0 1px 3px rgba(0,0,0,.6);
 }
-.tm-flip .tm-name{ margin-left:0; margin-right:-26%; }
+.tm-flip .tm-name{
+  align-self:flex-end;
+  text-align:right;
+  margin-left:0;
+  margin-right:-22%;
+}
 .tm-name span{ display:block; }
 
 .tm-tagline{ font-size:1.12rem; margin:0 0 18px; }
@@ -178,8 +205,15 @@
 .tm-mono .tm-facts li{ color:var(--text); }
 .tm-mono .tm-facts li::before{ background:#fff; }
 .tm-mono .tm-link{ color:#fff; }
-.tm-mono .tm-photo img{ filter:grayscale(1) contrast(1.08); }
-.tm-mono:hover .tm-photo img{ filter:grayscale(.2) contrast(1.02); }
+/* 960x1280. He fills more of the frame already, so a light zoom, and
+   pushed left — his band has the photo on the LEFT, so "outer" is left. */
+.tm-mono .tm-photo img{
+  --zoom:1.18;
+  object-position:34% 26%;
+  transform-origin:34% 26%;
+  filter:grayscale(1) contrast(1.08);
+}
+.tm-mono:hover .tm-photo img{ --zoom:1.24; filter:grayscale(.2) contrast(1.02); }
 
 
 /* ══════════════ VINOTHINI — plum, classic ══════════════ */
@@ -200,6 +234,16 @@
   margin-bottom:20px;
 }
 /* white at .86 on --maroon measures 10.7:1 */
+/* 720x1280 and she is small in it, so a harder crop. Pushed right —
+   her band has the photo on the RIGHT, so "outer" is right, which also
+   walks her away from the name crossing the left edge. */
+.tm-plum .tm-photo img{
+  --zoom:1.55;
+  object-position:66% 46%;
+  transform-origin:66% 46%;
+}
+.tm-plum:hover .tm-photo img{ --zoom:1.62; }
+
 .tm-plum .tm-bio{ color:rgba(255,255,255,.86); }
 .tm-plum .tm-facts li{ color:#fff; }
 .tm-plum .tm-facts li::before{ background:var(--red-2); }
@@ -249,9 +293,12 @@
    ───────────────────────────────────────────────────────── */
 
 /* The photograph wipes upward into frame. */
+/* clip-path ONLY. This used to animate transform too, which would now
+   overwrite the scale(var(--zoom)) framing above and pop the photo back
+   to unzoomed the moment the animation finished. */
 @keyframes tm-unveil{
-  from{ clip-path:inset(100% 0 0 0); transform:scale(1.12); }
-  to  { clip-path:inset(0 0 0 0);    transform:scale(1); }
+  from{ clip-path:inset(100% 0 0 0); }
+  to  { clip-path:inset(0 0 0 0); }
 }
 .tm-band.in .tm-photo img{ animation:tm-unveil 1.15s var(--ease) both; }
 
