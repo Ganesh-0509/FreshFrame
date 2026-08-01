@@ -1,210 +1,251 @@
 /* ══════════════════════════════════════════════════════════
    SERVICES
    ──────────────────────────────────────────────────────────
-   Was a static 2x2 card grid. Now a showcase, per the fourth
-   reference: one large panel showing the selected service, a
-   row of tabs underneath to switch it, and an auto-advance
-   that steps through on its own.
+   The fanned deck from the third reference: angled panels
+   overlapping like folders in a drawer, each with a vertical
+   tab, one open at a time.
 
-   Only one service is on screen at a time, so this panel gets
-   the space and the weight four cramped cards never had.
+   It is an accordion rather than a carousel because the panels
+   have to stay visible while one is open — that is what makes
+   the row read as a stack of folders you are flicking through.
+
+   The skew is applied to each panel and undone on its inner
+   wrapper, which is what gives the slanted folder edges without
+   tilting any of the text.
 
    Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
    Tokens live in styles/theme.css. Override them per section in the
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
-.sv-stage{ position:relative; }
+.sv-deck{
+  position:relative;
+  padding-left:52px;         /* room for the vertical rail */
+}
 
-/* The service number, oversized, behind the panel. --red-core is safe
-   here because it is decorative and display-sized. */
-.sv-ghost{
+/* The sideways script label up the left edge. */
+.sv-rail{
   position:absolute;
-  top:-58px; right:-10px;
-  z-index:0;
-
-  font-family:var(--font-display);
-  font-size:clamp(7rem,17vw,15rem);
-  line-height:.74;
-  color:transparent;
-  -webkit-text-stroke:2px var(--red-core);
-  opacity:.34;
+  left:0; bottom:0;
+  transform:rotate(180deg);
+  writing-mode:vertical-rl;
+  margin:0;
+  font-family:var(--font-script);
+  font-size:2.1rem;
+  font-weight:700;
+  color:var(--red);
+  opacity:.85;
   pointer-events:none;
   user-select:none;
 }
 
-/* ── the panel ── */
-.sv-panel{
+/* ── the fan ── */
+.sv-fan{
+  display:flex;
+  align-items:stretch;
+  gap:10px;
+  height:452px;
+}
+
+.sv-slide{
   position:relative;
-  z-index:1;
-  min-height:404px;
+  flex:0 0 88px;             /* collapsed width */
+  min-width:0;
+  padding:0;
+  cursor:pointer;
+  overflow:hidden;
+  text-align:left;
+
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:18px;
+  /* the folder lean */
+  transform:skewX(-2.6deg);
+
+  transition:flex-grow .62s var(--ease), flex-basis .62s var(--ease),
+             background .5s var(--ease), border-color .5s var(--ease),
+             box-shadow .5s var(--ease);
+}
+.sv-slide:hover{ border-color:var(--red); }
+
+.sv-slide.is-open{
+  flex:1 1 auto;
+  background:
+    linear-gradient(152deg, rgba(193,18,31,.30) 0%, transparent 56%),
+    var(--surface);
+  border-color:var(--red-core);
+  box-shadow:var(--shadow-deep);
+}
+
+/* Everything inside stands back up. */
+.sv-slide-inner{
+  display:block;
+  height:100%;
+  transform:skewX(2.6deg);
+}
+
+/* ── the vertical tab ──
+   Always present. On the open panel it moves aside rather than
+   disappearing, so the row keeps its rhythm. */
+.sv-tab{
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:88px;
   display:flex;
   flex-direction:column;
-
-  background:
-    linear-gradient(150deg, rgba(193,18,31,.16) 0%, transparent 52%),
-    var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius-lg);
-  padding:46px 48px 40px;
-  box-shadow:var(--shadow-card);
-  overflow:hidden;
+  align-items:center;
+  justify-content:flex-start;
+  gap:16px;
+  padding:22px 0;
+  transition:opacity .4s var(--ease);
 }
-
-/* The crimson edge that marks the panel as the live one. */
-.sv-panel::before{
-  content:"";
-  position:absolute;
-  inset:0 auto 0 0;
-  width:4px;
-  background:var(--red-core);
-}
-
-.sv-index{
+.sv-tab-num{
   font-family:var(--font-mono);
-  font-size:.76rem;
-  letter-spacing:.18em;
-  color:var(--dim);
-  margin:0 0 14px;
+  font-size:.72rem;
+  letter-spacing:.16em;
+  color:var(--red);
 }
-.sv-index span{ color:var(--red); font-weight:700; }
-
-.sv-title{
+.sv-tab-name{
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
   font-family:var(--font-display);
-  font-size:clamp(2.1rem,5.4vw,3.6rem);
-  font-weight:400;
-  line-height:.98;
-  letter-spacing:.006em;
+  font-size:1.32rem;
+  letter-spacing:.06em;
   text-transform:uppercase;
-  margin:0 0 14px;
+  color:var(--text);
+  white-space:nowrap;
+}
+.sv-slide.is-open .sv-tab{ opacity:0; pointer-events:none; }
+
+/* ── the open panel ── */
+.sv-open{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:40px 42px 38px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .4s var(--ease);
+}
+.sv-slide.is-open .sv-open{
+  opacity:1;
+  pointer-events:auto;
+  transition-delay:.18s;     /* wait for the width to open */
 }
 
-.sv-blurb{
+.sv-open-num{
+  font-family:var(--font-mono);
+  font-size:.74rem;
+  letter-spacing:.18em;
+  color:var(--red);
+  margin-bottom:12px;
+}
+.sv-open-title{
+  font-family:var(--font-display);
+  font-size:clamp(1.9rem,4.4vw,3.2rem);
+  line-height:.98;
+  letter-spacing:.008em;
+  text-transform:uppercase;
+  color:var(--text);
+  margin-bottom:14px;
+}
+.sv-open-blurb{
   color:var(--muted);
-  font-size:1.06rem;
-  max-width:56ch;
-  margin:0 0 26px;
+  font-size:1.02rem;
+  line-height:1.6;
+  max-width:52ch;
+  margin-bottom:26px;
 }
-
-.sv-items{
+.sv-open-items{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:11px 30px;
-  max-width:640px;
+  gap:10px 28px;
+  margin-top:auto;
+  max-width:600px;
 }
-.sv-items li{
-  display:flex;
-  align-items:flex-start;
-  gap:11px;
-  font-size:.97rem;
+.sv-open-items span{
+  position:relative;
+  padding-left:22px;
+  font-size:.95rem;
   color:var(--text);
 }
-.sv-items li::before{
+.sv-open-items span::before{
   content:"";
-  margin-top:.55em;
-  width:7px; height:7px;
+  position:absolute;
+  left:0; top:.56em;
+  width:8px; height:8px;
   border-radius:2px;
   background:var(--red);
-  flex:none;
 }
 
-/* ── arrows ── */
-.sv-arrows{
-  display:flex;
-  gap:9px;
-  margin-top:auto;
-  padding-top:30px;
-}
-.sv-arrow{
-  width:46px; height:46px;
+/* ── controls ── */
+.sv-next{
+  align-self:center;
+  flex:0 0 auto;
+  width:52px; height:52px;
+  margin-left:6px;
   border-radius:50%;
   background:var(--ghost-bg);
   border:1px solid var(--line);
   color:var(--text);
-  font-size:1.05rem;
+  font-size:1.1rem;
   cursor:pointer;
   transition:background .25s var(--ease), border-color .25s var(--ease),
              transform .25s var(--ease);
 }
-.sv-arrow:hover{
+.sv-next:hover{
   background:var(--red-core);
   border-color:var(--red-core);
   color:#fff;
-  transform:translateY(-2px);
+  transform:scale(1.08);
 }
 
-/* ── tabs ── */
-.sv-tabs{
-  position:relative;
-  z-index:1;
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-  margin-top:14px;
+.sv-dots{ display:flex; gap:7px; justify-content:center; margin-top:22px; }
+.sv-dots span{
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--line);
+  transition:background .3s var(--ease), width .3s var(--ease);
 }
-.sv-tab{
-  position:relative;
-  overflow:hidden;
-  text-align:left;
-  background:var(--surface);
-  border:1px solid var(--line-soft);
-  border-radius:var(--radius);
-  padding:16px 18px 18px;
-  cursor:pointer;
-  color:var(--muted);
-  transition:background .3s var(--ease), border-color .3s var(--ease),
-             transform .3s var(--ease), color .3s var(--ease);
-}
-.sv-tab:hover{ transform:translateY(-3px); border-color:var(--line); color:var(--text); }
+.sv-dots span.is-on{ background:var(--red); width:22px; border-radius:99px; }
 
-/* The selected tab fills with the classic crimson. This is most of
-   where the extra red coverage on the page comes from. */
-.sv-tab.is-active{
-  background:var(--red-core);
-  border-color:var(--red-core);
-  color:#fff;
-}
-
-.sv-tab-num{
-  display:block;
-  font-family:var(--font-mono);
-  font-size:.72rem;
-  letter-spacing:.16em;
-  opacity:.8;
-  margin-bottom:5px;
-}
-.sv-tab-name{
-  display:block;
-  font-weight:700;
-  font-size:1rem;
-  letter-spacing:-.01em;
-}
-
-/* Countdown to the next auto-advance. */
-.sv-tab-bar{
+/* Countdown to the next auto-advance, along the open panel's foot. */
+.sv-countdown{
   position:absolute;
   left:0; bottom:0;
-  height:2px;
-  width:100%;
+  height:3px; width:100%;
   transform:scaleX(0);
   transform-origin:left;
-  background:rgba(255,255,255,.85);
+  background:var(--red);
 }
 
 
 /* ─────────── RESPONSIVE ─────────── */
 
 @media (max-width:1024px){
-  .sv-panel{ padding:38px 32px 34px; min-height:0; }
-  .sv-tabs{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sv-fan{ height:520px; }
+  .sv-slide{ flex-basis:66px; }
+  .sv-tab{ width:66px; }
+  .sv-open{ padding:30px 26px 28px; }
+  .sv-open-items{ grid-template-columns:1fr; gap:8px; }
+  .sv-next{ display:none; }        /* tabs are reachable directly */
 }
 
-@media (max-width:520px){
-  .sv-panel{ padding:28px 22px 26px; }
-  .sv-items{ grid-template-columns:1fr; }
-  .sv-tabs{ grid-template-columns:1fr; gap:9px; }
-  .sv-tab{ padding:13px 15px 15px; }
-  .sv-ghost{ top:-38px; font-size:8rem; opacity:.22; }
+/* A horizontal fan cannot survive a phone: four collapsed tabs plus an
+   open panel leaves nothing readable. Below this it becomes a plain
+   stack, all panels open. */
+@media (max-width:720px){
+  .sv-deck{ padding-left:0; }
+  .sv-rail{ display:none; }
+  .sv-fan{ flex-direction:column; height:auto; gap:12px; }
+  .sv-slide,
+  .sv-slide.is-open{ flex:1 1 auto; transform:none; }
+  .sv-slide-inner{ transform:none; }
+  .sv-tab{ display:none; }
+  .sv-open,
+  .sv-slide.is-open .sv-open{ opacity:1; pointer-events:auto; padding:26px 22px; }
+  .sv-open-items{ margin-top:20px; }
+  .sv-countdown, .sv-dots{ display:none; }
 }
 
 
@@ -212,40 +253,25 @@
    ANIMATION — Services
    ───────────────────────────────────────────────────────── */
 
-/* Each switch replays this: the panel content is remounted by its key
-   in Services.jsx, so the animation restarts rather than being skipped
-   as an already-finished transition. */
-@keyframes sv-enter{
-  from{ opacity:0; transform:translateY(16px); }
+/* The open panel's content rising as the panel widens. */
+@keyframes sv-rise{
+  from{ opacity:0; transform:translateY(14px); }
   to  { opacity:1; transform:none; }
 }
-.sv-content{
-  animation:sv-enter .55s var(--ease) both;
-}
-/* Staggered so the block assembles rather than arriving as one slab. */
-.sv-content .sv-index{ animation:sv-enter .5s var(--ease) both .04s; }
-.sv-content .sv-title{ animation:sv-enter .5s var(--ease) both .08s; }
-.sv-content .sv-blurb{ animation:sv-enter .5s var(--ease) both .14s; }
-.sv-content .sv-items li{ animation:sv-enter .45s var(--ease) both; }
-.sv-content .sv-items li:nth-child(1){ animation-delay:.18s; }
-.sv-content .sv-items li:nth-child(2){ animation-delay:.23s; }
-.sv-content .sv-items li:nth-child(3){ animation-delay:.28s; }
-.sv-content .sv-items li:nth-child(4){ animation-delay:.33s; }
+.sv-slide.is-open .sv-open-num  { animation:sv-rise .5s var(--ease) both .22s; }
+.sv-slide.is-open .sv-open-title{ animation:sv-rise .5s var(--ease) both .27s; }
+.sv-slide.is-open .sv-open-blurb{ animation:sv-rise .5s var(--ease) both .33s; }
+.sv-slide.is-open .sv-open-items{ animation:sv-rise .5s var(--ease) both .39s; }
 
-/* The countdown bar. Only runs on the active tab and only while the
-   carousel is not paused — data-running is set from React so the two
-   can never disagree. Duration matches DWELL in Services.jsx; change
-   both together or the bar lies about when the next switch lands. */
+/* Duration matches DWELL in Services.jsx. */
 @keyframes sv-countdown{
   from{ transform:scaleX(0); }
   to  { transform:scaleX(1); }
 }
-.sv-tab-bar[data-running='true']{
-  animation:sv-countdown 5200ms linear both;
-}
+.sv-countdown[data-running='true']{ animation:sv-countdown 5200ms linear both; }
 
-/* Auto-advance is switched off in JS under reduced motion, so the bar
-   would otherwise sit at zero forever implying something is coming. */
+/* Auto-advance is off under reduced motion, so a bar stuck at zero
+   would imply a change that is never coming. */
 @media (prefers-reduced-motion:reduce){
-  .sv-tab-bar{ display:none; }
+  .sv-countdown{ display:none; }
 }

@@ -9,12 +9,66 @@
    ══════════════════════════════════════════════════════════ */
 
 .contact{
+  position:relative;
+  overflow:hidden;   /* clips the cord above the section */
   border-radius:var(--radius-band) var(--radius-band) 0 0;
   background:
     radial-gradient(760px 520px at 84% 30%, rgba(238,74,87,.10), transparent 66%),
     radial-gradient(620px 480px at 12% 80%, rgba(201,115,111,.16), transparent 64%),
     var(--ink);
 }
+
+/* ── the "ARE YOU ready" ask ──
+   From the first reference: heavy display caps with the closing word
+   in the handwritten face, tucked up under the baseline. */
+.contact-ask{
+  margin:0 0 20px;
+  line-height:.9;
+}
+.contact-ask-caps{
+  display:block;
+  font-family:var(--font-display);
+  font-size:clamp(2.6rem,7vw,5.4rem);
+  font-weight:400;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  color:var(--text);
+}
+.contact-ask-script{
+  display:block;
+  font-family:var(--font-script);
+  font-size:clamp(3rem,8.4vw,6.4rem);
+  font-weight:700;
+  color:var(--red);
+  /* pulled up and in so it nests under the caps the way the
+     reference's "ready" sits beneath "YOU" */
+  margin-top:-.16em;
+  margin-left:.14em;
+}
+
+/* ── the dropping handset ──
+   Pinned to the top-right of the section. The SVG is tall and mostly
+   cord, so it is anchored at the top and allowed to overflow past the
+   section's own padding. */
+.ff-phone{
+  position:absolute;
+  top:0; right:6%;
+  width:clamp(120px,17vw,230px);
+  color:var(--red-core);
+  pointer-events:none;
+  z-index:0;
+  filter:drop-shadow(0 22px 34px rgba(0,0,0,.55));
+}
+.ff-phone svg{ width:100%; height:auto; display:block; overflow:visible; }
+
+/* Punched out of the earpiece rather than drawn on top, so the holes
+   show the background through and the bulb reads as solid. */
+.ff-holes circle{ fill:var(--ink); }
+.ff-holes circle:first-child{ fill:none; stroke:var(--ink); stroke-width:2; opacity:.5; }
+
+/* The form and copy must sit above the handset. */
+.contact-grid{ position:relative; z-index:1; }
+
 .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
 .contact-list{ margin-top:32px; }
 .contact-list li{
@@ -117,6 +171,8 @@
 
 @media (max-width:1024px){
   .contact-grid{ grid-template-columns:1fr; gap:42px; }
+  /* one column means the form would sit under the handset */
+  .ff-phone{ right:2%; width:130px; opacity:.5; }
 }
 
 @media (max-width:860px){
@@ -125,6 +181,8 @@
 
 @media (max-width:520px){
   .contact{ border-radius:24px 24px 0 0; }
+  .ff-phone{ display:none; }   /* no room for it beside the copy */
+  .contact-ask-script{ margin-left:0; }
   .contact-form{ padding:24px 20px; }
 }
 

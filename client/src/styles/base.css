@@ -92,7 +92,7 @@ button{ font-family:inherit; }
 }
 
 /* The script aside and the oversized ghost word are NOT here. Each
-   section sizes its own (.hero-script/.hero-ghost, .sv-ghost) because
+   section sizes its own (.hero-script/.hero-ghost, .sv-rail) because
    the scale differs so much between them that a shared rule was being
    overridden everywhere it was used. Copy one when you add a section
    that needs it. */

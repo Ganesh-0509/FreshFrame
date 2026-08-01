@@ -2,6 +2,11 @@ import { work } from '../data/site.js'
 import { asset } from '../lib/asset.js'
 import Reveal from './Reveal.jsx'
 
+/* Turns "standardfireworkssivakasi.com" into "@standardfireworkssivakasi"
+   for the post header, the way the reference card is titled. */
+const handle = (url) =>
+  '@' + url.replace(/^https?:\/\//, '').replace(/^www\./, '').split(/[./]/)[0]
+
 export default function Work() {
   return (
     <section className="section" id="work">
@@ -13,49 +18,55 @@ export default function Work() {
           Both shipped, both live.
         </h2>
         <p className="section-lede">
-          We're a young studio and we'd rather show you two we're proud of than twenty we're not.
-          Click either one — they're live right now.
+          We&rsquo;re a young studio and we&rsquo;d rather show you two we&rsquo;re proud of than
+          twenty we&rsquo;re not. Tap either card — they&rsquo;re live right now.
         </p>
 
-        {work.map((p, i) => (
-          <Reveal
-            as="article"
-            className={`work-row ${i % 2 === 1 ? 'reverse' : ''}`}
-            key={p.url}
-          >
-            <a
-              className="work-shot"
-              href={p.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open ${p.name} in a new tab`}
-            >
-              {/* the heaviest images on the page — never fetch until near view */}
-              <img src={asset(p.shot)} alt={p.alt} loading="lazy" decoding="async" />
-              <span className="work-shot-badge">Visit site ↗</span>
-            </a>
+        <div className="wk-feed">
+          {work.map((p, i) => (
+            <Reveal as="article" className="wk-post" key={p.url}>
+              <span className="wk-tag">{i === 0 ? 'New post' : 'Post'}</span>
 
-            <div className="work-info">
-              <p className="work-index">{p.index}</p>
-              <h3>
-                <a href={p.url} target="_blank" rel="noopener noreferrer">
-                  {p.name}
-                </a>
-              </h3>
-              <p className="work-desc">{p.desc}</p>
-              <ul className="work-meta">
-                {p.meta.map(([label, value]) => (
-                  <li key={label}>
-                    <span>{label}</span> {value}
-                  </li>
-                ))}
-              </ul>
-              <a className="link-arrow" href={p.url} target="_blank" rel="noopener noreferrer">
-                Visit live site ↗
+              {/* The whole card is the link, so there is no separate
+                  "Visit site" button or link line any more. */}
+              <a
+                className="wk-card"
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${p.name} in a new tab`}
+              >
+                <header className="wk-head">
+                  <span className="wk-handle">{handle(p.url)}</span>
+                  <span className="wk-index">{p.index.split('—')[0].trim()}</span>
+                </header>
+
+                {/* Deliberately uncropped and unfiltered: the point of
+                    this section is that you can see the actual site. */}
+                <div className="wk-shot">
+                  <img src={asset(p.shot)} alt={p.alt} loading="lazy" decoding="async" />
+                </div>
+
+                <div className="wk-body">
+                  <h3 className="wk-name">{p.name}</h3>
+                  <p className="wk-desc">{p.desc}</p>
+                </div>
+
+                {/* The reference's like/comment/share bar, carrying the
+                    project's real facts instead of fake engagement. */}
+                <footer className="wk-actions">
+                  {p.meta.map(([label, value]) => (
+                    <span className="wk-action" key={label}>
+                      <i className="wk-ico" aria-hidden="true" data-ico={label} />
+                      <b>{label}</b>
+                      <em>{value}</em>
+                    </span>
+                  ))}
+                </footer>
               </a>
-            </div>
-          </Reveal>
-        ))}
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   )

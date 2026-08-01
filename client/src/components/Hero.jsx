@@ -21,7 +21,7 @@ export default function Hero() {
       <div className="wrap hero-inner">
         <p className="kicker">{hero.kicker}</p>
 
-        <p className="hero-script">Hello, we&rsquo;re</p>
+        <p className="hero-script">Hello,</p>
 
         {/* Each line arrives from the side named here, then the
             scrollbar drives them apart again — see useSplitScroll. */}

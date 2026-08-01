@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { contact, contactSection } from '../data/site.js'
+import PhoneDrop from './PhoneDrop.jsx'
 
 /* ══════════════════════════════════════════════════════════
    The form posts to Web3Forms, not to our own server.
@@ -124,14 +125,20 @@ export default function Contact() {
 
   return (
     <section className="section band-dark contact" id="contact">
+      {/* The handset drops in on its cord from the top of the section. */}
+      <PhoneDrop />
+
       <div className="wrap contact-grid">
         <div className="contact-copy">
           <p className="kicker">// 08 — Start here</p>
-          <h2 className="section-title">
-            {contactSection.title[0]}
-            <br />
-            {contactSection.title[1]}
+
+          {/* "ARE YOU / ready" from the reference: heavy display caps
+              with the last word in the handwritten face. */}
+          <h2 className="contact-ask">
+            <span className="contact-ask-caps">Are you</span>
+            <span className="contact-ask-script">ready</span>
           </h2>
+
           <p className="section-lede">{contactSection.lede}</p>
 
           <ul className="contact-list">
