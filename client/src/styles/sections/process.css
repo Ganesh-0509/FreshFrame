@@ -1,0 +1,120 @@
+/* ══════════════════════════════════════════════════════════
+   PROCESS
+   ────────────────────────────────────────────────────────
+   Two switchable paths and the GSAP flight arrow.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+/* the two-path switch */
+.path-tabs{
+  display:inline-flex;
+  gap:4px;
+  padding:5px;
+  border-radius:999px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.path-tab{
+  border:0;
+  background:none;
+  cursor:pointer;
+  font-size:.95rem;
+  font-weight:700;
+  color:var(--muted);
+  padding:11px 22px;
+  border-radius:999px;
+  transition:background .25s var(--ease), color .25s var(--ease);
+}
+.path-tab:hover{ color:var(--text); }
+.path-tab.active{ background:var(--grad); color:#fff; }
+
+.path-blurb{ color:var(--muted); font-size:1rem; margin:0 0 8px; max-width:62ch; }
+
+.process-track{ position:relative; margin-top:60px; padding:16px 0 36px; }
+
+.step{ display:flex; justify-content:flex-start; margin-bottom:118px; }
+.step.right{ justify-content:flex-end; }
+.step:last-child{ margin-bottom:0; }
+
+.step-card{
+  position:relative;
+  width:100%;
+  max-width:430px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:32px 30px;
+  box-shadow:var(--shadow-card);
+  transition:transform .35s var(--ease), border-color .35s, box-shadow .35s;
+}
+.step-card:hover{
+  transform:translateY(-5px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-deep);
+}
+.step-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2.4rem;
+  font-weight:700;
+  line-height:1;
+  margin:0 0 14px;
+  background:var(--grad-tri);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.step-card h3{ font-size:1.42rem; font-weight:800; margin:0 0 11px; letter-spacing:-.015em; }
+.step-card p{ margin:0; color:var(--muted); font-size:.97rem; }
+
+/* the arrow — GSAP moves this along an invisible path.
+   Dark and saturated so it reads against the light band. */
+.flight-arrow{
+  position:absolute;
+  top:0; left:0;
+  width:82px; height:82px;
+  z-index:6;
+  pointer-events:none;
+  opacity:0;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.flight-arrow-svg{ width:100%; height:100%; transition:transform .25s var(--ease); }
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:860px){
+  .step{ margin-bottom:88px; justify-content:center; }
+  .step.right{ justify-content:center; }
+  .step-card{ max-width:100%; }
+  .flight-arrow{ width:52px; height:52px; }
+  .process-track{ margin-top:42px; }
+}
+
+@media (max-width:520px){
+  .step-card{ padding:24px 20px; }
+  .path-tabs{ width:100%; }
+  .path-tab{ flex:1; padding:11px 14px; font-size:.9rem; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Process
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .step-card { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

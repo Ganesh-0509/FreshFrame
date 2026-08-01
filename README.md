@@ -121,10 +121,14 @@ Website-freelance/
 │       ├── App.jsx           section order
 │       ├── data/site.js      ← ALL CONTENT LIVES HERE
 │       ├── lib/asset.js      resolves public/ paths against the deploy base
-│       ├── styles/global.css theme + layout
+│       ├── styles/
+│       │   ├── global.css    ← IMPORTS ONLY. no rules. controls order
+│       │   ├── theme.css     ← ALL COLOUR, FONT + SHAPE TOKENS
+│       │   ├── base.css      reset, bands, shared type, buttons, reveal
+│       │   └── sections/     one .css per section, same names as below
 │       ├── hooks/
 │       │   └── useFlightArrow.js   the scroll arrow
-│       └── components/       one file per section
+│       └── components/       one .jsx per section
 └── server/                   ── ⚠ NOT DEPLOYED. escape hatch only ──
     ├── index.js              Express: /api/contact + serves client/dist
     ├── lib/mail.js           validation, rate limiting, the email itself
@@ -143,7 +147,9 @@ Website-freelance/
 | I want to change… | Edit |
 |---|---|
 | Any text, price, list item, link | `client/src/data/site.js` |
-| Colours, spacing, layout | `client/src/styles/global.css` |
+| **Any colour or font, site-wide** | `client/src/styles/theme.css` |
+| **One section's look or motion** | `client/src/styles/sections/<name>.css` |
+| Something shared by 2+ sections | `client/src/styles/base.css` |
 | Section order | `client/src/App.jsx` |
 | The big section headings (h2) | the individual component in `client/src/components/` |
 | Where email goes | the inbox on your Web3Forms key — change it at web3forms.com |
@@ -153,86 +159,126 @@ Website-freelance/
 process steps, team, pricing, FAQ. The one-off `<h2>` headings sit in their components,
 because several of them need a line break in a specific place.
 
+### The stylesheet is split one file per section
+
+`global.css` used to be a single 1,171-line file. It is now imports only, and each
+section owns its own stylesheet:
+
+```
+styles/
+├── global.css              imports, in page order. NO RULES HERE
+├── theme.css               every token. the only file a retheme touches
+├── base.css                reset, bands, .kicker/.section-title, buttons, .reveal
+└── sections/
+    header.css   hero.css      marquee.css   services.css
+    automation.css  work.css   process.css   team.css
+    pricing.css   faq.css      contact.css   footer.css
+```
+
+Every section file is laid out the same way: **THEME → LAYOUT → RESPONSIVE →
+ANIMATION**. That section's breakpoints live in its own file rather than a shared
+media-query block at the bottom, and each file ends with an empty `ANIMATION` block
+ready for motion to be dropped in.
+
+Two rules keep it that way:
+
+- **Section files never hardcode a colour.** They read tokens from `theme.css`, so a
+  palette change is one file, not thirteen.
+- **Anything used by two or more sections belongs in `base.css`**, not copied around.
+
+Anything added to an `ANIMATION` block is automatically neutralised by the
+`prefers-reduced-motion` query at the end of `base.css`.
+
 ---
 
 ## What we built
 
-### The design — a light tri-colour system
+### The design — near-black and crimson
 
-Two colours come off the logo, the third is added so the page isn't all one temperature.
-**No peach and no beige anywhere.**
+A single red family on a near-black page, with heavy poster display type. Replaced the
+old light blue/violet/teal system.
 
 | Token | Value | |
 |---|---|---|
-| `--blue` | `#2563eb` | the logo's blue — primary |
-| `--violet` | `#7c3aed` | the logo's outer edge |
-| `--teal` | `#0f766e` | **the third colour** |
-| `--paper` | `#ffffff` | page base |
-| `--paper-2` | `#f5f7fe` | cool lavender-white band |
-| `--paper-3` | `#eef4fb` | cool sky-white band |
-| `--ink` | `#0d1220` | the one dark band, and the footer |
+| `--red` | `#ee4a57` | the workhorse accent |
+| `--red-2` | `#ff4d5a` | hover and emphasis |
+| `--red-deep` | `#8f1620` | **large display type only** — fails contrast by design |
+| `--rose` | `#c9736f` | soft secondary |
+| `--ok` | `#5ec98b` | the one deliberate non-red, see below |
+| `--paper` | `#0b0b0d` | page base |
+| `--surface` | `#131317` | cards |
+| `--ink` | `#050506` | deepest band — contact and footer |
 
-**How the three get distributed.** Every section declares its own `--accent`, and all
-the small details — kickers, tick marks, hover borders, links, focus rings — read from
-that one variable. Change a section's accent and the whole section re-tints.
+Type: **Anton** for poster headings, **Caveat** for handwritten asides (`.script`),
+Inter for body, JetBrains Mono for labels.
 
-```
-#services    blue      #process  blue      #faq      blue
-#automation  violet    #team     violet    #contact  teal
-#work        teal      #pricing  teal
-```
+**Contrast is measured against `--surface-2` (`#1b1b21`), the lightest surface any text
+can land on** — not the page base, which would flatter every ratio by about 1.5× and
+hide failures on cards. Every text token clears AA body (4.5:1); the figures are in
+`theme.css`. The reference crimson `#e63946` sits at 4.1:1 on cards and **fails**, so
+`--red` is nudged to `#ee4a57` — the least-bright red that passes. `--red-deep` fails
+deliberately and is only used by `.ghost-type`, which is decorative.
 
-Neighbouring sections never share an accent. Within a section it subdivides further —
-the four service cards, six automation tiles, three pricing tiers and two people all
-take their own colour. The service cards sit on a 2×2 grid, so the colours have to
-differ both across *and* down.
+`--ok` is green rather than red because a success message in red is indistinguishable
+from an error. It is used in exactly one place.
 
-All three appear together in a few deliberate places: the hero headline gradient, the
-step numbers, the rule above the marquee, the top edge of the contact form — and the
-arrow.
+**Per-section accent.** Every section reads `--accent`, so one line in `theme.css`
+restyles a whole section. All eight currently point at `--red` to match the reference;
+they are listed separately so they can diverge.
 
 ### Band rhythm
 
-The page alternates white and tinted bands so it doesn't read as one flat sheet:
+The page is dark throughout, so the bands are now steps on one near-black ramp rather
+than an alternation between white and tint. Separation comes from small lightness
+shifts and hairline borders instead of colour:
 
 ```
-hero        white (soft tri-colour glow)
-marquee     lavender strip
-services    white
-automation  lavender
-work        white
-process     sky-white, rounded slab   ← the arrow lives here
-team        white
-pricing     lavender
-faq         white
-contact     DARK — the one dark band, anchoring the call to action
-footer      dark
+hero        --paper    #0b0b0d   (soft red glow)
+marquee     --paper-2  #101013
+services    --paper    #0b0b0d
+automation  --paper-2  #101013
+work        --paper    #0b0b0d
+process     --paper-3  #15151a   rounded slab  ← the arrow lives here
+team        --paper    #0b0b0d
+pricing     --paper-2  #101013
+faq         --paper    #0b0b0d
+contact     --ink      #050506   the deepest band, anchoring the CTA
+footer      --ink      #050506
 ```
 
-The dark contact band works by re-declaring the theme tokens (`.band-dark`), so every
-card, label and input inside it inverts automatically rather than needing its own rules.
-Its accents switch to light variants — `#5eead4` teal, `#7ea8ff` blue — because the
-dark-on-light values would be invisible there.
+`.band-dark` used to flip every token so light components inverted onto the one dark
+strip. With the page dark throughout that inversion is meaningless, so it now only goes
+darker and lifts its accent to `--red-2`, which reads more strongly against `--ink`.
 
 ### Accessibility
 
 Every text colour is checked at **≥4.5:1** (WCAG AA) against the lightest surface it
-can appear on. Measured, not guessed:
+can appear on — `--surface-2` `#1b1b21`. Measured, not guessed:
 
-| Token | Worst case (on `#eef4fb`) |
+| Token | Worst case (on `#1b1b21`) |
 |---|---|
-| `--text` `#1a2136` | 14.4:1 |
-| `--muted` `#5a6178` | 5.6:1 |
-| `--violet` `#7c3aed` | 5.2:1 |
-| `--teal` `#0f766e` | 4.9:1 |
-| `--dim` `#626980` | 4.9:1 |
-| `--blue` `#2563eb` | 4.7:1 |
+| `--text` `#f5f3f1` | 15.5:1 |
+| `--ok` `#5ec98b` | 8.3:1 |
+| `--muted` `#a5a09b` | 6.6:1 |
+| `--red-2` `#ff4d5a` | 5.3:1 |
+| `--rose` `#c9736f` | 5.0:1 |
+| `--dim` `#8b857f` | 4.7:1 |
+| `--red` `#ee4a57` | 4.7:1 |
+| `--red-deep` `#8f1620` | **1.9:1 — display only** |
 
-On the dark band: teal 12.6:1, violet 8.1:1, blue 7.9:1.
+Measuring against the page base instead would have flattered every figure by roughly
+1.5× and hidden a real failure on cards.
 
-If you change any of these, re-check the ratio. Two earlier picks (`#0d9488` teal and
-`#858ca3` dim) both failed and had to be darkened — a colour that *looks* fine on white
-often isn't.
+**`--red` is not the reference crimson.** `#e63946` from the reference image measures
+4.1:1 on card surfaces and fails AA. Since `.kicker` is small text, `--red` was moved to
+`#ee4a57`, the least-bright red that clears 4.5:1. The difference is barely visible; the
+failure would not have been.
+
+`--red-deep` fails deliberately. It is used only by `.ghost-type`, the oversized
+decorative word behind a section, which carries no information.
+
+If you change any of these, re-measure against `#1b1b21`. A colour that *looks* fine on
+the page base often isn't fine on a card.
 
 ### The sections
 

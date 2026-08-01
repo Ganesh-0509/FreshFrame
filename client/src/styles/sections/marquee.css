@@ -1,0 +1,63 @@
+/* ══════════════════════════════════════════════════════════
+   MARQUEE
+   ────────────────────────────────────────────────────────
+   The infinite scrolling strap line between hero and services.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.marquee{
+  border-top:1px solid var(--line-soft);
+  border-bottom:1px solid var(--line-soft);
+  background:var(--paper-2);
+  overflow:hidden;
+  padding:17px 0;
+  position:relative;
+}
+.marquee::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:2px;
+  background:var(--grad-tri);
+}
+.marquee-track{
+  display:flex;
+  align-items:center;
+  gap:32px;
+  width:max-content;
+  animation:slide 34s linear infinite;
+}
+.marquee-track span{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.marquee-track i{ font-style:normal; font-size:.6rem; }
+.marquee-track i:nth-of-type(3n+1){ color:var(--red); }
+.marquee-track i:nth-of-type(3n+2){ color:var(--rose); }
+.marquee-track i:nth-of-type(3n+3){ color:var(--red-2); }
+
+@keyframes slide{
+  from{ transform:translateX(0); }
+  to  { transform:translateX(-50%); }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Marquee
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .marquee-track { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

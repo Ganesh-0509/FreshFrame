@@ -1,0 +1,94 @@
+/* ══════════════════════════════════════════════════════════
+   TEAM
+   ────────────────────────────────────────────────────────
+   The two founder cards with square photo panels.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.team-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:26px; }
+
+/* Stacked, with a square photo panel. The source photos are tall
+   full-body portraits — a narrow side strip cropped the faces down
+   to nothing, so the photo gets the full card width instead. */
+.person{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  transition:transform .3s var(--ease), border-color .3s, box-shadow .3s;
+}
+.person:nth-child(1){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
+.person:nth-child(2){ --accent: var(--rose); --accent-soft: rgba(201,115,111,.12); }
+.person:hover{
+  transform:translateY(-6px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-card);
+}
+.person-photo{ background:var(--surface-2); position:relative; aspect-ratio:1 / 1; }
+.person-photo::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0 0;
+  height:4px;
+  background:var(--accent);
+}
+.person-photo img{
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:center 45%;  /* keeps faces off the crop line */
+}
+.person-body{ padding:28px 28px 30px; }
+.person-body h3{ font-size:1.38rem; font-weight:800; margin:0 0 3px; }
+.person-role{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 14px;
+}
+.person-bio{ margin:0 0 18px; color:var(--muted); font-size:.96rem; }
+
+.person-link{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:.92rem;
+  font-weight:700;
+  color:var(--accent);
+  border:1px solid var(--line);
+  background:var(--accent-soft);
+  padding:9px 18px;
+  border-radius:999px;
+  transition:border-color .25s, transform .2s var(--ease);
+}
+.person-link:hover{ border-color:var(--accent); transform:translateY(-2px); }
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1024px){
+  .team-grid{ grid-template-columns:1fr; }
+}
+
+@media (max-width:860px){
+  .person-photo{ aspect-ratio:4 / 3; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Team
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .person { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

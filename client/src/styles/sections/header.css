@@ -1,0 +1,108 @@
+/* ══════════════════════════════════════════════════════════
+   HEADER
+   ────────────────────────────────────────────────────────
+   Fixed top bar, brand mark, nav and the mobile drawer.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.site-header{
+  position:fixed;
+  inset:0 0 auto 0;
+  z-index:100;
+  padding:15px 0;
+  transition:background .3s var(--ease), border-color .3s, padding .3s, box-shadow .3s;
+  border-bottom:1px solid transparent;
+}
+.site-header.scrolled{
+  background:rgba(11,11,13,.86);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom-color:var(--line-soft);
+  box-shadow:var(--shadow-sm);
+  padding:9px 0;
+}
+.header-inner{ display:flex; align-items:center; gap:26px; }
+
+.brand{ display:flex; align-items:center; gap:11px; flex-shrink:0; }
+.brand-mark{
+  width:38px; height:38px;
+  border-radius:11px;
+  object-fit:cover;
+  border:1px solid var(--line);
+}
+.brand-text{ font-weight:900; font-size:1.14rem; letter-spacing:-.02em; }
+.brand-accent{ color:var(--red); }
+
+.nav{ display:flex; gap:28px; margin-left:auto; }
+.nav a{ font-size:.95rem; color:var(--muted); font-weight:500; transition:color .2s; }
+.nav a:hover{ color:var(--red); }
+
+.header-cta{ flex-shrink:0; }
+
+.nav-toggle{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  background:none;
+  border:0;
+  cursor:pointer;
+  padding:8px;
+  margin-left:auto;
+}
+.nav-toggle span{
+  width:23px; height:2px;
+  background:var(--text);
+  border-radius:2px;
+  transition:transform .25s var(--ease), opacity .2s;
+}
+.nav-toggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2){ opacity:0; }
+.nav-toggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1100px){
+  .nav{ gap:19px; }
+  .nav a{ font-size:.89rem; }
+  .header-inner{ gap:16px; }
+}
+
+@media (max-width:860px){
+  .nav{
+    position:fixed;
+    inset:62px 0 auto 0;
+    flex-direction:column;
+    gap:0;
+    background:rgba(14,14,17,.98);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow-card);
+    padding:8px 28px 20px;
+    transform:translateY(-12px);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .nav.open{ opacity:1; transform:none; pointer-events:auto; }
+  .nav a{ padding:14px 0; border-bottom:1px solid var(--line-soft); font-size:1rem; }
+  .header-cta{ display:none; }
+  .nav-toggle{ display:flex; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Header
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .brand-mark { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

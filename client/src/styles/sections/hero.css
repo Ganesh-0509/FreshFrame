@@ -1,0 +1,172 @@
+/* ══════════════════════════════════════════════════════════
+   HERO
+   ────────────────────────────────────────────────────────
+   First screen: display headline, lede, actions, floating chips.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.hero{ position:relative; padding:178px 0 100px; overflow:hidden; }
+
+/* one red family bleeding softly into the top of the page */
+.hero-glow{
+  position:absolute;
+  top:-340px; left:50%;
+  transform:translateX(-50%);
+  width:1300px; height:860px;
+  background:
+    radial-gradient(closest-side, rgba(238,74,87,.16), transparent 70%),
+    radial-gradient(closest-side at 30% 60%, rgba(201,115,111,.14), transparent 66%),
+    radial-gradient(closest-side at 76% 46%, var(--accent-soft), transparent 62%);
+  filter:blur(20px);
+  pointer-events:none;
+}
+.hero-grid{
+  position:relative;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:66px;
+  align-items:center;
+}
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(2.9rem,7.4vw,5.6rem);
+  font-weight:400;
+  line-height:.96;
+  letter-spacing:.005em;
+  text-transform:uppercase;
+  margin:0 0 24px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:var(--grad-tri);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.lede{ color:var(--muted); font-size:1.1rem; max-width:56ch; margin:0 0 34px; }
+.lede strong{ color:var(--text); font-weight:600; }
+
+.hero-actions{ display:flex; gap:13px; flex-wrap:wrap; margin-bottom:40px; }
+
+/* one dot per point, all in the accent now the palette is monochrome */
+.hero-points{ display:flex; flex-wrap:wrap; gap:12px 26px; }
+.hero-points li{
+  font-size:.9rem;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.hero-points li::before{
+  content:"";
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--red);
+}
+.hero-points li:nth-child(2)::before{ background:var(--rose); }
+.hero-points li:nth-child(3)::before{ background:var(--red-2); }
+
+/* hero code window — the one deliberately dark object on a light page */
+.hero-visual{ position:relative; }
+.code-window{
+  background:var(--ink);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow-deep);
+  animation:floaty 7s ease-in-out infinite;
+}
+.cw-bar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:13px 16px;
+  background:var(--ink);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.cw-bar span{ width:11px; height:11px; border-radius:50%; }
+.cw-bar span:nth-child(1){ background:var(--red); }
+.cw-bar span:nth-child(2){ background:var(--rose); }
+.cw-bar span:nth-child(3){ background:var(--dim); }
+.cw-bar i{
+  font-style:normal;
+  margin-left:14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.74rem;
+  color:var(--dim);
+}
+.cw-body{
+  margin:0;
+  padding:24px 22px 28px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:.84rem;
+  line-height:1.85;
+  color:var(--muted);
+  overflow-x:auto;
+}
+.c-key{ color:var(--rose); }
+.c-var{ color:var(--red-2); }
+.c-prop{ color:var(--text); }
+.c-str{ color:var(--red-2); }
+.c-bool,.c-num{ color:var(--rose); }
+.c-fn{ color:var(--red); }
+.c-com{ color:var(--dim); }
+
+.float-chip{
+  position:absolute;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.73rem;
+  letter-spacing:.05em;
+  padding:8px 15px;
+  border-radius:999px;
+  background:rgba(11,11,13,.92);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-card);
+  backdrop-filter:blur(8px);
+  white-space:nowrap;
+  animation:floaty 6s ease-in-out infinite;
+}
+/* explicit classes, not nth-child — the code window is a sibling
+   and would throw the counting off by one */
+.chip-1{ top:-20px;   right:24px;  animation-delay:-1s;   color:var(--red); }
+.chip-2{ top:34%;     left:-42px;  animation-delay:-2.5s; color:var(--red-2); }
+.chip-3{ bottom:56px; right:-28px; animation-delay:-4s;   color:var(--rose); }
+.chip-4{ bottom:-22px;left:28px;   animation-delay:-5.5s; color:var(--red); }
+
+@keyframes floaty{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-10px); }
+}
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1024px){
+  .hero-grid{ grid-template-columns:1fr; gap:52px; }
+  .hero{ padding:145px 0 84px; }
+  .chip-2{ left:-10px; }
+  .chip-3{ right:-10px; }
+}
+
+@media (max-width:520px){
+  .hero{ padding:126px 0 66px; }
+  .hero-actions .btn{ width:100%; }
+  .float-chip{ display:none; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Hero
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .hero-title { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

@@ -1,0 +1,221 @@
+/* ══════════════════════════════════════════════════════════
+   BASE — reset, page shell, bands, shared type, buttons,
+   scroll reveal and motion preferences.
+
+   Everything here is used by more than one section. Anything that
+   belongs to a single section lives in styles/sections/<name>.css.
+   Colours come from styles/theme.css — never hardcode one here.
+   ══════════════════════════════════════════════════════════ */
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; scroll-padding-top:88px; }
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ margin:0; padding:0; list-style:none; }
+button{ font-family:inherit; }
+
+/* Text selection in the accent, so even this detail is on-theme. */
+::selection{ background:var(--red); color:#fff; }
+
+.wrap{ width:100%; max-width:var(--wrap); margin:0 auto; padding:0 28px; }
+.wrap-narrow{ max-width:860px; }
+
+
+/* ══════════════════════════════════════════════════════════
+   BANDS
+   The light theme alternated white and tinted sections. On a dark
+   page that inversion no longer applies: every band is now a step
+   on the same near-black ramp, and separation comes from very
+   small lightness shifts plus hairline borders rather than colour.
+   ══════════════════════════════════════════════════════════ */
+
+.section{ padding:112px 0; position:relative; }
+
+.band-tint{ background:var(--paper-2); }
+
+.band-sky{
+  background:var(--paper-3);
+  border-radius:var(--radius-band);
+  position:relative;
+  z-index:1;
+}
+
+/* The deepest band. It used to flip every token to invert light
+   components onto a dark strip; the page is dark throughout now, so
+   it only needs to go darker and lift its own accent slightly. */
+.band-dark{
+  --surface:     var(--ink-2);
+  --surface-2:   #101014;
+  --ghost-bg:    rgba(255,255,255,.05);
+  --accent:      var(--red-2);
+  --accent-soft: rgba(255,77,90,.14);
+
+  background:var(--ink);
+  color:var(--text);
+}
+
+
+/* ─────────── shared type ─────────── */
+
+.kicker{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:0 0 18px;
+}
+
+/* The poster headline face. Anton has no weight axis and sits tight,
+   so letter-spacing is opened slightly and line-height pulled in. */
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,6vw,4.4rem);
+  font-weight:400;
+  line-height:.98;
+  letter-spacing:.005em;
+  text-transform:uppercase;
+  margin:0 0 20px;
+}
+
+/* Handwritten aside, as in "Hello, I'm" on the reference. */
+.script{
+  font-family:var(--font-script);
+  font-size:clamp(1.6rem,3.2vw,2.4rem);
+  font-weight:600;
+  line-height:1;
+  color:var(--red);
+  text-transform:none;
+  letter-spacing:0;
+}
+
+/* Oversized ghost word behind a section, the reference's signature
+   move. Deliberately --red-deep and decorative only: it must never
+   carry text a reader needs, because it does not meet contrast. */
+.ghost-type{
+  font-family:var(--font-display);
+  font-size:clamp(5rem,18vw,15rem);
+  line-height:.8;
+  text-transform:uppercase;
+  color:var(--red-deep);
+  opacity:.5;
+  pointer-events:none;
+  user-select:none;
+}
+
+.section-lede{
+  color:var(--muted);
+  max-width:62ch;
+  margin:0 0 54px;
+  font-size:1.05rem;
+}
+.section-lede strong{ color:var(--text); font-weight:600; }
+
+
+/* ─────────── buttons ─────────── */
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5em;
+  font-weight:700;
+  font-size:1rem;
+  padding:15px 30px;
+  border-radius:999px;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:transform .18s var(--ease), box-shadow .25s var(--ease),
+             background .25s var(--ease), border-color .25s var(--ease);
+  white-space:nowrap;
+}
+.btn:hover{ transform:translateY(-2px); }
+.btn-sm{ padding:11px 21px; font-size:.92rem; }
+.btn-block{ display:flex; width:100%; }
+
+.btn-primary{
+  background:var(--grad);
+  color:#fff;
+  box-shadow:0 8px 22px rgba(238,74,87,.30);
+}
+.btn-primary:hover{ box-shadow:0 14px 34px rgba(238,74,87,.45); }
+
+.btn-ghost{
+  background:var(--ghost-bg);
+  border-color:var(--line);
+  color:var(--text);
+}
+.btn-ghost:hover{ border-color:var(--accent); background:var(--accent-soft); }
+
+.link-arrow{
+  display:inline-block;
+  margin-top:20px;
+  font-weight:700;
+  font-size:.95rem;
+  color:var(--accent);
+  border-bottom:1px solid currentColor;
+  padding-bottom:2px;
+  transition:opacity .2s;
+}
+.link-arrow:hover{ opacity:.7; }
+
+/* Keyboard focus. On a dark page the default outline is nearly
+   invisible, so it is drawn in the accent explicitly. */
+:focus-visible{
+  outline:2px solid var(--red);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+
+/* ══════════════ SCROLL REVEAL ══════════════ */
+
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .7s var(--ease), transform .7s var(--ease);
+}
+.reveal.in{ opacity:1; transform:none; }
+
+
+/* ══════════════ RESPONSIVE (shared only) ══════════════
+   Section-specific breakpoints live in that section's own file. */
+
+@media (max-width:860px){
+  .section{ padding:82px 0; }
+  .band-sky{ border-radius:32px; }
+}
+
+@media (max-width:520px){
+  body{ font-size:16px; }
+  .wrap{ padding:0 20px; }
+  .band-sky{ border-radius:24px; }
+}
+
+
+/* ══════════════ MOTION PREFERENCES ══════════════
+   Anything added to a section's ANIMATION block is covered by this. */
+
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  .reveal{ opacity:1; transform:none; }
+  .flight-arrow{ display:none !important; }
+}

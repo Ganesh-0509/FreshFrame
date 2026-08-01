@@ -1,0 +1,143 @@
+/* ══════════════════════════════════════════════════════════
+   CONTACT
+   ────────────────────────────────────────────────────────
+   The enquiry form and direct contact list.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.contact{
+  border-radius:var(--radius-band) var(--radius-band) 0 0;
+  background:
+    radial-gradient(760px 520px at 84% 30%, rgba(238,74,87,.10), transparent 66%),
+    radial-gradient(620px 480px at 12% 80%, rgba(201,115,111,.16), transparent 64%),
+    var(--ink);
+}
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+.contact-list{ margin-top:32px; }
+.contact-list li{
+  display:flex;
+  gap:18px;
+  align-items:baseline;
+  padding:14px 0;
+  border-top:1px solid var(--line-soft);
+  font-size:.97rem;
+  color:var(--muted);
+}
+.contact-list li span{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.73rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--dim);
+  min-width:94px;
+}
+.contact-list a{ color:var(--text); border-bottom:1px solid var(--line); }
+.contact-list a:hover{ color:var(--red-2); border-color:var(--red-2); }
+
+.contact-form{
+  position:relative;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:34px 32px;
+  box-shadow:var(--shadow-deep);
+  overflow:hidden;
+}
+.contact-form::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:3px;
+  background:var(--grad-tri);
+}
+.field{ margin-bottom:19px; }
+.field label{
+  display:block;
+  font-size:.81rem;
+  font-weight:600;
+  letter-spacing:.03em;
+  color:var(--muted);
+  margin-bottom:7px;
+}
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  background:var(--ink);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:13px 15px;
+  color:var(--text);
+  font-family:inherit;
+  font-size:.97rem;
+  transition:border-color .2s, box-shadow .2s;
+  resize:vertical;
+}
+.field input::placeholder,
+.field textarea::placeholder{ color:var(--dim); }
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  outline:none;
+  border-color:var(--red-2);
+  box-shadow:0 0 0 3px rgba(238,74,87,.18);
+}
+.field select{ appearance:none; cursor:pointer; }
+/* the open dropdown is OS-rendered — set it explicitly or Windows
+   draws dark text on a dark list */
+.field select option{ background:var(--surface); color:var(--text); }
+.field input.invalid{ border-color:var(--red-2); }
+
+/* honeypot — a bot fills this, a person never sees it */
+.hp{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+/* Brighter than the page-wide --grad on purpose: this button sits on
+   the deepest band, so it needs more lift to stay the loudest thing
+   on screen — it is the primary conversion on the page. */
+.contact .btn-primary{
+  background:linear-gradient(115deg, var(--red) 0%, var(--red-2) 100%);
+  color:#fff;
+  box-shadow:0 8px 22px rgba(255,77,90,.24);
+}
+.contact .btn-primary:hover{ box-shadow:0 14px 34px rgba(255,77,90,.34); }
+.contact .btn-primary:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+.form-note{ margin:15px 0 0; font-size:.9rem; min-height:1.2em; color:var(--muted); }
+/* Success is the palette's one non-red on purpose — see --ok in
+   theme.css. The message text differs too, so colour is never the only
+   signal, but these two states must not look alike at a glance. */
+.form-note.ok{ color:var(--ok); }
+.form-note.err{ color:var(--red-2); }
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1024px){
+  .contact-grid{ grid-template-columns:1fr; gap:42px; }
+}
+
+@media (max-width:860px){
+  .contact{ border-radius:32px 32px 0 0; }
+}
+
+@media (max-width:520px){
+  .contact{ border-radius:24px 24px 0 0; }
+  .contact-form{ padding:24px 20px; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Contact
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .contact-form { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

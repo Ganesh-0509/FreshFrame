@@ -1,0 +1,103 @@
+/* ══════════════════════════════════════════════════════════
+   SERVICES
+   ────────────────────────────────────────────────────────
+   The 2x2 card grid of what the studio sells.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.cards-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+
+/* 2x2 rather than 4 across — four narrow columns squeeze the tick lists */
+.cards-4{ display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+
+.card{
+  position:relative;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:34px 30px 32px;
+  overflow:hidden;
+  transition:transform .3s var(--ease), border-color .3s, box-shadow .3s;
+}
+.card:hover{
+  transform:translateY(-6px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-card);
+}
+.card h3{ font-size:1.38rem; font-weight:800; margin:0 0 9px; letter-spacing:-.015em; }
+.card > p{ color:var(--muted); margin:0 0 22px; font-size:.97rem; }
+
+.card-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.77rem;
+  letter-spacing:.16em;
+  margin-bottom:18px;
+  color:var(--accent);
+}
+
+/* Four cards on a 2x2 grid, so both the horizontal and vertical
+   neighbours have to differ: blue / teal over violet / blue.
+   Automation takes teal — it's the newest offering. */
+#services .card:nth-child(1){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
+#services .card:nth-child(2){ --accent: var(--red-2);   --accent-soft: rgba(255,77,90,.12); }
+#services .card:nth-child(3){ --accent: var(--rose); --accent-soft: rgba(201,115,111,.12); }
+#services .card:nth-child(4){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
+#services .card::after{
+  content:"";
+  position:absolute;
+  inset:auto auto 0 0;
+  height:3px; width:0;
+  background:var(--accent);
+  transition:width .4s var(--ease);
+}
+#services .card:hover::after{ width:100%; }
+
+.ticks li{
+  position:relative;
+  padding-left:25px;
+  margin-bottom:10px;
+  font-size:.94rem;
+  color:var(--muted);
+}
+.ticks li::before{
+  content:"";
+  position:absolute;
+  left:0; top:.58em;
+  width:11px; height:6px;
+  border-left:2px solid var(--accent);
+  border-bottom:2px solid var(--accent);
+  transform:rotate(-45deg);
+}
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1024px){
+  .cards-3{ grid-template-columns:1fr; }
+  .cards-4{ grid-template-columns:repeat(2,1fr); }
+}
+
+@media (max-width:860px){
+  .cards-4{ grid-template-columns:1fr; }
+}
+
+@media (max-width:520px){
+  .card{ padding:24px 20px; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Services
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .card { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

@@ -1,0 +1,128 @@
+/* ══════════════════════════════════════════════════════════
+   PRICING
+   ────────────────────────────────────────────────────────
+   Three tiers plus the care-plan add-on strip.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.pricing-grid{ align-items:stretch; }
+.price-card{ display:flex; flex-direction:column; }
+.price-card .ticks{ flex:1; margin-bottom:26px; }
+.price-card h3{ margin-bottom:3px; }
+
+.price-card:nth-child(1){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
+.price-card:nth-child(2){ --accent: var(--red-2);   --accent-soft: rgba(255,77,90,.12); }
+.price-card:nth-child(3){ --accent: var(--rose); --accent-soft: rgba(201,115,111,.12); }
+
+.price-for{ color:var(--dim); font-size:.87rem; margin:0 0 18px !important; }
+.price{
+  font-size:2.15rem;
+  font-weight:900;
+  letter-spacing:-.03em;
+  margin:0 0 24px !important;
+  color:var(--text) !important;
+  display:flex;
+  align-items:baseline;
+  gap:2px;
+}
+.price .cur{ font-size:1.35rem; font-weight:700; color:var(--accent); }
+.price small{
+  font-size:.74rem;
+  font-weight:500;
+  color:var(--dim);
+  margin-left:8px;
+  letter-spacing:.04em;
+}
+
+.price-card.featured{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent), var(--shadow-card);
+}
+.price-badge{
+  position:absolute;
+  top:0; right:0;
+  background:var(--accent);
+  color:#fff;
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:6px 16px;
+  border-radius:0 var(--radius) 0 var(--radius);
+}
+
+/* the care plan add-on strip */
+.care-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--rose);
+  margin:38px 0 14px;
+}
+.care-plan{
+  display:flex;
+  align-items:center;
+  gap:28px;
+  flex-wrap:wrap;
+  padding:26px 30px;
+  border:1px dashed rgba(201,115,111,.42);
+  border-radius:var(--radius-lg);
+  background:rgba(238,74,87,.05);
+}
+.care-plan h3{ font-size:1.3rem; font-weight:800; margin:0 0 4px; }
+.care-tag{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.66rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#fff;
+  background:var(--rose);
+  padding:4px 11px;
+  border-radius:999px;
+}
+.care-body{ flex:1; min-width:240px; margin:0; color:var(--muted); font-size:.96rem; }
+.care-body strong{ color:var(--rose); font-weight:700; }
+.care-price{
+  font-size:1.85rem;
+  font-weight:900;
+  letter-spacing:-.03em;
+  margin:0;
+  white-space:nowrap;
+}
+.care-price .cur{ font-size:1.2rem; font-weight:700; color:var(--rose); }
+.care-price small{ display:block; font-size:.74rem; font-weight:500; color:var(--dim); text-align:right; }
+
+.pricing-note{ margin:30px 0 0; color:var(--dim); font-size:.95rem; max-width:66ch; }
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1024px){
+  .care-plan{ gap:18px; }
+  .care-price{ text-align:left; }
+  .care-price small{ text-align:left; }
+}
+
+@media (max-width:520px){
+  .care-plan{ padding:24px 20px; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Pricing
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .tier { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+

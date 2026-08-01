@@ -1,0 +1,101 @@
+/* ══════════════════════════════════════════════════════════
+   THEME — every colour, font and shape token on the site.
+
+   THIS IS THE ONLY FILE YOU EDIT TO RETHEME THE WHOLE SITE.
+   Section files never hardcode a colour; they read these tokens,
+   so changing a value here changes it everywhere at once.
+
+   Current theme: near-black with crimson. Dark surfaces, one red
+   accent family, heavy display type, a script face for asides.
+   ══════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── surfaces, darkest to lightest ── */
+  --ink:        #050506;   /* deepest band — contact + footer   */
+  --ink-2:      #08080a;
+  --paper:      #0b0b0d;   /* page base                         */
+  --paper-2:    #101013;   /* first tinted band                 */
+  --paper-3:    #15151a;   /* second tinted band                */
+  --surface:    #131317;   /* cards                             */
+  --surface-2:  #1b1b21;   /* insets, photo backdrops           */
+
+  --line:       rgba(255,255,255,.12);
+  --line-soft:  rgba(255,255,255,.07);
+
+  /* ── text ──
+     Ratios are the WORST CASE: measured against --surface-2 (#1b1b21),
+     the lightest surface any of these can land on. Measuring against
+     the page base would flatter them by ~1.5x and hide a failure on
+     cards. If you change one, re-measure against #1b1b21. */
+  --text:       #f5f3f1;   /* 15.5:1 */
+  --muted:      #a5a09b;   /*  6.6:1 */
+  --dim:        #8b857f;   /*  4.7:1 */
+
+  /* ── the red family ──
+     One accent family, unlike the old blue/violet/teal trio.
+     --red is the workhorse; it is the lightest of the three and the
+     only one used for small text, because the deeper reds do not
+     reach 4.5:1 on the dark surfaces. Keep it that way. */
+  --red:        #ee4a57;   /*  4.7:1 — clears AA body, just.
+                               The reference crimson (#e63946) sits at
+                               4.1:1 on cards and fails, and .kicker is
+                               small text, so this is nudged up to the
+                               least-bright red that passes.           */
+  --red-2:      #ff4d5a;   /*  5.3:1 — hover and emphasis            */
+  --red-deep:   #8f1620;   /*  1.9:1 — LARGE DISPLAY TYPE ONLY, never
+                               body text or small labels. Used by
+                               .ghost-type, which is decorative.       */
+  --rose:       #c9736f;   /*  5.0:1 — soft secondary accent          */
+
+  /* The one deliberate non-red in the palette. Signalling a successful
+     form submission in red would make it indistinguishable from the
+     error state, which is the more important thing to get right than
+     palette purity. Change it if you disagree — it is used in exactly
+     one place, .form-note.ok in sections/contact.css. */
+  --ok:         #5ec98b;   /*  8.3:1 */
+
+  /* ── per-section accent ──
+     Every section reads --accent, so one line below restyles a whole
+     section without touching its stylesheet. All start on --red to
+     match the reference; change them individually as you send themes. */
+  --accent:      var(--red);
+  --accent-soft: rgba(238,74,87,.12);
+
+  /* ── type ── */
+  --font-body:    'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --font-display: 'Anton','Inter',system-ui,sans-serif;  /* huge poster headings */
+  --font-script:  'Caveat',cursive;                      /* "Hello, I'm" asides  */
+  --font-mono:    'JetBrains Mono',ui-monospace,monospace;
+
+  /* ── gradients ── */
+  --grad:     linear-gradient(115deg, var(--red-deep) 0%, var(--red) 100%);
+  --grad-tri: linear-gradient(100deg, var(--red-deep) 0%, var(--red) 55%, var(--rose) 100%);
+
+  /* ── depth ──
+     Shadows on a dark page read as absence of light, not grey haze,
+     so these are near-black and heavier than the light theme's. */
+  --ghost-bg:    rgba(255,255,255,.04);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.45);
+  --shadow-card: 0 16px 40px rgba(0,0,0,.55);
+  --shadow-deep: 0 24px 60px rgba(0,0,0,.65);
+
+  /* ── shape ── */
+  --radius:      18px;
+  --radius-lg:   26px;
+  --radius-band: 48px;
+  --wrap:        1180px;
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* ── which section wears which accent ──
+   One line each, on purpose. When you send a theme for a section,
+   this is usually the only line that changes. */
+#services   { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#automation { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#work       { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#process    { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#team       { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#pricing    { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#faq        { --accent: var(--red);    --accent-soft: rgba(238,74,87,.12); }
+#contact    { --accent: var(--red);    --accent-soft: rgba(238,74,87,.14); }

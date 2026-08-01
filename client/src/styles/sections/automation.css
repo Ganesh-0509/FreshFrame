@@ -1,0 +1,122 @@
+/* ══════════════════════════════════════════════════════════
+   AUTOMATION
+   ────────────────────────────────────────────────────────
+   Tile grid plus the horizontal flow strip.
+
+   Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
+   Tokens live in styles/theme.css. Override them per section in the
+   THEME block below rather than hardcoding a colour here.
+   ══════════════════════════════════════════════════════════ */
+
+.auto-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-bottom:56px;
+}
+
+.auto-tile{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px 24px 26px;
+  transition:transform .3s var(--ease), border-color .3s, box-shadow .3s;
+}
+.auto-tile:hover{
+  transform:translateY(-5px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-card);
+}
+.auto-tile h3{ font-size:1.1rem; font-weight:800; margin:0 0 8px; letter-spacing:-.015em; }
+.auto-tile p{ margin:0; color:var(--muted); font-size:.93rem; }
+
+.auto-ico{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:42px; height:42px;
+  margin-bottom:16px;
+  border-radius:12px;
+  color:var(--accent);
+  background:var(--accent-soft);
+  border:1px solid var(--line);
+}
+.auto-ico svg{ width:21px; height:21px; }
+
+/* six tiles cycling the three colours, offset per row so no tile
+   shares an accent with the one above or beside it */
+.auto-tile:nth-child(1){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
+.auto-tile:nth-child(2){ --accent: var(--rose); --accent-soft: rgba(201,115,111,.12); }
+.auto-tile:nth-child(3){ --accent: var(--red-2);   --accent-soft: rgba(255,77,90,.12); }
+.auto-tile:nth-child(4){ --accent: var(--red-2);   --accent-soft: rgba(255,77,90,.12); }
+.auto-tile:nth-child(5){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
+.auto-tile:nth-child(6){ --accent: var(--rose); --accent-soft: rgba(201,115,111,.12); }
+
+.auto-flow{
+  display:flex;
+  align-items:stretch;
+  gap:6px;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  background:var(--surface);
+  box-shadow:var(--shadow-sm);
+  margin-bottom:28px;
+}
+.auto-flow-step{ flex:1; display:flex; flex-direction:column; gap:9px; padding:6px 12px; }
+.auto-flow-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  background:var(--grad-tri);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.auto-flow-step p{ margin:0; font-size:.93rem; color:var(--muted); line-height:1.5; }
+.auto-flow-sep{
+  align-self:center;
+  color:var(--rose);
+  font-size:1.25rem;
+  flex-shrink:0;
+  opacity:.55;
+}
+
+.auto-note{ color:var(--dim); font-size:.95rem; margin:0 0 24px; max-width:56ch; }
+
+
+/* ─────────── RESPONSIVE ─────────── */
+
+@media (max-width:1024px){
+  .auto-grid{ grid-template-columns:repeat(2,1fr); }
+
+  /* the flow strip stops being a row and becomes a list */
+  .auto-flow{ flex-direction:column; gap:0; padding:18px 20px; }
+  .auto-flow-step{ padding:13px 0; }
+  .auto-flow-sep{ transform:rotate(90deg); align-self:flex-start; margin-left:6px; }
+}
+
+@media (max-width:860px){
+  .auto-grid{ grid-template-columns:1fr; }
+}
+
+@media (max-width:520px){
+  .auto-tile{ padding:24px 20px; }
+  .auto-grid{ margin-bottom:40px; }
+  .automation .btn{ width:100%; }
+}
+
+/* ─────────────────────────────────────────────────────────
+   ANIMATION — Automation
+   Nothing here yet. Section-specific motion goes in this block so
+   it stays out of the layout rules above.
+
+   Scroll-in is already handled globally by .reveal in base.css.
+   Anything added here must degrade under the reduced-motion query
+   at the end of base.css, which kills animation for users who ask
+   the OS to reduce motion.
+
+   e.g.  .auto-tile { animation: fade-up .8s var(--ease) both; }
+   ───────────────────────────────────────────────────────── */
+
