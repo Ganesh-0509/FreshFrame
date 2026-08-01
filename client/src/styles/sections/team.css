@@ -1,94 +1,183 @@
 /* ══════════════════════════════════════════════════════════
    TEAM
-   ────────────────────────────────────────────────────────
-   The two founder cards with square photo panels.
+   ──────────────────────────────────────────────────────────
+   One full-width horizontal band per person, alternating
+   sides, each with its own treatment:
+
+     .tm-mono   Ganesh — high-contrast black and white,
+                editorial, all-caps display. Professional.
+     .tm-plum   Vinothini — deep maroon panel with a script
+                accent and softer rhythm. Classic.
+
+   The two must not look like the same card with a different
+   photo, so the difference is carried by the panel colour,
+   the accent face and the photo treatment — not just a hue.
 
    Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
    Tokens live in styles/theme.css. Override them per section in the
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
-.team-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:26px; }
-
-/* Stacked, with a square photo panel. The source photos are tall
-   full-body portraits — a narrow side strip cropped the faces down
-   to nothing, so the photo gets the full card width instead. */
-.person{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius-lg);
+.tm-band{
+  position:relative;
+  margin-top:34px;
   overflow:hidden;
-  box-shadow:var(--shadow-sm);
-  transition:transform .3s var(--ease), border-color .3s, box-shadow .3s;
 }
-.person:nth-child(1){ --accent: var(--red);   --accent-soft: rgba(238,74,87,.12); }
-.person:nth-child(2){ --accent: var(--rose); --accent-soft: rgba(201,115,111,.12); }
-.person:hover{
-  transform:translateY(-6px);
-  border-color:var(--accent);
-  box-shadow:var(--shadow-card);
+
+.tm-inner{
+  display:grid;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);
+  align-items:stretch;
+  border-radius:26px;
+  overflow:hidden;
+  border:1px solid var(--line);
 }
-.person-photo{ background:var(--surface-2); position:relative; aspect-ratio:1 / 1; }
-.person-photo::after{
-  content:"";
-  position:absolute;
-  inset:auto 0 0 0;
-  height:4px;
-  background:var(--accent);
+/* Alternating sides. The photo moves to column 2 without reordering
+   the DOM, so reading order stays the same on both bands. */
+.tm-flip .tm-photo{ grid-column:2; grid-row:1; }
+.tm-flip .tm-copy { grid-column:1; grid-row:1; }
+
+/* ── the photo ──
+   The source images are tall portraits. Without object-position they
+   crop to the middle of the torso and cut the head off, which is what
+   was happening before. */
+.tm-photo{
+  position:relative;
+  min-height:430px;
+  background:var(--surface-2);
+  overflow:hidden;
 }
-.person-photo img{
+.tm-photo img{
   width:100%; height:100%;
   object-fit:cover;
-  object-position:center 45%;  /* keeps faces off the crop line */
+  object-position:center 22%;
+  transition:transform .8s var(--ease), filter .8s var(--ease);
 }
-.person-body{ padding:28px 28px 30px; }
-.person-body h3{ font-size:1.38rem; font-weight:800; margin:0 0 3px; }
-.person-role{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.75rem;
-  letter-spacing:.14em;
+.tm-band:hover .tm-photo img{ transform:scale(1.04); }
+
+.tm-copy{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:52px 54px;
+}
+
+.tm-role{
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  letter-spacing:.2em;
   text-transform:uppercase;
-  color:var(--accent);
+  margin:0 0 18px;
+}
+
+.tm-name{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,5.6vw,4.4rem);
+  font-weight:400;
+  line-height:.92;
+  letter-spacing:.01em;
+  text-transform:uppercase;
   margin:0 0 14px;
 }
-.person-bio{ margin:0 0 18px; color:var(--muted); font-size:.96rem; }
+.tm-name span{ display:block; }
 
-.person-link{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  font-size:.92rem;
-  font-weight:700;
-  color:var(--accent);
-  border:1px solid var(--line);
-  background:var(--accent-soft);
-  padding:9px 18px;
-  border-radius:999px;
-  transition:border-color .25s, transform .2s var(--ease);
+.tm-tagline{ font-size:1.1rem; margin:0 0 16px; }
+
+.tm-bio{
+  font-size:.98rem;
+  line-height:1.65;
+  max-width:52ch;
+  margin:0 0 24px;
 }
-.person-link:hover{ border-color:var(--accent); transform:translateY(-2px); }
+
+.tm-facts{ display:grid; gap:9px; margin:0 0 28px; }
+.tm-facts li{ position:relative; padding-left:20px; font-size:.93rem; }
+.tm-facts li::before{
+  content:"";
+  position:absolute;
+  left:0; top:.62em;
+  width:8px; height:2px;
+}
+
+.tm-link{
+  align-self:flex-start;
+  font-weight:700;
+  font-size:.92rem;
+  padding-bottom:3px;
+  border-bottom:1px solid currentColor;
+  transition:opacity .25s var(--ease);
+}
+.tm-link:hover{ opacity:.66; }
+
+
+/* ══════════════ GANESH — mono, editorial ══════════════
+   Near-black panel, white type, one hairline rule. The restraint is
+   the point: it should read as a developer's page. */
+.tm-mono .tm-inner{ background:#0e0e11; }
+.tm-mono .tm-role{ color:var(--dim); }
+.tm-mono .tm-name{ color:#fff; }
+.tm-mono .tm-tagline{
+  color:var(--text);
+  font-weight:700;
+  letter-spacing:-.01em;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--line);
+}
+.tm-mono .tm-bio{ color:var(--muted); }
+.tm-mono .tm-facts li{ color:var(--text); }
+.tm-mono .tm-facts li::before{ background:#fff; }
+.tm-mono .tm-link{ color:#fff; }
+/* Desaturated so the band really is black and white, warming on hover. */
+.tm-mono .tm-photo img{ filter:grayscale(1) contrast(1.06); }
+.tm-mono:hover .tm-photo img{ filter:grayscale(.25) contrast(1.02); }
+
+
+/* ══════════════ VINOTHINI — plum, classic ══════════════
+   Deep maroon panel with the script face on the tagline. Warmer and
+   softer than the mono band without becoming a different site. */
+.tm-plum .tm-inner{
+  background:
+    linear-gradient(155deg, rgba(193,18,31,.20) 0%, transparent 58%),
+    var(--maroon);
+  border-color:rgba(255,255,255,.14);
+}
+.tm-plum .tm-role{ color:rgba(255,255,255,.86); }
+.tm-plum .tm-name{ color:#fff; }
+.tm-plum .tm-tagline{
+  font-family:var(--font-script);
+  font-size:clamp(1.7rem,3vw,2.4rem);
+  font-weight:700;
+  line-height:1.05;
+  color:var(--red-2);
+  margin-bottom:18px;
+}
+/* white at .86 on --maroon measures 10.7:1 */
+.tm-plum .tm-bio{ color:rgba(255,255,255,.86); }
+.tm-plum .tm-facts li{ color:#fff; }
+.tm-plum .tm-facts li::before{ background:var(--red-2); }
+.tm-plum .tm-link{ color:#fff; }
 
 
 /* ─────────── RESPONSIVE ─────────── */
 
-@media (max-width:1024px){
-  .team-grid{ grid-template-columns:1fr; }
+@media (max-width:900px){
+  .tm-inner{ grid-template-columns:1fr; }
+  /* Stacking makes the flip meaningless, and left alone it would put
+     the photo below the copy on one band and above it on the other. */
+  .tm-flip .tm-photo{ grid-column:1; grid-row:1; }
+  .tm-flip .tm-copy { grid-column:1; grid-row:2; }
+  .tm-photo{ min-height:0; aspect-ratio:4 / 3; }
+  .tm-copy{ padding:34px 30px 38px; }
 }
 
-@media (max-width:860px){
-  .person-photo{ aspect-ratio:4 / 3; }
+@media (max-width:520px){
+  .tm-copy{ padding:26px 22px 30px; }
+  .tm-name span{ display:inline; }   /* stacked words waste a phone screen */
 }
+
 
 /* ─────────────────────────────────────────────────────────
    ANIMATION — Team
-   Nothing here yet. Section-specific motion goes in this block so
-   it stays out of the layout rules above.
-
-   Scroll-in is already handled globally by .reveal in base.css.
-   Anything added here must degrade under the reduced-motion query
-   at the end of base.css, which kills animation for users who ask
-   the OS to reduce motion.
-
-   e.g.  .person { animation: fade-up .8s var(--ease) both; }
+   Scroll-in is handled by .reveal in base.css. The photo's slow zoom
+   and the mono band's desaturation sit on their own rules above.
    ───────────────────────────────────────────────────────── */
-

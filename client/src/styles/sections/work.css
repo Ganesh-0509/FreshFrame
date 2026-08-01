@@ -23,16 +23,24 @@
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
-.wk-feed{
-  display:flex;
-  flex-direction:column;
-  gap:34px;
+/* ── the overlapping stack ──
+   Each card sticks a little lower than the one before it, so scrolling
+   lays them over each other like a pile of prints. The overlap IS the
+   scroll — no trigger, no JS, and it cannot get out of sync. */
+.wk-stack{ display:flex; flex-direction:column; gap:46px; }
+
+.wk-post{
+  position:sticky;
+  top:calc(112px + var(--i) * 26px);
+  /* later cards must sit above earlier ones as they land */
+  z-index:calc(var(--i) + 1);
 }
 
 /* ── the card ── */
 .wk-card{
   display:grid;
   grid-template-columns:1.35fr 1fr;
+  grid-template-rows:auto 1fr;
   align-items:stretch;
 
   background:var(--maroon);
@@ -104,8 +112,8 @@
   display:flex;
   align-items:center;
   gap:12px;
-  padding-bottom:16px;
-  margin-bottom:18px;
+  grid-column:1 / -1;
+  padding:16px 22px;
   border-bottom:1px solid rgba(255,255,255,.14);
 }
 .wk-avatar{
@@ -114,6 +122,19 @@
   flex:none;
   background:linear-gradient(140deg, var(--red) 0%, var(--red-deep) 100%);
   border:1px solid rgba(255,255,255,.28);
+  display:grid;
+  place-items:center;
+  font-family:var(--font-display);
+  font-size:1.05rem;
+  color:#fff;
+  line-height:1;
+}
+
+.wk-more{
+  margin-left:auto;
+  letter-spacing:.14em;
+  font-size:.8rem;
+  color:rgba(255,255,255,.66);
 }
 .wk-who{ display:flex; flex-direction:column; gap:2px; min-width:0; }
 .wk-who b{
@@ -134,6 +155,55 @@
   /* .86 on --maroon is 12.0:1 — comfortable for text this small */
   color:rgba(255,255,255,.86);
 }
+
+/* ── the action bar ──
+   Drawn in CSS: four icons and no icon font, no extra request. They are
+   decorative — the whole card is already one link, so these are not
+   buttons pretending to do something. */
+.wk-bar{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding-bottom:14px;
+  margin-bottom:12px;
+}
+.wk-act{
+  width:23px; height:23px;
+  background:#fff;
+  opacity:.92;
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center;  mask-position:center;
+  -webkit-mask-size:contain;     mask-size:contain;
+  transition:transform .3s var(--ease);
+}
+.wk-act-save{ margin-left:auto; }
+.wk-post:hover .wk-act-like{ transform:scale(1.22); }
+
+.wk-act-like{
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21Z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21Z'/%3E%3C/svg%3E");
+}
+.wk-act-chat{
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 11.5a8 8 0 0 1-11.7 7.1L3 21l2.4-6.1A8 8 0 1 1 21 11.5Z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 11.5a8 8 0 0 1-11.7 7.1L3 21l2.4-6.1A8 8 0 1 1 21 11.5Z'/%3E%3C/svg%3E");
+}
+.wk-act-send{
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13M22 2l-7 20-4-9-9-4Z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13M22 2l-7 20-4-9-9-4Z'/%3E%3C/svg%3E");
+}
+.wk-act-save{
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18l-6-5-6 5Z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18l-6-5-6 5Z'/%3E%3C/svg%3E");
+}
+
+/* The "liked by" line. Says something true about the project rather
+   than inventing a follower count. */
+.wk-likes{
+  margin:0 0 14px;
+  font-size:.86rem;
+  color:rgba(255,255,255,.86);
+}
+.wk-likes b{ color:#fff; font-weight:700; }
 
 .wk-desc{
   margin:0 0 22px;

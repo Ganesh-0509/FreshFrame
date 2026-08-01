@@ -38,8 +38,38 @@
 
 .process-track{ position:relative; margin-top:60px; padding:16px 0 36px; }
 
-.step{ display:flex; justify-content:flex-start; margin-bottom:118px; }
+.step{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  margin-bottom:118px;
+}
 .step.right{ justify-content:flex-end; }
+
+/* ── the ghost number ──
+   Sits on whichever side the card is not. Decorative and aria-hidden,
+   so --red-deep failing contrast is fine; the real number is inside
+   the card. */
+.step-ghost{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-family:var(--font-display);
+  font-size:clamp(5rem,13vw,11rem);
+  line-height:.8;
+  color:transparent;
+  -webkit-text-stroke:2px var(--red-core);
+  opacity:.30;
+  pointer-events:none;
+  user-select:none;
+  transition:opacity .45s var(--ease), letter-spacing .45s var(--ease);
+}
+.step:not(.right) .step-ghost{ right:6%; }
+.step.right .step-ghost{ left:6%; }
+
+/* the whole row responds, not just the card */
+.step:hover .step-ghost{ opacity:.62; letter-spacing:.03em; }
 .step:last-child{ margin-bottom:0; }
 
 .step-card{
@@ -53,23 +83,42 @@
   box-shadow:var(--shadow-card);
   transition:transform .35s var(--ease), border-color .35s, box-shadow .35s;
 }
+.step-card::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:3px;
+  border-radius:3px;
+  background:var(--red-core);
+  transform:scaleY(0);
+  transform-origin:top;
+  transition:transform .45s var(--ease);
+}
+.step-card:hover::before{ transform:scaleY(1); }
 .step-card:hover{
   transform:translateY(-5px);
   border-color:var(--accent);
   box-shadow:var(--shadow-deep);
 }
 .step-num{
-  font-family:'JetBrains Mono',monospace;
-  font-size:2.4rem;
+  font-family:var(--font-mono);
+  font-size:.8rem;
   font-weight:700;
+  letter-spacing:.2em;
   line-height:1;
   margin:0 0 14px;
-  background:var(--grad-tri);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
+  color:var(--red);
 }
-.step-card h3{ font-size:1.42rem; font-weight:800; margin:0 0 11px; letter-spacing:-.015em; }
+/* Display face, so the punchier titles actually land. */
+.step-card h3{
+  font-family:var(--font-display);
+  font-size:1.72rem;
+  font-weight:400;
+  line-height:1.02;
+  letter-spacing:.012em;
+  text-transform:uppercase;
+  margin:0 0 11px;
+}
 .step-card p{ margin:0; color:var(--muted); font-size:.97rem; }
 
 /* the arrow — GSAP moves this along an invisible path.
@@ -94,6 +143,8 @@
 @media (max-width:860px){
   .step{ margin-bottom:88px; justify-content:center; }
   .step.right{ justify-content:center; }
+  /* nothing to fill once the zigzag becomes a single column */
+  .step-ghost{ display:none; }
   .step-card{ max-width:100%; }
   .flight-arrow{ width:52px; height:52px; }
   .process-track{ margin-top:42px; }

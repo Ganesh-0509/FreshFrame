@@ -42,15 +42,18 @@ export default function Process() {
           <div className="flight-arrow" ref={arrowRef} aria-hidden="true">
             <svg viewBox="0 0 100 100" className="flight-arrow-svg">
               <defs>
-                {/* tail -> nose: violet, blue, teal. all three, in flight. */}
+                {/* Tail -> nose, deep to bright, so the nose leads the eye.
+                    This was still the old violet/blue/teal trio, which is
+                    why the arrow was the one blue thing on a red page. */}
                 <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stopColor="#7c3aed" />
-                  <stop offset=".5" stopColor="#2563eb" />
-                  <stop offset="1" stopColor="#0f766e" />
+                  <stop offset="0" stopColor="#7a0d16" />
+                  <stop offset=".5" stopColor="#c1121f" />
+                  <stop offset="1" stopColor="#ff4d5a" />
                 </linearGradient>
               </defs>
               <path d="M96 50 L6 95 L27 50 L6 5 Z" fill="url(#arrowGrad)" />
-              <path d="M96 50 L27 50 L6 95 Z" fill="#0d1220" opacity=".22" />
+              {/* the shaded underside, giving the dart some volume */}
+              <path d="M96 50 L27 50 L6 95 Z" fill="#000" opacity=".28" />
             </svg>
           </div>
 
@@ -60,6 +63,13 @@ export default function Process() {
               data-step
               key={`${active.id}-${step.num}`}
             >
+              {/* Oversized number on the empty side of the row. The
+                  zigzag left half the width blank at every step; this
+                  fills it and doubles as the step marker. */}
+              <span className="step-ghost" aria-hidden="true">
+                {step.num}
+              </span>
+
               <div className="step-card">
                 <p className="step-num">{step.num}</p>
                 <h3>{step.title}</h3>

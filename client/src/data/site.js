@@ -171,27 +171,27 @@ export const processPaths = [
     steps: [
       {
         num: '01',
-        title: 'Tell us the idea',
+        title: 'Talk, don’t brief',
         body: 'A call or a WhatsApp message. Twenty minutes is usually enough for us to understand what you’re trying to do.',
       },
       {
         num: '02',
-        title: 'We build a basic mock',
+        title: 'We build it. Free.',
         body: 'A real page you can open and click through — not a picture of one. Free, and yours to look at for as long as you need.',
       },
       {
         num: '03',
-        title: 'You decide',
+        title: 'Walk away, or don’t',
         body: 'Like it? We keep going. Don’t? You walk away owing us nothing. This is the whole reason we work this way.',
       },
       {
         num: '04',
-        title: 'We build it properly',
+        title: 'The real thing',
         body: 'Ganesh writes the real thing. Vinothini keeps you updated so you’re never wondering what’s happening.',
       },
       {
         num: '05',
-        title: 'Launch & support',
+        title: 'Live, and looked after',
         body: 'Domain, hosting, handover, and the training to run it yourself. Then we stay reachable — we don’t disappear.',
       },
     ],
@@ -204,44 +204,54 @@ export const processPaths = [
     steps: [
       {
         num: '01',
-        title: 'Tell us what’s slowing you down',
+        title: 'Name the bottleneck',
         body: 'The task you keep repeating, the thing that breaks every month. You don’t need to know what the solution looks like.',
       },
       {
         num: '02',
-        title: 'We get on a call and talk features',
+        title: 'We take it apart',
         body: 'A proper conversation about what it must do, what it shouldn’t, and where it has to fit with what you already use.',
       },
       {
         num: '03',
-        title: 'We scope it and quote',
+        title: 'Price in writing, first',
         body: 'You get the feature list and the number in writing before anything is built. If it isn’t worth automating, we’ll tell you that instead.',
       },
       {
         num: '04',
-        title: 'We build it, you try it',
+        title: 'You break it early',
         body: 'You run it on real work while we’re still building, so problems surface early rather than after handover.',
       },
       {
         num: '05',
-        title: 'Handover & support',
+        title: 'Yours to run',
         body: 'It runs itself. You get the walkthrough and the logins, and we stay on hand when something needs changing.',
       },
     ],
   },
 ]
 
+/* `style` picks the treatment in components/Team.jsx:
+     'mono'  — high-contrast black and white, editorial. Professional.
+     'plum'  — deep maroon panel with a script accent. Classic.
+   Each person gets a full-width horizontal band of their own. */
 export const team = [
   {
+    style: 'mono',
     name: 'Ganesh Kumar',
     role: 'Full-Stack Developer',
+    tagline: 'Writes every line of it',
+    facts: ['Front to back', 'Hand-written, not templated', 'Ships and maintains'],
     photo: '/assets/Ganesh.jpeg',
     bio: 'Builds it. Front to back — the interface you see and the parts underneath that make it work. If it’s on your site, he wrote it.',
     portfolio: 'https://ganesh-0509.github.io/ganesh-portfolio-interactive/',
   },
   {
+    style: 'plum',
     name: 'Vinothini',
     role: 'Product & Client Engagement',
+    tagline: 'Works out what you actually need',
+    facts: ['Scopes before a line is written', 'Keeps you in the loop', 'Straight answers, always'],
     photo: '/assets/Vino.jpeg',
     bio: 'Works out what you actually need before a line is written, then stays with you through the build so you always know where things stand.',
     portfolio: 'https://portfolio-p2yy.onrender.com/',

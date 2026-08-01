@@ -1,5 +1,6 @@
-import { Fragment } from 'react'
+import { Fragment, useRef } from 'react'
 import { automation } from '../data/site.js'
+import useCoverflow from '../hooks/useCoverflow.js'
 import Reveal from './Reveal.jsx'
 
 /* keyed off `icon` in data/site.js */
@@ -45,8 +46,12 @@ const FLOW = [
 ]
 
 export default function Automation() {
+  const sectionRef = useRef(null)
+  const trackRef = useRef(null)
+  useCoverflow(sectionRef, trackRef)
+
   return (
-    <section className="section band-tint automation" id="automation">
+    <section className="section band-tint automation" id="automation" ref={sectionRef}>
       <div className="wrap">
         <p className="kicker">// 02 — Automation</p>
         <h2 className="section-title">
@@ -58,9 +63,14 @@ export default function Automation() {
           {automation.lede} <strong>{automation.ledeStrong}</strong>
         </p>
 
-        <div className="auto-grid">
+      </div>
+
+      {/* Full-bleed on purpose: the row has to be able to run past both
+          edges of the page or there is nothing for the scroll to reveal. */}
+      <div className="auto-rail">
+        <div className="auto-track" ref={trackRef}>
           {automation.tiles.map((tile) => (
-            <Reveal as="article" className="auto-tile" key={tile.title}>
+            <article className="auto-tile" key={tile.title}>
               <span className="auto-ico" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -75,10 +85,12 @@ export default function Automation() {
               </span>
               <h3>{tile.title}</h3>
               <p>{tile.body}</p>
-            </Reveal>
+            </article>
           ))}
         </div>
+      </div>
 
+      <div className="wrap">
         <Reveal className="auto-flow">
           {FLOW.map((step, i) => (
             <Fragment key={step.num}>
