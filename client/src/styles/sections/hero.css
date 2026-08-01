@@ -56,7 +56,8 @@
   text-transform:uppercase;
 
   color:var(--red-core);
-  opacity:.30;
+  /* .30 buried the headline that sits on top of it */
+  opacity:.24;
   pointer-events:none;
   user-select:none;
 }
@@ -96,13 +97,15 @@
   display:block;
   will-change:transform;
 }
-/* The one word carrying the whole proposition. Solid --red-core: it is
-   display-sized, so the deep crimson is safe and reads far heavier
-   than the old gradient fill did. */
+/* The one word carrying the whole proposition.
+   NOT --red-core, despite being display-sized. The ghost wordmark sits
+   directly behind this, and --red-core on that blend measures 2.60:1 —
+   it fails even the 3:1 bar for large text. Red on red cancels out.
+   --red is 4.43:1 against the same blend. Measured, not eyeballed. */
 .hero-title em{
   font-style:normal;
-  color:var(--red-core);
-  -webkit-text-stroke:1px var(--red);
+  color:var(--red);
+  -webkit-text-stroke:1px var(--red-2);
 }
 
 .hero-body{ max-width:62ch; }
