@@ -59,6 +59,12 @@
                                Decorative; carries no information.     */
   --rose:       #c9736f;   /*  5.0:1 — soft secondary accent          */
 
+  /* Deep crimson with a brown undertone — the project cards. Much
+     darker and less orange than --red-core, so a large filled card
+     reads as considered rather than loud. White on it is 14.0:1, so
+     everything on the card has room to breathe. */
+  --maroon:     #4f1a1c;
+
   /* The one deliberate non-red in the palette. Signalling a successful
      form submission in red would make it indistinguishable from the
      error state, which is the more important thing to get right than

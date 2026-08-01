@@ -125,10 +125,11 @@ export default function Contact() {
 
   return (
     <section className="section band-dark contact" id="contact">
-      {/* The handset drops in on its cord from the top of the section. */}
-      <PhoneDrop />
-
       <div className="wrap contact-grid">
+        {/* Its own column on the left, per the reference — not floated
+            over the content, where it was getting clipped. */}
+        <PhoneDrop />
+
         <div className="contact-copy">
           <p className="kicker">// 08 — Start here</p>
 

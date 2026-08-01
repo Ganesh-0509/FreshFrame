@@ -51,25 +51,30 @@
    cord, so it is anchored at the top and allowed to overflow past the
    section's own padding. */
 .ff-phone{
-  position:absolute;
-  top:0; right:6%;
-  width:clamp(120px,17vw,230px);
-  color:var(--red-core);
+  /* A real grid column now. It was absolutely positioned on the right
+     and getting clipped by the section edge, which is what made the
+     drop hard to read. */
+  align-self:start;
+  margin-top:-104px;            /* start above the section's padding */
   pointer-events:none;
-  z-index:0;
-  filter:drop-shadow(0 22px 34px rgba(0,0,0,.55));
+  filter:drop-shadow(0 30px 46px rgba(0,0,0,.7));
 }
 .ff-phone svg{ width:100%; height:auto; display:block; overflow:visible; }
 
-/* Punched out of the earpiece rather than drawn on top, so the holes
-   show the background through and the bulb reads as solid. */
-.ff-holes circle{ fill:var(--ink); }
-.ff-holes circle:first-child{ fill:none; stroke:var(--ink); stroke-width:2; opacity:.5; }
+/* Punched out so the holes show the dark body through. */
+.ff-holes circle{ fill:#26050a; }
 
-/* The form and copy must sit above the handset. */
-.contact-grid{ position:relative; z-index:1; }
-
-.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+/* Three columns: handset, copy, form. The handset gets its own track
+   so it can never overlap the text — the reference has it clear on the
+   left, not floating behind the words. */
+.contact-grid{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:minmax(150px,210px) 1fr 1.05fr;
+  gap:48px;
+  align-items:start;
+}
 .contact-list{ margin-top:32px; }
 .contact-list li{
   display:flex;
@@ -170,9 +175,10 @@
 /* ─────────── RESPONSIVE ─────────── */
 
 @media (max-width:1024px){
-  .contact-grid{ grid-template-columns:1fr; gap:42px; }
-  /* one column means the form would sit under the handset */
-  .ff-phone{ right:2%; width:130px; opacity:.5; }
+  /* handset shares the top row with the copy, form drops below */
+  .contact-grid{ grid-template-columns:150px 1fr; gap:36px 30px; }
+  .contact-form{ grid-column:1 / -1; }
+  .ff-phone{ margin-top:-84px; }
 }
 
 @media (max-width:860px){
@@ -182,6 +188,7 @@
 @media (max-width:520px){
   .contact{ border-radius:24px 24px 0 0; }
   .ff-phone{ display:none; }   /* no room for it beside the copy */
+  .contact-grid{ grid-template-columns:1fr; }
   .contact-ask-script{ margin-left:0; }
   .contact-form{ padding:24px 20px; }
 }

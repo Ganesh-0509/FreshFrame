@@ -2,8 +2,7 @@ import { work } from '../data/site.js'
 import { asset } from '../lib/asset.js'
 import Reveal from './Reveal.jsx'
 
-/* Turns "standardfireworkssivakasi.com" into "@standardfireworkssivakasi"
-   for the post header, the way the reference card is titled. */
+/* "standardfireworkssivakasi.com" -> "@standardfireworkssivakasi" */
 const handle = (url) =>
   '@' + url.replace(/^https?:\/\//, '').replace(/^www\./, '').split(/[./]/)[0]
 
@@ -23,12 +22,9 @@ export default function Work() {
         </p>
 
         <div className="wk-feed">
-          {work.map((p, i) => (
+          {work.map((p) => (
             <Reveal as="article" className="wk-post" key={p.url}>
-              <span className="wk-tag">{i === 0 ? 'New post' : 'Post'}</span>
-
-              {/* The whole card is the link, so there is no separate
-                  "Visit site" button or link line any more. */}
+              {/* One anchor around the whole card — no separate link. */}
               <a
                 className="wk-card"
                 href={p.url}
@@ -36,33 +32,35 @@ export default function Work() {
                 rel="noopener noreferrer"
                 aria-label={`Open ${p.name} in a new tab`}
               >
-                <header className="wk-head">
-                  <span className="wk-handle">{handle(p.url)}</span>
-                  <span className="wk-index">{p.index.split('—')[0].trim()}</span>
-                </header>
-
-                {/* Deliberately uncropped and unfiltered: the point of
-                    this section is that you can see the actual site. */}
+                {/* ── the shot, with the name sitting ON it ── */}
                 <div className="wk-shot">
                   <img src={asset(p.shot)} alt={p.alt} loading="lazy" decoding="async" />
-                </div>
-
-                <div className="wk-body">
                   <h3 className="wk-name">{p.name}</h3>
-                  <p className="wk-desc">{p.desc}</p>
                 </div>
 
-                {/* The reference's like/comment/share bar, carrying the
-                    project's real facts instead of fake engagement. */}
-                <footer className="wk-actions">
-                  {p.meta.map(([label, value]) => (
-                    <span className="wk-action" key={label}>
-                      <i className="wk-ico" aria-hidden="true" data-ico={label} />
-                      <b>{label}</b>
-                      <em>{value}</em>
+                {/* ── the caption, alongside rather than beneath ── */}
+                <div className="wk-side">
+                  <header className="wk-head">
+                    <span className="wk-avatar" aria-hidden="true" />
+                    <span className="wk-who">
+                      <b>{handle(p.url)}</b>
+                      <em>{p.index.split('—')[1]?.trim() || 'Project'}</em>
                     </span>
-                  ))}
-                </footer>
+                  </header>
+
+                  <p className="wk-desc">{p.desc}</p>
+
+                  <dl className="wk-meta">
+                    {p.meta.map(([label, value]) => (
+                      <div key={label}>
+                        <dt>{label}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+
+                  <span className="wk-go">Open the live site &#8594;</span>
+                </div>
               </a>
             </Reveal>
           ))}
