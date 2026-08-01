@@ -239,21 +239,35 @@ export const team = [
   {
     style: 'mono',
     name: 'Ganesh Kumar',
-    role: 'Full-Stack Developer',
-    tagline: 'Writes every line of it',
-    facts: ['Front to back', 'Hand-written, not templated', 'Ships and maintains'],
+    role: 'Full-Stack Developer · ML',
+    tagline: 'If it runs, he wrote it',
+    facts: [
+      'Front end, back end, no handover',
+      'Trains and ships ML models',
+      'Hand-written, never templated',
+    ],
     photo: '/assets/Ganesh.jpeg',
-    bio: 'Builds it. Front to back — the interface you see and the parts underneath that make it work. If it’s on your site, he wrote it.',
+    bio:
+      'Builds the whole thing — the interface you see and everything underneath that ' +
+      'makes it work. He also trains the models behind the smarter automations, so the ' +
+      'clever parts are built in-house rather than bolted on.',
     portfolio: 'https://ganesh-0509.github.io/ganesh-portfolio-interactive/',
   },
   {
     style: 'plum',
     name: 'Vinothini',
-    role: 'Product & Client Engagement',
-    tagline: 'Works out what you actually need',
-    facts: ['Scopes before a line is written', 'Keeps you in the loop', 'Straight answers, always'],
+    role: 'Frontend Developer · Product',
+    tagline: 'Knows what you meant, not just what you said',
+    facts: [
+      'Builds the front end you touch',
+      'Scopes it before a line is written',
+      'One person, start to finish',
+    ],
     photo: '/assets/Vino.jpeg',
-    bio: 'Works out what you actually need before a line is written, then stays with you through the build so you always know where things stand.',
+    bio:
+      'Works out what you actually need before anything gets built, then builds the front ' +
+      'end of it herself. The same person who took your brief is the one shaping the ' +
+      'screens, so nothing gets lost in translation.',
     portfolio: 'https://portfolio-p2yy.onrender.com/',
   },
 ]

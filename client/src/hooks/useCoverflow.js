@@ -78,24 +78,33 @@ export default function useCoverflow(sectionRef, trackRef, { speed = 46 } = {}) 
     )
     io.observe(section)
 
+    /* Pause is per CARD, not per section. Hovering anywhere in the
+       section — the heading, the padding, the gap between cards — used
+       to stop the row, which made it feel broken rather than paused.
+       Now it only stops when the pointer is actually on a card. */
     const stop = () => tween?.pause()
     const start = () => {
-      /* Only resume if the section is actually on screen — otherwise a
-         mouseleave as the user scrolls away restarts it invisibly. */
+      /* Only resume if the section is still on screen, or a mouseleave
+         fired while scrolling away would restart it invisibly. */
       const box = section.getBoundingClientRect()
       if (box.bottom > 0 && box.top < window.innerHeight) tween?.play()
     }
-    section.addEventListener('mouseenter', stop)
-    section.addEventListener('mouseleave', start)
-    section.addEventListener('focusin', stop)
-    section.addEventListener('focusout', start)
+
+    cards.forEach((card) => {
+      card.addEventListener('mouseenter', stop)
+      card.addEventListener('mouseleave', start)
+      card.addEventListener('focusin', stop)
+      card.addEventListener('focusout', start)
+    })
 
     return () => {
       io.disconnect()
-      section.removeEventListener('mouseenter', stop)
-      section.removeEventListener('mouseleave', start)
-      section.removeEventListener('focusin', stop)
-      section.removeEventListener('focusout', start)
+      cards.forEach((card) => {
+        card.removeEventListener('mouseenter', stop)
+        card.removeEventListener('mouseleave', start)
+        card.removeEventListener('focusin', stop)
+        card.removeEventListener('focusout', start)
+      })
       ctx.revert()
     }
   }, [sectionRef, trackRef, speed])
