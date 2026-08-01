@@ -38,29 +38,58 @@
 .tm-flip .tm-copy { grid-column:1; grid-row:1; }
 
 /* ── the photo ──
-   The source images are tall portraits. Without object-position they
-   crop to the middle of the torso and cut the head off, which is what
-   was happening before. */
+   MEASURED, not guessed. The sources are tall portraits —
+   Ganesh 960x1280 (0.75), Vinothini 720x1280 (0.56) — and the old
+   frame was landscape (~500x430, ratio 1.16). Forcing a 0.56 portrait
+   into a 1.16 landscape throws away about 80% of the image vertically,
+   which is why the band was showing sky with a forehead in it.
+
+   4/5 is the poster ratio and is close to both sources, so the crop is
+   now small: Ganesh loses ~6% of his height, Vinothini's sides are
+   held and the frame takes the middle. */
 .tm-photo{
   position:relative;
-  min-height:430px;
+  aspect-ratio:4 / 5;
   background:var(--surface-2);
   overflow:hidden;
+  /* the poster frame */
+  margin:26px;
+  border-radius:16px;
+  box-shadow:0 26px 60px rgba(0,0,0,.6);
 }
 .tm-photo img{
   width:100%; height:100%;
   object-fit:cover;
-  object-position:center 22%;
-  transition:transform .8s var(--ease), filter .8s var(--ease);
+  /* Faces sit in the upper half of a standing portrait. */
+  object-position:center 30%;
+  transition:transform 1s var(--ease), filter .8s var(--ease);
 }
-.tm-band:hover .tm-photo img{ transform:scale(1.04); }
+.tm-band:hover .tm-photo img{ transform:scale(1.05); }
+
+/* ── poster furniture ──
+   A hairline inner rule and a corner tick, so the photo reads as a
+   mounted print rather than a cropped avatar. */
+.tm-photo::after{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:9px;
+  pointer-events:none;
+}
 
 .tm-copy{
+  position:relative;
+  z-index:2;
   display:flex;
   flex-direction:column;
   justify-content:center;
   padding:52px 54px;
 }
+.tm-flip .tm-copy{ align-items:flex-end; text-align:right; }
+.tm-flip .tm-facts li{ padding-left:0; padding-right:20px; }
+.tm-flip .tm-facts li::before{ left:auto; right:0; }
+.tm-flip .tm-link{ align-self:flex-end; }
 
 .tm-role{
   font-family:var(--font-mono);
@@ -80,6 +109,13 @@
   margin:0 0 14px;
 }
 .tm-name span{ display:block; }
+
+/* Poster overlap: the name plate pulls back across the photo's edge so
+   the two halves interlock rather than sitting side by side.
+   MUST come after the .tm-name block above — its `margin:0 0 14px`
+   shorthand would otherwise reset this to 0. */
+.tm-name{ margin-left:-84px; }
+.tm-flip .tm-name{ margin-left:0; margin-right:-84px; }
 
 .tm-tagline{ font-size:1.1rem; margin:0 0 16px; }
 
@@ -166,18 +202,64 @@
      the photo below the copy on one band and above it on the other. */
   .tm-flip .tm-photo{ grid-column:1; grid-row:1; }
   .tm-flip .tm-copy { grid-column:1; grid-row:2; }
-  .tm-photo{ min-height:0; aspect-ratio:4 / 3; }
+  /* stays portrait — 4/3 here would reintroduce the crop */
+  .tm-photo{ aspect-ratio:4 / 5; max-width:420px; margin:26px auto 0; }
   .tm-copy{ padding:34px 30px 38px; }
+  .tm-name,
+  .tm-flip .tm-name{ margin-left:0; margin-right:0; }
+  .tm-flip .tm-copy{ align-items:flex-start; text-align:left; }
+  .tm-flip .tm-facts li{ padding-left:20px; padding-right:0; }
+  .tm-flip .tm-facts li::before{ left:0; right:auto; }
+  .tm-flip .tm-link{ align-self:flex-start; }
 }
 
 @media (max-width:520px){
   .tm-copy{ padding:26px 22px 30px; }
+  .tm-photo{ margin:18px auto 0; }
   .tm-name span{ display:inline; }   /* stacked words waste a phone screen */
 }
 
 
 /* ─────────────────────────────────────────────────────────
    ANIMATION — Team
-   Scroll-in is handled by .reveal in base.css. The photo's slow zoom
-   and the mono band's desaturation sit on their own rules above.
+
+   Keyed off `.in`, which Reveal.jsx adds when the band scrolls into
+   view, so the poster assembles itself once per visit rather than
+   playing on load where nobody sees it.
    ───────────────────────────────────────────────────────── */
+
+/* The print wipes upward into its frame. */
+@keyframes tm-unveil{
+  from{ clip-path:inset(100% 0 0 0); transform:scale(1.1); }
+  to  { clip-path:inset(0 0 0 0);    transform:scale(1); }
+}
+.tm-band.in .tm-photo img{ animation:tm-unveil 1.05s var(--ease) both; }
+
+/* The frame's hairline draws in after the print has landed. */
+@keyframes tm-frame{ from{ opacity:0; } to{ opacity:1; } }
+.tm-band .tm-photo::after{ opacity:0; }
+.tm-band.in .tm-photo::after{ animation:tm-frame .6s var(--ease) both .75s; }
+
+/* Copy rises in sequence, name first. */
+@keyframes tm-rise{
+  from{ opacity:0; transform:translateY(20px); }
+  to  { opacity:1; transform:none; }
+}
+.tm-band.in .tm-role   { animation:tm-rise .6s var(--ease) both .18s; }
+.tm-band.in .tm-name   { animation:tm-rise .7s var(--ease) both .26s; }
+.tm-band.in .tm-tagline{ animation:tm-rise .6s var(--ease) both .40s; }
+.tm-band.in .tm-bio    { animation:tm-rise .6s var(--ease) both .48s; }
+.tm-band.in .tm-facts li{ animation:tm-rise .55s var(--ease) both; }
+.tm-band.in .tm-facts li:nth-child(1){ animation-delay:.56s; }
+.tm-band.in .tm-facts li:nth-child(2){ animation-delay:.63s; }
+.tm-band.in .tm-facts li:nth-child(3){ animation-delay:.70s; }
+.tm-band.in .tm-link   { animation:tm-rise .6s var(--ease) both .80s; }
+
+/* The name animation sets transform, which would wipe out the negative
+   margin overlap if it were done with translate instead. Guard the
+   reduced-motion case too: base.css kills the duration but the
+   from-state would still apply, leaving the frame invisible. */
+@media (prefers-reduced-motion:reduce){
+  .tm-band .tm-photo::after{ opacity:1; }
+  .tm-band .tm-photo img{ clip-path:none; }
+}

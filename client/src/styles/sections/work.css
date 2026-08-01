@@ -1,262 +1,85 @@
 /* ══════════════════════════════════════════════════════════
    WORK
    ──────────────────────────────────────────────────────────
-   Horizontal post cards. Screenshot on the left, caption
-   alongside it on the right — an Instagram post turned on its
-   side rather than stacked.
+   Screenshots only. Every caption, handle, action bar and meta
+   row was removed on request — the shot is the entire card and
+   the card is the link to the live site.
 
-   Three things asked for, and where each one lives:
-
-     "make it horizontal"      -> .wk-card is a 2-column grid,
-                                  one card per row, full width
-     "remove the red"          -> --maroon (#4f1a1c), a deep
-                                  crimson-brown, not --red-core
-     "words inside"            -> .wk-name sits ON the screenshot
-                                  over a scrim. No separate band
-                                  of text under the image.
-
-   The screenshot still has to read clearly, so the scrim is a
-   bottom-only gradient — the site itself is never tinted.
+   Nothing is layered over the image: no scrim, no tint, no
+   overlaid title. The only mark is a small corner glyph that
+   appears on hover to signal it opens somewhere.
 
    Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
    Tokens live in styles/theme.css. Override them per section in the
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
-/* ── the overlapping stack ──
-   Each card sticks a little lower than the one before it, so scrolling
-   lays them over each other like a pile of prints. The overlap IS the
-   scroll — no trigger, no JS, and it cannot get out of sync. */
-.wk-stack{ display:flex; flex-direction:column; gap:46px; }
-
-.wk-post{
-  position:sticky;
-  top:calc(112px + var(--i) * 26px);
-  /* later cards must sit above earlier ones as they land */
-  z-index:calc(var(--i) + 1);
-}
-
-/* ── the card ── */
-.wk-card{
+.wk-feed{
   display:grid;
-  grid-template-columns:1.35fr 1fr;
-  grid-template-rows:auto 1fr;
-  align-items:stretch;
-
-  background:var(--maroon);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:22px;
-  overflow:hidden;
-  box-shadow:var(--shadow-card);
-  transition:transform .4s var(--ease), box-shadow .4s var(--ease),
-             border-color .4s var(--ease);
-}
-.wk-post:hover .wk-card{
-  transform:translateY(-6px);
-  border-color:rgba(255,255,255,.2);
-  box-shadow:0 30px 66px rgba(0,0,0,.66);
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:28px;
 }
 
-/* ── the screenshot ──
-   The point of the section. Never tinted or filtered; the only thing
-   over it is the scrim under the name, and that stops well short of
-   the top so the site's own header stays readable. */
-.wk-shot{
+.wk-post{ position:relative; }
+
+.wk-card{
   position:relative;
-  background:var(--ink);
-  aspect-ratio:16 / 10;
+  display:block;
+  border-radius:20px;
   overflow:hidden;
+  background:var(--ink);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-card);
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease),
+             border-color .45s var(--ease);
 }
-.wk-shot img{
-  width:100%; height:100%;
+.wk-card:hover{
+  transform:translateY(-8px);
+  border-color:var(--red-core);
+  box-shadow:0 30px 68px rgba(0,0,0,.7);
+}
+
+/* The screenshots are ~2:1. Holding that ratio means the whole
+   homepage stays in frame instead of being cropped to a strip. */
+.wk-card img{
+  width:100%;
+  aspect-ratio:1897 / 906;
   object-fit:cover;
   object-position:top center;
-  transition:transform .7s var(--ease);
+  transition:transform .8s var(--ease);
 }
-.wk-post:hover .wk-shot img{ transform:scale(1.04); }
+.wk-card:hover img{ transform:scale(1.045); }
 
-/* the scrim that makes the name legible on any screenshot */
-.wk-shot::after{
-  content:"";
+/* The one mark on the card: a corner glyph so it is obvious the
+   image is a link. Hidden until hover so the shot is untouched. */
+.wk-open{
   position:absolute;
-  inset:auto 0 0 0;
-  height:52%;
-  background:linear-gradient(to top, rgba(20,4,6,.94) 12%, rgba(20,4,6,.55) 48%, transparent 100%);
-  pointer-events:none;
-}
-
-/* the project name, ON the shot */
-.wk-name{
-  position:absolute;
-  left:26px; right:26px; bottom:22px;
-  z-index:1;
-  margin:0;
-  font-family:var(--font-display);
-  font-size:clamp(1.5rem,2.6vw,2.3rem);
-  font-weight:400;
-  line-height:1.02;
-  letter-spacing:.012em;
-  text-transform:uppercase;
-  color:#fff;
-  text-shadow:0 2px 18px rgba(0,0,0,.7);
-}
-
-/* ── the caption side ── */
-.wk-side{
-  display:flex;
-  flex-direction:column;
-  padding:26px 30px 28px;
-}
-
-.wk-head{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  grid-column:1 / -1;
-  padding:16px 22px;
-  border-bottom:1px solid rgba(255,255,255,.14);
-}
-.wk-avatar{
-  width:38px; height:38px;
-  border-radius:50%;
-  flex:none;
-  background:linear-gradient(140deg, var(--red) 0%, var(--red-deep) 100%);
-  border:1px solid rgba(255,255,255,.28);
+  top:16px; right:16px;
+  width:40px; height:40px;
   display:grid;
   place-items:center;
-  font-family:var(--font-display);
-  font-size:1.05rem;
+  border-radius:50%;
+  background:var(--red-core);
   color:#fff;
-  line-height:1;
+  font-size:1.15rem;
+  opacity:0;
+  transform:translateY(-6px) scale(.85);
+  transition:opacity .35s var(--ease), transform .35s var(--ease);
+  pointer-events:none;
 }
-
-.wk-more{
-  margin-left:auto;
-  letter-spacing:.14em;
-  font-size:.8rem;
-  color:rgba(255,255,255,.66);
-}
-.wk-who{ display:flex; flex-direction:column; gap:2px; min-width:0; }
-.wk-who b{
-  font-size:.95rem;
-  font-weight:700;
-  color:#fff;
-  letter-spacing:-.01em;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.wk-who em{
-  font-style:normal;
-  font-family:var(--font-mono);
-  font-size:.65rem;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  /* .86 on --maroon is 12.0:1 — comfortable for text this small */
-  color:rgba(255,255,255,.86);
-}
-
-/* ── the action bar ──
-   Drawn in CSS: four icons and no icon font, no extra request. They are
-   decorative — the whole card is already one link, so these are not
-   buttons pretending to do something. */
-.wk-bar{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding-bottom:14px;
-  margin-bottom:12px;
-}
-.wk-act{
-  width:23px; height:23px;
-  background:#fff;
-  opacity:.92;
-  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-  -webkit-mask-position:center;  mask-position:center;
-  -webkit-mask-size:contain;     mask-size:contain;
-  transition:transform .3s var(--ease);
-}
-.wk-act-save{ margin-left:auto; }
-.wk-post:hover .wk-act-like{ transform:scale(1.22); }
-
-.wk-act-like{
-  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21Z'/%3E%3C/svg%3E");
-  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21Z'/%3E%3C/svg%3E");
-}
-.wk-act-chat{
-  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 11.5a8 8 0 0 1-11.7 7.1L3 21l2.4-6.1A8 8 0 1 1 21 11.5Z'/%3E%3C/svg%3E");
-  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 11.5a8 8 0 0 1-11.7 7.1L3 21l2.4-6.1A8 8 0 1 1 21 11.5Z'/%3E%3C/svg%3E");
-}
-.wk-act-send{
-  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13M22 2l-7 20-4-9-9-4Z'/%3E%3C/svg%3E");
-  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13M22 2l-7 20-4-9-9-4Z'/%3E%3C/svg%3E");
-}
-.wk-act-save{
-  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18l-6-5-6 5Z'/%3E%3C/svg%3E");
-  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18l-6-5-6 5Z'/%3E%3C/svg%3E");
-}
-
-/* The "liked by" line. Says something true about the project rather
-   than inventing a follower count. */
-.wk-likes{
-  margin:0 0 14px;
-  font-size:.86rem;
-  color:rgba(255,255,255,.86);
-}
-.wk-likes b{ color:#fff; font-weight:700; }
-
-.wk-desc{
-  margin:0 0 22px;
-  font-size:.94rem;
-  line-height:1.62;
-  color:rgba(255,255,255,.86);
-}
-
-.wk-meta{ margin:0 0 22px; display:grid; gap:11px; }
-.wk-meta div{ display:grid; grid-template-columns:78px 1fr; gap:12px; align-items:baseline; }
-.wk-meta dt{
-  font-family:var(--font-mono);
-  font-size:.62rem;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.72);
-}
-.wk-meta dd{ margin:0; font-size:.85rem; line-height:1.45; color:#fff; }
-
-/* Reads as the card's call to action without being a second link —
-   the whole card is already the anchor. */
-.wk-go{
-  margin-top:auto;
-  align-self:flex-start;
-  font-size:.86rem;
-  font-weight:700;
-  color:#fff;
-  border-bottom:1px solid rgba(255,255,255,.45);
-  padding-bottom:2px;
-  transition:border-color .25s var(--ease);
-}
-.wk-post:hover .wk-go{ border-bottom-color:#fff; }
+.wk-card:hover .wk-open,
+.wk-card:focus-visible .wk-open{ opacity:1; transform:none; }
 
 
 /* ─────────── RESPONSIVE ─────────── */
 
 @media (max-width:900px){
-  /* Horizontal stops working once the caption column is narrower than
-     its own metadata labels. */
-  .wk-card{ grid-template-columns:1fr; }
-  .wk-shot{ aspect-ratio:16 / 9; }
-  .wk-side{ padding:22px 22px 24px; }
-}
-
-@media (max-width:520px){
-  .wk-name{ left:18px; right:18px; bottom:16px; }
-  .wk-meta div{ grid-template-columns:1fr; gap:1px; }
-  .wk-side{ padding:18px 18px 20px; }
+  .wk-feed{ grid-template-columns:1fr; gap:22px; }
 }
 
 
 /* ─────────────────────────────────────────────────────────
    ANIMATION — Work
-   Scroll-in is handled by .reveal in base.css. The hover lift and the
-   screenshot's slow zoom sit on the rules they belong to, above.
+   Scroll-in is handled by .reveal in base.css. The lift, the slow
+   zoom and the corner glyph all sit on the rules above.
    ───────────────────────────────────────────────────────── */

@@ -68,9 +68,18 @@ export default function Automation() {
       {/* Full-bleed on purpose: the row has to be able to run past both
           edges of the page or there is nothing for the scroll to reveal. */}
       <div className="auto-rail">
+        {/* Rendered TWICE. useCoverflow loops x from 0 to -50% of the
+            track, so the second copy is exactly where the first started
+            when it wraps and the seam never shows. The duplicate is
+            aria-hidden so it is not read out as six more tiles. */}
         <div className="auto-track" ref={trackRef}>
-          {automation.tiles.map((tile) => (
-            <article className="auto-tile" key={tile.title}>
+          {[0, 1].flatMap((copy) =>
+            automation.tiles.map((tile) => (
+            <article
+              className="auto-tile"
+              key={`${copy}-${tile.title}`}
+              aria-hidden={copy === 1 ? 'true' : undefined}
+            >
               <span className="auto-ico" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -86,7 +95,8 @@ export default function Automation() {
               <h3>{tile.title}</h3>
               <p>{tile.body}</p>
             </article>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
