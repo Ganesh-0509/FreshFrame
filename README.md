@@ -14,9 +14,8 @@ access key. Those steps need a browser login, so they're written out as instruct
 rather than done for you.
 
 > **Why there's no backend.** GitHub Pages serves static files only — it can't run
-> Node, so it can't run a mail server. The form posts straight to Web3Forms instead.
-> `server/` still holds a complete Express mail server, but **nothing deploys or runs
-> it**; it's an escape hatch, explained at the top of `server/index.js`.
+> Node, so it can't run a mail server. The form posts straight to Web3Forms instead,
+> which is why there is no server in this repo at all.
 >
 > The free plan delivers to **one inbox**, which is all this needs — enquiries go to
 > Vinothini, who handles client engagement. A second recipient (`ccemail`) is a PRO
@@ -29,12 +28,10 @@ rather than done for you.
 ### First time only
 
 ```
-npm run setup
+npm install
 ```
 
-Installs the client dependencies.
-
-Then copy `client/.env.example` to `client/.env` and paste in your Web3Forms access
+Then copy `.env.example` to `.env` and paste in your Web3Forms access
 key. Without it the site still runs, but the form shows its fallback message instead
 of sending — see [Making the contact form send real email](#making-the-contact-form-send-real-email).
 
@@ -44,17 +41,17 @@ of sending — see [Making the contact form send real email](#making-the-contact
 npm run dev
 ```
 
-One process now. Open **http://localhost:5173**. Edits reload the browser instantly.
+Open **http://localhost:5173**. Edits reload the browser instantly.
 
 > On Windows, use `localhost` and not `127.0.0.1` — Vite binds to IPv6 by default.
 
 > `VITE_*` variables are inlined at **build** time, not read at run time. After
-> editing `client/.env` you must restart `npm run dev` or the change won't apply.
+> editing `.env` you must restart `npm run dev` or the change won't apply.
 
 ### Building for production
 
 ```
-npm run build      # builds the static site into client/dist
+npm run build      # builds the static site into dist
 npm run preview    # serves that build locally so you can check it
 ```
 
@@ -70,7 +67,7 @@ submission. That's deliberate: it never claims to have sent something it hasn't.
 
 1. Go to **https://web3forms.com**
 2. Enter the inbox that should receive enquiries. They email you an **access key**
-3. Copy `client/.env.example` to `client/.env` and paste it in:
+3. Copy `.env.example` to `.env` and paste it in:
 
 ```
 VITE_WEB3FORMS_KEY=your-access-key-here
@@ -105,55 +102,48 @@ you get a new key for the other inbox and swap the secret. Editing files does no
 ## File structure
 
 ```
-Website-freelance/
-├── package.json              root scripts (setup, dev, build, preview)
+FreshFrame/
 ├── .github/workflows/
-│   └── deploy.yml            builds + publishes to Pages on every push to main
-├── client/                   ── the site. this is what deploys ──
-│   ├── index.html            page shell, font links, link-preview tags
-│   ├── vite.config.js        base:'./' — the Pages subfolder fix
-│   ├── .env.example          copy to .env, add your Web3Forms key
-│   ├── public/
-│   │   ├── .nojekyll         stops Pages running the files through Jekyll
-│   │   └── assets/           logo, screenshots, photos
-│   └── src/
-│       ├── main.jsx
-│       ├── App.jsx           section order
-│       ├── data/site.js      ← ALL CONTENT LIVES HERE
-│       ├── lib/asset.js      resolves public/ paths against the deploy base
-│       ├── styles/
-│       │   ├── global.css    ← IMPORTS ONLY. no rules. controls order
-│       │   ├── theme.css     ← ALL COLOUR, FONT + SHAPE TOKENS
-│       │   ├── base.css      reset, bands, shared type, buttons, reveal
-│       │   └── sections/     one .css per section, same names as below
-│       ├── hooks/
-│       │   └── useFlightArrow.js   the scroll arrow
-│       └── components/       one .jsx per section
-└── server/                   ── ⚠ NOT DEPLOYED. escape hatch only ──
-    ├── index.js              Express: /api/contact + serves client/dist
-    ├── lib/mail.js           validation, rate limiting, the email itself
-    ├── .env.example          only needed if you actually host this
-    └── package.json
+│   └── deploy.yml        builds + publishes to Pages on every push to main
+├── index.html            page shell, font links, link-preview tags
+├── vite.config.js        base:'./' — the Pages subfolder fix
+├── .env.example          copy to .env, add your Web3Forms key
+├── package.json
+├── public/
+│   ├── .nojekyll         stops Pages running the files through Jekyll
+│   └── assets/           logo, screenshots, photos
+└── src/
+    ├── main.jsx
+    ├── App.jsx           section order
+    ├── data/site.js      ← ALL CONTENT LIVES HERE
+    ├── lib/asset.js      resolves public/ paths against the deploy base
+    ├── styles/
+    │   ├── global.css    ← IMPORTS ONLY. no rules. controls order
+    │   ├── theme.css     ← ALL COLOUR, FONT + SHAPE TOKENS
+    │   ├── base.css      reset, bands, shared type, buttons, reveal
+    │   └── sections/     one .css per section, same names as below
+    ├── hooks/            scroll-driven motion
+    └── components/       one .jsx per section
 ```
 
-> **`client/src/lib/asset.js` matters more than it looks.** Pages serves a project
+> **`src/lib/asset.js` matters more than it looks.** Pages serves a project
 > repo from `username.github.io/repo-name/`, not the root. Vite rewrites paths it
 > can see at build time, but a plain string like `src="/assets/logo.png"` in JSX is
 > just a runtime string — it stays absolute and 404s. Every reference to
-> `client/public/` from a component must go through `asset()`.
+> `public/` from a component must go through `asset()`.
 
 ### Where to change things
 
 | I want to change… | Edit |
 |---|---|
-| Any text, price, list item, link | `client/src/data/site.js` |
-| **Any colour or font, site-wide** | `client/src/styles/theme.css` |
-| **One section's look or motion** | `client/src/styles/sections/<name>.css` |
-| Something shared by 2+ sections | `client/src/styles/base.css` |
-| Section order | `client/src/App.jsx` |
-| The big section headings (h2) | the individual component in `client/src/components/` |
+| Any text, price, list item, link | `src/data/site.js` |
+| **Any colour or font, site-wide** | `src/styles/theme.css` |
+| **One section's look or motion** | `src/styles/sections/<name>.css` |
+| Something shared by 2+ sections | `src/styles/base.css` |
+| Section order | `src/App.jsx` |
+| The big section headings (h2) | the individual component in `src/components/` |
 | Where email goes | the inbox on your Web3Forms key — change it at web3forms.com |
-| An image | drop it in `client/public/assets/`, reference it via `asset()` |
+| An image | drop it in `public/assets/`, reference it via `asset()` |
 
 `site.js` holds all the repeating content — services, automation tiles, projects,
 process steps, team, pricing, FAQ. The one-off `<h2>` headings sit in their components,
@@ -333,7 +323,7 @@ for.
 
 The thing from ecell.in/chapters. One arrow, **no visible line**.
 
-Code: `client/src/hooks/useFlightArrow.js`.
+Code: `src/hooks/useFlightArrow.js`.
 
 1. It reads the **live position** of every `.step-card` and builds an array of `{x, y}`
    points from their inner edges.
@@ -386,7 +376,7 @@ hop. That's why it isn't on the Work section.
 ### Blocking — before anyone sees this
 
 - [ ] **Web3Forms access key.** Go to web3forms.com, enter `vinoism1703@gmail.com`,
-      and they email you a key. Put it in `client/.env` for local dev, and add it as the
+      and they email you a key. Put it in `.env` for local dev, and add it as the
       repo secret `VITE_WEB3FORMS_KEY` for the Pages build. **This is the only thing
       standing between you and a working site.** Until then the form shows an error,
       which is deliberate — see below.
@@ -423,7 +413,7 @@ hop. That's why it isn't on the Work section.
       mobile data this will crawl. TinyPNG or Squoosh; screenshots should be well under
       300 KB each as `.jpg`.
 - [ ] **Favicon.** Reusing the full logo. A 512×512 square crop looks better in a tab.
-- [x] **Open Graph tags** added to `client/index.html`, pointing at the real Pages URL.
+- [x] **Open Graph tags** added to `index.html`, pointing at the real Pages URL.
       The share image is the logo as a stand-in; a 1200×630 JPG is better.
 - [x] **Deleted the duplicate `logo.png`** from the project root.
 - [x] **`loading="lazy"`** on the project screenshots, team photos and footer logo. The
@@ -443,7 +433,5 @@ hop. That's why it isn't on the Work section.
 Step-by-step setup — repo, Pages source, the access key — is in
 **[DEPLOY.md](DEPLOY.md)**.
 
-If you ever outgrow Web3Forms (more than one recipient without paying, or you want to
-store submissions), `server/index.js` is a complete Express app that serves the built
-client and the mail API on one port. Deploy it to Render or Railway unchanged with
-`npm run build && npm run start:server`, and point the form back at `/api/contact`.
+There is no other deployment path and nothing else to configure. The whole site is
+static files built by Vite and served by Pages.

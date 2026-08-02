@@ -3,18 +3,22 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Fresh Frame — website. Static React site deployed to GitHub Pages.",
+  "description": "Fresh Frame — studio website. Static React site, deployed to GitHub Pages.",
   "engines": {
     "node": ">=18"
   },
-  "comment": "server/ is NOT part of the Pages deploy — the contact form posts to Web3Forms. The *:server scripts exist only for the Render/Railway escape hatch described at the top of server/index.js. Root deps are gone: nodemailer moved to server/, and concurrently is unneeded now that dev runs one process.",
   "scripts": {
-    "setup": "npm --prefix client install",
-    "dev": "npm --prefix client run dev",
-    "build": "npm --prefix client install --no-audit --no-fund && npm --prefix client run build",
-    "preview": "npm --prefix client run preview",
-    "setup:server": "npm --prefix server install",
-    "dev:server": "npm --prefix server run dev",
-    "start:server": "npm --prefix server start"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
   }
 }

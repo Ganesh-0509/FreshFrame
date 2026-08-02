@@ -34,10 +34,6 @@ Nothing to work around.
 If you later want Ganesh's inbox on it too, the free route is a Gmail forwarding
 filter on `no-reply@web3forms.com` rather than paying for PRO.
 
-`server/` still contains a complete, working Node mail server. Nothing deploys
-it and nothing runs it. It's kept as an escape hatch — see the note at the top
-of `server/index.js` if you ever want to move to Render or Railway.
-
 ---
 
 ## 1. Push to GitHub
@@ -57,8 +53,8 @@ Personal access tokens → Tokens (classic) → Generate new token → tick `rep
 
 > The repo is **public**, which is what free Pages requires — Pages on a private
 > repo needs GitHub Pro. Everything you push is publicly readable, so keep
-> credentials out of it. `client/.env` and `server/.env` are gitignored for
-> exactly this reason; the `.env.example` files are the ones that get committed.
+> credentials out of it. `.env` is gitignored for exactly this reason;
+> `.env.example` is the one that gets committed.
 
 ---
 
@@ -125,7 +121,7 @@ fallback message. Add the secret, then re-run the workflow.
 
 **c. Link-preview URLs — already done**
 
-`client/index.html` has the `og:`/`twitter:` URLs set to
+`index.html` has the `og:`/`twitter:` URLs set to
 `https://Vino1705.github.io/FreshFrame/`. Nothing to change unless you rename
 the repo or move to a custom domain, in which case update all three — they must
 be absolute, because link scrapers don't resolve relative paths.
@@ -161,7 +157,7 @@ https://Vino1705.github.io/FreshFrame/
 ## 5. Optional — a custom domain
 
 Pages → Settings → Pages → **Custom domain**. Add the domain, create a
-`client/public/CNAME` file containing just the domain, and point your DNS at
+`public/CNAME` file containing just the domain, and point your DNS at
 GitHub. Then update the `og:` URLs again to the new domain.
 
 A custom domain serves from the root rather than a subfolder. The build handles
@@ -173,14 +169,14 @@ are needed either way.
 ## Troubleshooting
 
 **Blank page, or CSS and images missing.** Almost always the base path.
-`client/vite.config.js` sets `base: './'`, which makes every URL relative so the
+`vite.config.js` sets `base: './'`, which makes every URL relative so the
 build works at any subfolder without hardcoding the repo name. If you ever add
 client-side routing (React Router), relative base stops being safe and you must
 set `base: '/your-repo-name/'` explicitly.
 
 **Images 404 but CSS loads.** An image path lost its `asset()` wrapper. Every
-reference to `client/public/` from JSX must go through
-`asset()` in `client/src/lib/asset.js` — a bare `src="/assets/x.png"` resolves
+reference to `public/` from JSX must go through
+`asset()` in `src/lib/asset.js` — a bare `src="/assets/x.png"` resolves
 to the domain root and 404s on a project-repo URL.
 
 **Form says "Could not send".** Open the browser console. Either
@@ -200,6 +196,6 @@ and must match the repo name exactly.
 GitHub-provided actions use, not the Node that builds your site, and GitHub
 migrates them automatically. Ignore it.
 
-**Workflow fails on install.** There's no root lockfile covering `client/`, so
-the workflow uses `npm install` rather than `npm ci`. If you add a root lockfile,
-switch it back for reproducible builds.
+**Workflow fails on install.** The workflow uses `npm ci`, which needs
+`package-lock.json` to match `package.json` exactly. If you change a dependency,
+run `npm install` locally and commit the updated lockfile with it.

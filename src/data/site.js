@@ -3,7 +3,7 @@
 
    Edit this file to change any text, price, link or list item on
    the site. You should not need to open a component to change
-   wording. Images live in client/public/assets/.
+   wording. Images live in public/assets/.
    ══════════════════════════════════════════════════════════ */
 
 export const contact = {
@@ -250,7 +250,7 @@ export const team = [
     bio:
       'Builds the whole thing — what you see and everything underneath that makes it work. ' +
       'He also trains the models behind the smarter automations.',
-    portfolio: 'https://ganesh-0509.github.io/ganesh-portfolio-interactive/',
+    portfolio: 'https://ganesh-0509.github.io/',
   },
   {
     style: 'plum',
