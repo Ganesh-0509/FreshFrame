@@ -48,7 +48,16 @@ export default function PhoneDrop() {
 
       gsap
         .timeline({
-          scrollTrigger: { trigger: root, start: 'top 85%', once: true },
+          scrollTrigger: {
+            trigger: root,
+            start: 'top 85%',
+            end: 'bottom top',
+            /* enter / leave / enterBack / leaveBack.
+               restart on the way down AND on the way back up, reset
+               once it is fully past — so the handset drops again every
+               time the section is visited, from either direction. */
+            toggleActions: 'restart none restart reset',
+          },
         })
         /* Slower than a normal UI transition on purpose. The drop is
            the thing being looked at, so it is given time to be seen. */

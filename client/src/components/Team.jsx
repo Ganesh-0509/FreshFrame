@@ -16,23 +16,24 @@ export default function Team() {
           No account managers, no handoffs, no one repeating your brief back to someone else. The
           two people you meet are the two people who do the work.
         </p>
-      </div>
 
-      {/* One full-width horizontal band each, alternating sides, with a
-          different treatment per person — see `style` in data/site.js. */}
-      {team.map((person, i) => (
-        <Reveal
-          as="article"
-          className={`tm-band tm-${person.style} ${i % 2 === 1 ? 'tm-flip' : ''}`}
-          key={person.name}
-        >
-          <div className="wrap tm-inner">
-            <div className="tm-photo">
-              <img src={asset(person.photo)} alt={person.name} loading="lazy" decoding="async" />
-            </div>
+        {/* ONE horizontal poster. Both people on the same sheet, each
+            in an outer corner, with the ampersand holding the middle —
+            they're siblings, so the layout should say "a pair", not
+            "two profiles that happen to be adjacent". */}
+        <Reveal className="tm-poster">
+          {/* Direct child of the poster, NOT of a half: .tm-half is
+              position:relative, so nested here its left:50% would centre
+              it inside one half instead of the sheet. */}
+          <span className="tm-amp" aria-hidden="true">
+            &amp;
+          </span>
 
-            <div className="tm-copy">
-              <p className="tm-role">{person.role}</p>
+          {team.map((person) => (
+            <div className={`tm-half tm-${person.style}`} key={person.name}>
+              <div className="tm-photo">
+                <img src={asset(person.photo)} alt={person.name} loading="lazy" decoding="async" />
+              </div>
 
               <h3 className="tm-name">
                 {person.name.split(' ').map((word, w) => (
@@ -40,6 +41,7 @@ export default function Team() {
                 ))}
               </h3>
 
+              <p className="tm-role">{person.role}</p>
               <p className="tm-tagline">{person.tagline}</p>
               <p className="tm-bio">{person.bio}</p>
 
@@ -58,9 +60,9 @@ export default function Team() {
                 {person.name.split(' ')[0]}&rsquo;s portfolio &#8599;
               </a>
             </div>
-          </div>
+          ))}
         </Reveal>
-      ))}
+      </div>
     </section>
   )
 }
