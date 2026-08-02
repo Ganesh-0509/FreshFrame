@@ -52,18 +52,21 @@
 .tm-half:last-of-type{ align-items:flex-end;   text-align:right; }
 
 /* ── the portrait plates ──
-   Identical 1:1 boxes, so the two read as a matched pair whatever
-   the sources are. They are small on purpose — this is a poster
-   with two portraits on it, not two photographs with captions.
+   Identical 3:4 rectangles, so the two read as a matched pair whatever
+   the sources are. Portrait, not square: both sources are tall
+   (Ganesh 960x1280, Vinothini 720x1280) and a square box was throwing
+   away the height while keeping almost the full width — the old crop
+   showed 86% of Ganesh's photo, which is why he was a small figure in
+   a landscape rather than a portrait.
 
-   Both sources are tall portraits (Ganesh 960x1280, Vinothini
-   720x1280), so a square crop keeps the full width and takes a slice
-   of the height. --zoom and object-position pick which slice; they
-   are set per person below because the two are framed differently. */
+   --zoom and object-position below pull each window down to roughly
+   head-and-shoulders. They are per person because the two are framed
+   differently in their originals; these are the two numbers to nudge
+   if a face still sits off-centre. */
 .tm-photo{
-  width:clamp(112px,15vw,178px);
-  aspect-ratio:1 / 1;
-  border-radius:4px;
+  width:clamp(150px,17vw,206px);
+  aspect-ratio:3 / 4;
+  border-radius:3px;
   overflow:hidden;
   margin-bottom:26px;
   background:var(--surface-2);
@@ -150,12 +153,11 @@
 
 
 /* ══════════════ GANESH — mono, editorial ══════════════
-   960x1280. He sits slightly left of centre and reasonably high, so a
-   modest zoom and a crop toward the top holds his face in the square. */
-.tm-mono{ --zoom:1.16; }
+   960x1280. Window lands on roughly x 24-70%, y 18-65% of the source. */
+.tm-mono{ --zoom:2.15; }
 .tm-mono .tm-photo img{
-  object-position:38% 20%;
-  transform-origin:38% 20%;
+  object-position:44% 34%;
+  transform-origin:44% 34%;
   filter:grayscale(1) contrast(1.08);
 }
 .tm-mono:hover .tm-photo img{ filter:grayscale(.15) contrast(1.02); }
@@ -175,12 +177,12 @@
 
 
 /* ══════════════ VINOTHINI — plum, classic ══════════════
-   720x1280 and she is smaller in the frame, so a harder zoom. The
-   script tagline is hers alone — it is the warm half of the sheet. */
-.tm-plum{ --zoom:1.5; }
+   720x1280. Window lands on roughly x 31-80%, y 22-58% of the source.
+   The script tagline is hers alone — the warm half of the sheet. */
+.tm-plum{ --zoom:2.05; }
 .tm-plum .tm-photo img{
-  object-position:62% 40%;
-  transform-origin:62% 40%;
+  object-position:60% 34%;
+  transform-origin:60% 34%;
 }
 .tm-plum .tm-role{ color:rgba(255,255,255,.82); }
 .tm-plum .tm-tagline{
@@ -265,7 +267,6 @@
 .tm-poster.in .tm-facts li{ animation:tm-rise .5s var(--ease) both; }
 .tm-poster.in .tm-facts li:nth-child(1){ animation-delay:.58s; }
 .tm-poster.in .tm-facts li:nth-child(2){ animation-delay:.64s; }
-.tm-poster.in .tm-facts li:nth-child(3){ animation-delay:.70s; }
 .tm-poster.in .tm-link   { animation:tm-rise .55s var(--ease) both .78s; }
 /* hers trails his throughout */
 .tm-poster.in .tm-half:last-of-type .tm-role,

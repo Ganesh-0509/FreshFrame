@@ -233,24 +233,23 @@ export const processPaths = [
 
 /* `style` picks the treatment in components/Team.jsx:
      'mono'  — high-contrast black and white, editorial. Professional.
-     'plum'  — deep maroon panel with a script accent. Classic.
-   Each person gets a full-width horizontal band of their own. */
+     'plum'  — warm maroon end, script accent. Classic.
+   Both share ONE horizontal poster, one at each outer corner.
+   Bios are two sentences each, on purpose — a poster is not a CV. */
 export const team = [
   {
     style: 'mono',
     name: 'Ganesh Kumar',
     role: 'Full-Stack Developer · ML',
     tagline: 'If it runs, he wrote it',
-    facts: [
-      'Front end, back end, no handover',
-      'Trains and ships ML models',
-      'Hand-written, never templated',
-    ],
+    facts: ['Front to back, no handover', 'Trains and ships ML models'],
     photo: '/assets/Ganesh.jpeg',
+    /* Two sentences. The first says what he does, the second says the
+       thing nobody else in the room can do. Nothing else earns its
+       place on a poster. */
     bio:
-      'Builds the whole thing — the interface you see and everything underneath that ' +
-      'makes it work. He also trains the models behind the smarter automations, so the ' +
-      'clever parts are built in-house rather than bolted on.',
+      'Builds the whole thing — what you see and everything underneath that makes it work. ' +
+      'He also trains the models behind the smarter automations.',
     portfolio: 'https://ganesh-0509.github.io/ganesh-portfolio-interactive/',
   },
   {
@@ -258,16 +257,11 @@ export const team = [
     name: 'Vinothini',
     role: 'Frontend Developer · Product',
     tagline: 'Knows what you meant, not just what you said',
-    facts: [
-      'Builds the front end you touch',
-      'Scopes it before a line is written',
-      'One person, start to finish',
-    ],
+    facts: ['Scopes it before a line is written', 'Builds the front end you touch'],
     photo: '/assets/Vino.jpeg',
     bio:
-      'Works out what you actually need before anything gets built, then builds the front ' +
-      'end of it herself. The same person who took your brief is the one shaping the ' +
-      'screens, so nothing gets lost in translation.',
+      'Works out what you actually need, then builds the front end of it herself. ' +
+      'The person who took your brief is the one shaping your screens.',
     portfolio: 'https://portfolio-p2yy.onrender.com/',
   },
 ]
