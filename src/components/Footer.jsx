@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="wrap footer-inner">
         <div className="footer-brand">
           {/* same file as the header logo, so this is a cache hit, not a second download */}
-          <img src={asset('assets/logo.png')} alt="Fresh Frame logo" className="brand-mark" loading="lazy" decoding="async" />
+          <img src={asset('assets/logo.webp')} alt="Fresh Frame logo" className="brand-mark" loading="lazy" decoding="async" />
           <div>
             <p className="footer-name">
               FRESH<span className="brand-accent">FRAME</span>

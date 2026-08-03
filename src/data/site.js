@@ -125,7 +125,7 @@ export const work = [
     index: 'Project 01 — Retail',
     name: 'Standard Fireworks, Sivakasi',
     url: 'https://standardfireworkssivakasi.com/',
-    shot: '/assets/project-1.png',
+    shot: '/assets/project-1.webp',
     alt: 'Standard Fireworks Sivakasi homepage',
     desc:
       'A wholesale and retail cracker business selling direct from Sivakasi to Chennai and across ' +
@@ -142,7 +142,7 @@ export const work = [
     index: 'Project 02 — Food & Beverage',
     name: 'Cafe by Cassette',
     url: 'https://cafe-by-cassette.netlify.app/',
-    shot: '/assets/project-2.png',
+    shot: '/assets/project-2.webp',
     alt: 'Cafe by Cassette homepage',
     desc:
       'A cassette-themed music café in Kattupakkam, Chennai. The brief was atmosphere first — the ' +
@@ -246,7 +246,7 @@ export const team = [
     /* Alpha cutout, cropped to the subject — the Team section stands
        these ON the sheet rather than inside a plate, so a matted
        background would show as a white box. */
-    photo: '/assets/ganesh-cut.png',
+    photo: '/assets/ganesh-cut.webp',
     /* Two sentences. The first says what he does, the second says the
        thing nobody else in the room can do. Nothing else earns its
        place on a poster. */
@@ -261,7 +261,7 @@ export const team = [
     role: 'Frontend Developer · Product',
     tagline: 'Knows what you meant, not just what you said',
     facts: ['Scopes it before a line is written', 'Builds the front end you touch'],
-    photo: '/assets/vino-cut.png',
+    photo: '/assets/vino-cut.webp',
     bio:
       'Works out what you actually need, then builds the front end of it herself. ' +
       'The person who took your brief is the one shaping your screens.',

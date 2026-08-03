@@ -18,7 +18,7 @@ export default function Header() {
       <div className="wrap header-inner">
         <a className="brand" href="#top" onClick={() => setOpen(false)}>
           {/* above the fold — deliberately NOT lazy-loaded */}
-          <img src={asset('assets/logo.png')} alt="Fresh Frame logo" className="brand-mark" />
+          <img src={asset('assets/logo.webp')} alt="Fresh Frame logo" className="brand-mark" />
           <span className="brand-text">
             FRESH<span className="brand-accent">FRAME</span>
           </span>
