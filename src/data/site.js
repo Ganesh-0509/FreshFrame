@@ -265,7 +265,7 @@ export const team = [
     bio:
       'Works out what you actually need, then builds the front end of it herself. ' +
       'The person who took your brief is the one shaping your screens.',
-    portfolio: 'https://portfolio-p2yy.onrender.com/',
+    portfolio: 'https://vinothini-port.vercel.app/',
   },
 ]
 
