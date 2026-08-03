@@ -1,127 +1,208 @@
 /* ══════════════════════════════════════════════════════════
    TEAM
    ──────────────────────────────────────────────────────────
-   ONE horizontal poster carrying both people, rather than two
-   stacked bands.
+   ONE stage split by a divider that follows the cursor, rather than two
+   columns sharing a sheet. Hovering a half gives it the sheet; leaving
+   the stage settles it back to even. See Team.jsx for why hover alone
+   is enough and cannot oscillate.
 
-     • each photo sits in an OUTER corner, pushed apart
-     • both photos are the SAME size and tightly cropped —
-       small portrait plates, not full-height pictures
-     • name, then everything else BELOW it
-     • an ampersand holds the centre: they are a brother and a
-       sister, so the sheet should read as a pair rather than as
-       two profiles that happen to be next to each other
+   THE GEOMETRY, because every number below depends on it:
 
-   The warmth split survives inside the one sheet: the poster
-   grades from near-black on his side to maroon on hers, and his
-   plate is grayscale where hers keeps its colour. One object,
-   two temperatures.
+     each half is a WINDOW  ->  .tm-side, overflow:hidden, width tracks --p
+     onto a FULL-WIDTH block -> .tm-inner, exactly --stage-w wide, pinned
+                                to the half's OUTER edge
+
+   Because .tm-inner is always the width of the whole stage, every
+   position inside it is a fraction OF THE STAGE and never moves when
+   the half resizes. Widening the half just uncovers more of a block
+   that was already laid out. Nothing reflows as the sheet moves, so
+   type never re-wraps and the two figures never jump.
+
+     .tm-figure  stands --figx in from its outer edge (JS, see Team.jsx)
+     .tm-copy    is parked at 42% of the stage, 34% wide, and is simply
+                 at opacity 0 until its half is past the midpoint
+
+   So the resting 50/50 is two portraits either side of the ampersand
+   with nothing to read, and everything past that is the copy fading up
+   in space the figure has already walked out of.
+
+   The two temperatures survive: his half grades to near-black, hers to
+   maroon. BOTH photographs stay in full colour — the halves are told
+   apart by the sheet under them and by how the copy is set, not by
+   draining one of them. The overlays are sized to --stage-w and pinned
+   to their own outer edge so they do NOT stretch as the halves move —
+   a gradient that squashed on hover would give the whole thing away.
 
    Order inside this file: THEME -> LAYOUT -> RESPONSIVE -> ANIMATION.
    Tokens live in styles/theme.css. Override them per section in the
    THEME block below rather than hardcoding a colour here.
    ══════════════════════════════════════════════════════════ */
 
-.tm-poster{
+.tm-stage{
   position:relative;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:clamp(38px,7vw,110px);
-  align-items:start;
-
+  height:clamp(470px,54vw,600px);
   margin-top:44px;
-  padding:clamp(38px,5vw,68px) clamp(30px,5vw,66px) clamp(42px,5vw,62px);
   border-radius:6px;              /* classic: near-square */
-  border:1px solid var(--line);
-  /* his end to hers, left to right, across one sheet */
-  background:
-    linear-gradient(100deg, #0c0c0f 0%, #170f11 46%, var(--maroon) 100%);
-  box-shadow:0 30px 80px rgba(0,0,0,.6);
   overflow:hidden;
+  /* his end to hers, left to right, across one sheet. On the STAGE, not
+     on the halves, so the divider travels across a fixed backdrop. */
+  background:linear-gradient(100deg, #0c0c0f 0%, #170f11 46%, var(--maroon) 100%);
+  /* inset ring rather than a border: a border would make the padding
+     box 2px narrower than --stage-w and put every fraction below out
+     by a pixel. */
+  box-shadow:inset 0 0 0 1px var(--line), 0 30px 80px rgba(0,0,0,.6);
 }
 
-.tm-half{
-  position:relative;
+/* ── the two windows ── */
+.tm-side{
+  position:absolute;
+  top:0; bottom:0;
+  overflow:hidden;
+  cursor:pointer;
+  transition:width .55s var(--ease);
+}
+.tm-side--l{ left:0;  width:calc(var(--p,50) * 1%);         --grow:var(--lg,.5); --open:var(--lo,0); --figx:var(--lx,.22); }
+.tm-side--r{ right:0; width:calc((100 - var(--p,50)) * 1%); --grow:var(--rg,.5); --open:var(--ro,0); --figx:var(--rx,.22); }
+
+/* Per-half wash. background-size is the whole stage and the position is
+   the half's own outer edge, so it stays put while the half resizes. */
+.tm-side::before{
+  content:"";
+  position:absolute; inset:0;
+  background-size:var(--stage-w,900px) 100%;
+  background-repeat:no-repeat;
+  opacity:calc(.3 + .7 * var(--open));
+  transition:opacity .55s var(--ease);
+  pointer-events:none;
+}
+.tm-side--l::before{ background-position:left center; }
+.tm-side--r::before{ background-position:right center; }
+
+/* ── the block being uncovered ──
+   Always the full width of the stage, pinned to the half's outer edge:
+   that is what makes every fraction below a fraction of the SHEET
+   rather than of a half that is currently moving. */
+.tm-inner{
+  position:absolute;
+  top:0; bottom:0;
+  width:var(--stage-w,900px);
+}
+.tm-side--l .tm-inner{ left:0; }
+.tm-side--r .tm-inner{ right:0; }
+
+/* ── figure: photo, name, role. The part that is always on the sheet. ── */
+.tm-figure{
+  position:absolute;
+  top:0; bottom:0;
+  z-index:1;
+  max-width:calc(var(--stage-w,900px) * .34);
   display:flex;
   flex-direction:column;
+  justify-content:flex-end;
+  gap:clamp(14px,2.4vw,24px);
+  padding:clamp(26px,4vw,44px) 0 clamp(28px,4vw,46px);
+  /* Reaches 1 at the resting half-and-half and holds there, and goes to
+     nothing at the far end of the travel — so the receding one leaves
+     the sheet rather than being sliced by the divider. */
+  opacity:calc(2.3 * var(--grow) - .15);
+  transition:opacity .55s var(--ease), left .55s var(--ease), right .55s var(--ease);
 }
-/* Pushed to opposite corners: his content hugs the left edge of the
-   sheet, hers the right. This is what puts the two plates in the
-   outer corners rather than side by side in the middle. */
-.tm-half:first-of-type{ align-items:flex-start; text-align:left; }
-.tm-half:last-of-type{ align-items:flex-end;   text-align:right; }
-
-/* ── the portrait plates ──
-   Identical 3:4 rectangles, so the two read as a matched pair whatever
-   the sources are. Portrait, not square: both sources are tall
-   (Ganesh 960x1280, Vinothini 720x1280) and a square box was throwing
-   away the height while keeping almost the full width — the old crop
-   showed 86% of Ganesh's photo, which is why he was a small figure in
-   a landscape rather than a portrait.
-
-   --zoom and object-position below pull each window down to roughly
-   head-and-shoulders. They are per person because the two are framed
-   differently in their originals; these are the two numbers to nudge
-   if a face still sits off-centre. */
-.tm-photo{
-  width:clamp(150px,17vw,206px);
-  aspect-ratio:3 / 4;
-  border-radius:3px;
-  overflow:hidden;
-  margin-bottom:26px;
-  background:var(--surface-2);
-  box-shadow:0 18px 40px rgba(0,0,0,.55);
+.tm-side--l .tm-figure{
+  left:calc(var(--stage-w,900px) * var(--figx));
+  align-items:flex-start; text-align:left;
 }
-.tm-photo img{
-  width:100%; height:100%;
-  object-fit:cover;
-  transform:scale(var(--zoom,1));
-  transition:transform 1s var(--ease), filter .8s var(--ease);
+.tm-side--r .tm-figure{
+  right:calc(var(--stage-w,900px) * var(--figx));
+  align-items:flex-end; text-align:right;
 }
-.tm-half:hover .tm-photo img{ transform:scale(calc(var(--zoom,1) * 1.06)); }
 
-/* ── the name ── */
+/* The cutouts have real alpha, so there is no plate and no crop to get
+   wrong — they stand ON the sheet. Height is the only thing that moves;
+   width follows the aspect ratio, which is why neither of them ever
+   stretches. The ceiling (68%) is what leaves room for the name and
+   role underneath at the shortest stage height. */
+.tm-cut{
+  display:block;
+  flex:none;                      /* a column flex child would shrink it */
+  height:calc(40% + var(--grow) * 28%);
+  width:auto;
+  max-width:100%;
+  object-fit:contain;
+  object-position:bottom;
+  filter:drop-shadow(0 26px 34px rgba(0,0,0,.55));
+  transition:height .55s var(--ease), filter .55s var(--ease);
+}
+
 .tm-name{
   font-family:var(--font-display);
-  font-size:clamp(2rem,4.4vw,3.5rem);
+  font-size:clamp(1.55rem, calc(2.1vw + var(--grow) * 1.7vw), 3.1rem);
   font-weight:400;
   line-height:.9;
   letter-spacing:.012em;
   text-transform:uppercase;
   color:#fff;
-  margin:0 0 12px;
+  margin:0;
+  transition:font-size .55s var(--ease);
 }
 .tm-name span{ display:block; }
 
+/* Tracks the viewport: the figure stands --figx (22% of the stage at
+   rest) in from its outer edge, so a fixed-size role line is the one
+   thing here long enough to reach past the divider on a narrow desktop.
+   Hers — "Frontend Developer · Product" — is the long one. */
 .tm-role{
   font-family:var(--font-mono);
-  font-size:.68rem;
-  letter-spacing:.24em;
+  font-size:clamp(.56rem,.78vw,.68rem);
+  letter-spacing:.2em;
   text-transform:uppercase;
-  margin:0 0 16px;
+  margin:0;
 }
 
-.tm-tagline{ margin:0 0 18px; }
+/* ── copy column: everything that has to be READ, so it only appears
+      once its half has actually won the sheet. ── */
+.tm-copy{
+  position:absolute;
+  top:0; bottom:0;
+  width:calc(var(--stage-w,900px) * .34);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:18px;
+  padding:clamp(30px,4vw,50px) 0;
+  opacity:var(--open);
+  transition:opacity .5s var(--ease), transform .5s var(--ease);
+}
+.tm-side--l .tm-copy{
+  left:calc(var(--stage-w,900px) * .42);
+  align-items:flex-start; text-align:left;
+  transform:translateX(calc((1 - var(--open)) * 20px));
+}
+.tm-side--r .tm-copy{
+  right:calc(var(--stage-w,900px) * .42);
+  align-items:flex-end; text-align:right;
+  transform:translateX(calc((1 - var(--open)) * -20px));
+}
+
+.tm-tagline{ margin:0; }
 
 .tm-bio{
   font-size:.95rem;
   line-height:1.7;
-  max-width:44ch;
-  margin:0 0 22px;
+  margin:0;
 }
 
-.tm-facts{ display:grid; gap:9px; margin:0 0 26px; }
+.tm-facts{ display:grid; gap:9px; margin:0; }
 .tm-facts li{ position:relative; font-size:.92rem; }
-.tm-half:first-of-type .tm-facts li{ padding-left:22px; }
-.tm-half:last-of-type .tm-facts li{ padding-right:22px; }
+.tm-side--l .tm-facts li{ padding-left:22px; }
+.tm-side--r .tm-facts li{ padding-right:22px; }
 .tm-facts li::before{
   content:"";
   position:absolute;
   top:.66em;
   width:12px; height:1px;
 }
-.tm-half:first-of-type .tm-facts li::before{ left:0; }
-.tm-half:last-of-type .tm-facts li::before{ right:0; }
+.tm-side--l .tm-facts li::before{ left:0; }
+.tm-side--r .tm-facts li::before{ right:0; }
 
 .tm-link{
   font-family:var(--font-mono);
@@ -134,55 +215,144 @@
 }
 .tm-link:hover{ opacity:.7; letter-spacing:.24em; }
 
-/* ── the ampersand ──
-   Dead centre of the sheet, behind everything. The one mark that says
-   these two belong on the same page. */
-.tm-amp{
+/* ── the divider ──
+   A MARK, not a control: pointer-events:none so sweeping the cursor
+   across the seam never lifts it off the half underneath, which would
+   otherwise read as the section flickering shut mid-move. */
+.tm-handle{
   position:absolute;
-  top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  z-index:0;
-  font-family:var(--font-script);
-  font-size:clamp(5rem,13vw,11rem);
-  line-height:1;
-  color:var(--red);
-  opacity:.16;
+  top:0; bottom:0;
+  left:calc(var(--p,50) * 1%);
+  width:clamp(56px,6vw,76px);
+  transform:translateX(-50%);
+  z-index:3;
+  display:grid;
+  place-items:center;
   pointer-events:none;
+  transition:left .55s var(--ease);
+}
+.tm-handle::before{
+  content:"";
+  position:absolute;
+  top:0; bottom:0; left:50%;
+  width:1px; margin-left:-.5px;
+  background:linear-gradient(180deg, transparent, rgba(255,255,255,.28) 22%, rgba(255,255,255,.28) 78%, transparent);
+}
+/* A disc now rather than the old drag pill: there are no arrows on it
+   because there is nothing to pull. It steps back a little once a half
+   has taken the sheet, so the ampersand never competes with the copy. */
+.tm-knob{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:clamp(46px,4.4vw,58px);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:rgba(10,9,11,.82);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 12px 30px rgba(0,0,0,.6);
+  backdrop-filter:blur(7px);
+  transform:scale(calc(1 - .18 * var(--away,0)));
+  opacity:calc(1 - .35 * var(--away,0));
+  transition:transform .55s var(--ease), opacity .55s var(--ease);
+}
+
+.tm-amp{
+  font-family:var(--font-script);
+  font-size:clamp(1.5rem,2.2vw,2rem);
+  line-height:.8;
+  color:var(--red);
   user-select:none;
 }
 
+.tm-hint{
+  margin:18px 0 0;
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--dim);
+  text-align:center;
+}
 
-/* ══════════════ GANESH — mono, editorial ══════════════
-   960x1280. Window lands on roughly x 24-70%, y 18-65% of the source. */
-.tm-mono{ --zoom:2.15; }
-.tm-mono .tm-photo img{
-  object-position:44% 34%;
-  transform-origin:44% 34%;
-  filter:grayscale(1) contrast(1.08);
+
+
+/* ══════════════ GANESH — editorial, spec-sheet ══════════════
+   Both photographs stay in full colour; the two halves are told apart
+   by the SHEET and the TYPE, not by draining one of them. His end of
+   the sheet is near-black and his copy is set like a spec — display
+   caps, a rule, numbered facts. Hers is maroon and handwritten. */
+.tm-mono::before{
+  background-image:radial-gradient(120% 96% at 20% 72%, rgba(255,255,255,.07), transparent 62%);
 }
-.tm-mono:hover .tm-photo img{ filter:grayscale(.15) contrast(1.02); }
+.tm-mono .tm-cut{
+  filter:saturate(1.04) drop-shadow(0 26px 34px rgba(0,0,0,.6));
+}
 .tm-mono .tm-role{ color:var(--dim); }
-.tm-mono .tm-tagline{
-  color:var(--text);
-  font-weight:700;
-  font-size:1.06rem;
-  letter-spacing:-.01em;
-  padding-bottom:16px;
-  border-bottom:1px solid var(--line);
+
+/* A hairline down the inner side, so his block reads as a column of a
+   broadsheet rather than text that happens to be there. Drawn as a
+   pseudo-element and faded at both ends: a full-height border here
+   would read as a SECOND divider next to the real one. */
+.tm-mono .tm-copy{ padding-left:clamp(20px,2.2vw,34px); }
+.tm-mono .tm-copy::before{
+  content:"";
+  position:absolute;
+  left:0; top:26%; bottom:26%;
+  width:1px;
+  background:linear-gradient(180deg, transparent, rgba(255,255,255,.18) 26%, rgba(255,255,255,.18) 74%, transparent);
 }
+
+.tm-mono .tm-tagline{
+  font-family:var(--font-display);
+  font-size:clamp(1.45rem,2.3vw,2.15rem);
+  font-weight:400;
+  line-height:1;
+  letter-spacing:.012em;
+  text-transform:uppercase;
+  color:#fff;
+}
+/* The one piece of solid red on his half — small, so it can be the
+   full-strength --red-core rather than the text-safe red. */
+.tm-mono .tm-tagline::before{
+  content:"";
+  display:block;
+  width:52px; height:3px;
+  margin-bottom:clamp(12px,1.4vw,18px);
+  background:var(--grad);
+}
+
 .tm-mono .tm-bio{ color:var(--muted); }
-.tm-mono .tm-facts li{ color:var(--text); }
-.tm-mono .tm-facts li::before{ background:#fff; }
-.tm-mono .tm-link{ color:#fff; }
+
+/* Numbered rather than dashed. Two facts set as 01 / 02 in the mono
+   face is the cheapest way to make a two-item list look deliberate. */
+.tm-mono .tm-facts{ counter-reset:tm-fact; gap:12px; }
+.tm-mono .tm-facts li{
+  counter-increment:tm-fact;
+  color:var(--text);
+  padding-left:30px;
+}
+.tm-mono .tm-facts li::before{
+  content:counter(tm-fact,decimal-leading-zero);
+  top:.12em;
+  width:auto; height:auto;
+  background:none;
+  font-family:var(--font-mono);
+  font-size:.64rem;
+  letter-spacing:.12em;
+  color:var(--red);
+}
+
+.tm-mono .tm-link{ color:#fff; margin-top:8px; }
 
 
 /* ══════════════ VINOTHINI — plum, classic ══════════════
-   720x1280. Window lands on roughly x 31-80%, y 22-58% of the source.
    The script tagline is hers alone — the warm half of the sheet. */
-.tm-plum{ --zoom:2.05; }
-.tm-plum .tm-photo img{
-  object-position:60% 34%;
-  transform-origin:60% 34%;
+.tm-plum::before{
+  background-image:radial-gradient(120% 96% at 80% 72%, rgba(255,90,100,.16), transparent 64%);
+}
+.tm-plum .tm-cut{
+  filter:saturate(1.04) drop-shadow(0 26px 34px rgba(0,0,0,.5));
 }
 .tm-plum .tm-role{ color:rgba(255,255,255,.82); }
 .tm-plum .tm-tagline{
@@ -199,36 +369,85 @@
 .tm-plum .tm-link{ color:#fff; }
 
 
-/* ─────────── RESPONSIVE ─────────── */
+/* ─────────── RESPONSIVE ───────────
+   Below 900px the divider goes away entirely. A one-thumb drag on a
+   narrow screen is a worse way to read two paragraphs than simply
+   having both paragraphs, and it is also the no-JS fallback: with
+   --p never set, everything here holds regardless. */
 
-@media (max-width:820px){
-  /* Two columns of prose at this width leaves ~30 characters a line,
-     which is unreadable. Stacked, with each half keeping its own
-     alignment so the pairing still reads. */
-  .tm-poster{
-    grid-template-columns:1fr;
-    gap:46px;
+@media (max-width:900px){
+  .tm-stage{
+    height:auto;
+    display:grid;
     background:linear-gradient(168deg, #0c0c0f 0%, #170f11 48%, var(--maroon) 100%);
+    --grow:1;
+    --open:1;
   }
-  .tm-amp{ display:none; }        /* nothing left to sit between */
-  .tm-bio{ max-width:none; }
+  .tm-side,
+  .tm-side--l,
+  .tm-side--r{
+    position:relative;
+    width:auto;
+    overflow:visible;
+    cursor:default;
+    --grow:1;
+    --open:1;
+  }
+  .tm-side--r{ box-shadow:inset 0 1px 0 var(--line-soft); }
+
+  .tm-inner,
+  .tm-side--l .tm-inner,
+  .tm-side--r .tm-inner{
+    position:relative;
+    width:auto;
+    inset:auto;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    padding:clamp(34px,6vw,52px) clamp(22px,5vw,40px);
+  }
+  .tm-figure,
+  .tm-copy,
+  .tm-side--l .tm-figure,
+  .tm-side--r .tm-figure,
+  .tm-side--l .tm-copy,
+  .tm-side--r .tm-copy{
+    position:relative;
+    inset:auto;
+    width:auto;
+    max-width:none;
+    padding:0;
+    opacity:1;
+    transform:none;
+    align-items:flex-start;
+    text-align:left;
+  }
+  .tm-figure{ gap:16px; }
+  .tm-side--r .tm-facts li{ padding-right:0; padding-left:22px; }
+  .tm-side--r .tm-facts li::before{ right:auto; left:0; }
+
+  .tm-cut{ height:auto; width:clamp(160px,44vw,240px); }
+  .tm-name{ font-size:clamp(2rem,8vw,3rem); }
+  .tm-mono .tm-copy{ padding-left:0; }
+  .tm-mono .tm-copy::before{ display:none; }   /* nothing to rule off when stacked */
+
+  .tm-handle,
+  .tm-hint{ display:none; }
 }
 
 @media (max-width:520px){
-  /* Mirrored text on a narrow column is hard to read — both halves
-     align left below this. */
-  .tm-half:last-of-type{ align-items:flex-start; text-align:left; }
-  .tm-half:last-of-type .tm-facts li{ padding-right:0; padding-left:22px; }
-  .tm-half:last-of-type .tm-facts li::before{ right:auto; left:0; }
+  /* One line at this width. The name is split into a span per word for
+     the stacked setting above, so the space between them has to be put
+     back explicitly — otherwise it reads GANESHKUMAR. */
   .tm-name span{ display:inline; }
-  .tm-poster{ padding:30px 22px 34px; }
+  .tm-name span + span::before{ content:"\00a0"; }
 }
 
 
 /* ─────────────────────────────────────────────────────────
    ANIMATION — Team
 
-   Keyed off `.in`, which Reveal adds while the poster is on screen and
+   Keyed off `.in`, which Reveal adds while the stage is on screen and
    REMOVES once it leaves, so the whole sheet re-assembles every visit.
 
    The two halves are staggered against each other — his side lands
@@ -236,13 +455,12 @@
    than hit with everything at once.
    ───────────────────────────────────────────────────────── */
 
-/* the plates drop in and settle */
-@keyframes tm-plate{
-  from{ opacity:0; transform:translateY(-22px) scale(.94); }
+@keyframes tm-stand{
+  from{ opacity:0; transform:translateY(26px) scale(.96); }
   to  { opacity:1; transform:none; }
 }
-.tm-poster.in .tm-photo{ animation:tm-plate .8s var(--ease) both; }
-.tm-poster.in .tm-half:last-of-type .tm-photo{ animation-delay:.16s; }
+.tm-reveal.in .tm-cut{ animation:tm-stand .85s var(--ease) both; }
+.tm-reveal.in .tm-side--r .tm-cut{ animation-delay:.16s; }
 
 /* names cut in from their own outer edge */
 @keyframes tm-title-l{
@@ -253,37 +471,27 @@
   from{ opacity:0; clip-path:inset(0 0 0 100%); }
   to  { opacity:1; clip-path:inset(0 0 0 0); }
 }
-.tm-poster.in .tm-half:first-of-type .tm-name{ animation:tm-title-l .8s var(--ease) both .2s; }
-.tm-poster.in .tm-half:last-of-type .tm-name{ animation:tm-title-r .8s var(--ease) both .36s; }
+.tm-reveal.in .tm-side--l .tm-name{ animation:tm-title-l .8s var(--ease) both .22s; }
+.tm-reveal.in .tm-side--r .tm-name{ animation:tm-title-r .8s var(--ease) both .38s; }
 
-/* everything below the name rises in sequence */
 @keyframes tm-rise{
   from{ opacity:0; transform:translateY(16px); }
   to  { opacity:1; transform:none; }
 }
-.tm-poster.in .tm-role   { animation:tm-rise .55s var(--ease) both .34s; }
-.tm-poster.in .tm-tagline{ animation:tm-rise .55s var(--ease) both .42s; }
-.tm-poster.in .tm-bio    { animation:tm-rise .55s var(--ease) both .5s; }
-.tm-poster.in .tm-facts li{ animation:tm-rise .5s var(--ease) both; }
-.tm-poster.in .tm-facts li:nth-child(1){ animation-delay:.58s; }
-.tm-poster.in .tm-facts li:nth-child(2){ animation-delay:.64s; }
-.tm-poster.in .tm-link   { animation:tm-rise .55s var(--ease) both .78s; }
-/* hers trails his throughout */
-.tm-poster.in .tm-half:last-of-type .tm-role,
-.tm-poster.in .tm-half:last-of-type .tm-tagline,
-.tm-poster.in .tm-half:last-of-type .tm-bio,
-.tm-poster.in .tm-half:last-of-type .tm-link{ animation-delay:.5s; }
+.tm-reveal.in .tm-role{ animation:tm-rise .55s var(--ease) both .4s; }
+.tm-reveal.in .tm-side--r .tm-role{ animation-delay:.56s; }
 
-/* the ampersand breathes once the halves have landed */
-@keyframes tm-amp{
-  from{ opacity:0; transform:translate(-50%,-50%) scale(.8); }
-  to  { opacity:.16; transform:translate(-50%,-50%) scale(1); }
+/* the grip arrives last, once there is something to move */
+@keyframes tm-grip{
+  from{ opacity:0; transform:translateX(-50%) scale(.86); }
+  to  { opacity:1; transform:translateX(-50%) scale(1); }
 }
-.tm-poster.in .tm-amp{ animation:tm-amp 1s var(--ease) both .85s; }
+.tm-reveal.in .tm-handle{ animation:tm-grip .7s var(--ease) both .8s; }
+.tm-reveal.in .tm-hint  { animation:tm-rise .6s var(--ease) both 1s; }
 
 /* base.css zeroes the DURATION under reduced motion, but a `both` fill
    would still hold the from-state and leave names clipped to nothing. */
 @media (prefers-reduced-motion:reduce){
   .tm-name{ clip-path:none; opacity:1; }
-  .tm-amp{ opacity:.16; }
+  .tm-handle{ transform:translateX(-50%); opacity:1; }
 }

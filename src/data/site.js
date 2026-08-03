@@ -243,7 +243,10 @@ export const team = [
     role: 'Full-Stack Developer · ML',
     tagline: 'If it runs, he wrote it',
     facts: ['Front to back, no handover', 'Trains and ships ML models'],
-    photo: '/assets/Ganesh.jpeg',
+    /* Alpha cutout, cropped to the subject — the Team section stands
+       these ON the sheet rather than inside a plate, so a matted
+       background would show as a white box. */
+    photo: '/assets/ganesh-cut.png',
     /* Two sentences. The first says what he does, the second says the
        thing nobody else in the room can do. Nothing else earns its
        place on a poster. */
@@ -258,7 +261,7 @@ export const team = [
     role: 'Frontend Developer · Product',
     tagline: 'Knows what you meant, not just what you said',
     facts: ['Scopes it before a line is written', 'Builds the front end you touch'],
-    photo: '/assets/Vino.jpeg',
+    photo: '/assets/vino-cut.png',
     bio:
       'Works out what you actually need, then builds the front end of it herself. ' +
       'The person who took your brief is the one shaping your screens.',

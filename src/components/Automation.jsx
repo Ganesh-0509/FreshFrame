@@ -53,7 +53,6 @@ export default function Automation() {
   return (
     <section className="section band-tint automation" id="automation" ref={sectionRef}>
       <div className="wrap">
-        <p className="kicker">// 02 — Automation</p>
         <h2 className="section-title">
           {automation.title[0]}
           <br />

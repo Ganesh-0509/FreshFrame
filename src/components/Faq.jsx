@@ -8,7 +8,6 @@ export default function Faq() {
   return (
     <section className="section" id="faq">
       <div className="wrap wrap-narrow">
-        <p className="kicker">// 07 — Questions</p>
         <h2 className="section-title">
           The things
           <br />

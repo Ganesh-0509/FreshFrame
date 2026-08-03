@@ -34,7 +34,6 @@ export default function Services() {
   return (
     <section className="section" id="services">
       <div className="wrap">
-        <p className="kicker">// 01 — What we do</p>
         <h2 className="section-title">
           Four things,
           <br />

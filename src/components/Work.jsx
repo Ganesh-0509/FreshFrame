@@ -6,7 +6,6 @@ export default function Work() {
   return (
     <section className="section" id="work">
       <div className="wrap">
-        <p className="kicker">// 03 — Selected work</p>
         <h2 className="section-title">
           Two projects.
           <br />

@@ -15,7 +15,6 @@ export default function Process() {
   return (
     <section className="section band-sky process" id="process">
       <div className="wrap">
-        <p className="kicker">// 04 — How it works</p>
         <h2 className="section-title">
           Two ways in.
           <br />

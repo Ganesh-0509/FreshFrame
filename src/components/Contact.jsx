@@ -131,8 +131,6 @@ export default function Contact() {
         <PhoneDrop />
 
         <div className="contact-copy">
-          <p className="kicker">// 08 — Start here</p>
-
           {/* "ARE YOU / ready" from the reference: heavy display caps
               with the last word in the handwritten face. */}
           <h2 className="contact-ask">

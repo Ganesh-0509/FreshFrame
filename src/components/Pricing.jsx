@@ -7,7 +7,6 @@ export default function Pricing() {
   return (
     <section className="section band-tint" id="pricing">
       <div className="wrap">
-        <p className="kicker">// 06 — Pricing</p>
         <h2 className="section-title">
           Told upfront.
           <br />
