@@ -129,9 +129,33 @@
   max-width:100%;
   object-fit:contain;
   object-position:bottom;
-  filter:drop-shadow(0 26px 34px rgba(0,0,0,.55));
+  filter:
+    saturate(1.04)
+    drop-shadow(0 0 var(--rim-size,24px) rgba(var(--rim,255,235,225), var(--rim-a,0)))
+    drop-shadow(0 26px 34px rgba(0,0,0,.55));
   transition:height .55s var(--ease), filter .55s var(--ease);
 }
+
+/* ── the rim light ──
+   A glow that HUGS the silhouette, which is only possible because the
+   cutouts carry real alpha: drop-shadow reads the alpha channel, so a
+   0-offset one traces the person rather than boxing them.
+
+   It is not decoration on her half. Measured against the sheet she
+   stands on, her black coat is 1.41:1 on the maroon — visible, but only
+   just, and the coat is most of her. His cream tee is 10.7:1 on the
+   near-black and needs nothing, so his is a tenth of the strength and
+   only there so the two are lit by the same world.
+
+   (Aside, since it is the obvious thing to try: putting her on the
+   near-black end instead drops her to 1.01:1 and she disappears
+   entirely. The halves are already the right way round.)
+
+   The BLUR IS FIXED and only the alpha moves. Animating a blur radius
+   re-rasterises the whole filter chain every frame; animating the
+   colour alpha does not. */
+.tm-mono .tm-cut{ --rim:255,236,222; --rim-size:22px; --rim-a:calc(.05 + .11 * var(--open)); }
+.tm-plum .tm-cut{ --rim:255,148,138; --rim-size:30px; --rim-a:calc(.24 + .30 * var(--open)); }
 
 .tm-name{
   font-family:var(--font-display);
@@ -285,9 +309,8 @@
 .tm-mono::before{
   background-image:radial-gradient(120% 96% at 20% 72%, rgba(255,255,255,.07), transparent 62%);
 }
-.tm-mono .tm-cut{
-  filter:saturate(1.04) drop-shadow(0 26px 34px rgba(0,0,0,.6));
-}
+/* His photo treatment is the shared one — see .tm-cut and the rim-light
+   block above, which is where the two of them differ. */
 .tm-mono .tm-role{ color:var(--dim); }
 
 /* A hairline down the inner side, so his block reads as a column of a
@@ -350,9 +373,6 @@
    The script tagline is hers alone — the warm half of the sheet. */
 .tm-plum::before{
   background-image:radial-gradient(120% 96% at 80% 72%, rgba(255,90,100,.16), transparent 64%);
-}
-.tm-plum .tm-cut{
-  filter:saturate(1.04) drop-shadow(0 26px 34px rgba(0,0,0,.5));
 }
 .tm-plum .tm-role{ color:rgba(255,255,255,.82); }
 .tm-plum .tm-tagline{
