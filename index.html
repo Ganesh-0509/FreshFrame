@@ -36,6 +36,119 @@
   <meta name="twitter:description" content="A two-person studio building websites, branding and custom business automation. We build you a real working mock first — you decide after you've seen it.">
   <meta name="twitter:image" content="https://Ganesh-0509.github.io/FreshFrame/assets/og-card.jpg">
 
+  <!-- ══ Structured data ══
+       Hardcoded here rather than generated from src/data/site.js because
+       this is the static HTML shell — the one thing crawlers that don't
+       execute JS (and the first pass of most that do) actually read.
+       If FAQ copy or contact details change in site.js, mirror the change
+       here too, or this schema drifts from what's on the page. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Fresh Frame",
+    "description": "Two-person studio building websites, branding and custom business automation, based in Chennai.",
+    "url": "https://Ganesh-0509.github.io/FreshFrame/",
+    "image": "https://Ganesh-0509.github.io/FreshFrame/assets/og-card.jpg",
+    "email": "ganesh957kumar@gmail.com",
+    "telephone": "+919042785843",
+    "priceRange": "₹3,000–₹30,000",
+    "areaServed": {
+      "@type": "City",
+      "name": "Chennai"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chennai",
+      "addressRegion": "Tamil Nadu",
+      "addressCountry": "IN"
+    },
+    "sameAs": [
+      "https://ganesh-0509.github.io/",
+      "https://vinothini-port.vercel.app/"
+    ],
+    "makesOffer": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website design and development" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Business process automation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Branding and visual identity" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "SEO setup, analytics and hosting" } }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is the mock really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, for websites. We build you a working page based on your brief and send you the link. If you don't want to go ahead after seeing it, that's the end of it — no invoice, no obligation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does the mock take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually 2–3 days from the time we've understood your brief. The full build depends on scope — a single-page site is about a week, a larger site two to three."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if I don't like the mock?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tell us why and we'll do one more pass, or you walk away. We'd rather find out we're not a fit at this stage than three weeks in."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do automations get a free mock too?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No — a workflow isn't something you can look at in a browser and judge in five minutes. Automations start with a call instead. We work through the features with you, then give you the scope and the price in writing before anything gets built."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What kind of automation can you actually build?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If a person is doing it repeatedly on a computer or a phone, it can usually be automated — order and enquiry handling, invoices and quotes, daily reports, stock alerts, reminders and follow-ups."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need a website to get an automation built?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The two are separate. Plenty of businesses have a workflow worth fixing and no website at all — we're happy to do just the automation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to buy the domain and hosting myself?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can, and we'll help you pick. Or we'll set it all up and hand you the logins. Either way the accounts are in your name — you own everything."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I update the site myself afterwards?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We hand over a short walkthrough of how to change text, images and prices. Anything bigger, message us — or take the Care plan and we handle it."
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- matches --paper in styles/theme.css -->
   <meta name="theme-color" content="#0b0b0d">
 
