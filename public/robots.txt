@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# AI answer engines — explicitly allowed so Fresh Frame can be cited
+# in ChatGPT/Perplexity/Google AI Overviews, not just ranked in search.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://Ganesh-0509.github.io/FreshFrame/sitemap.xml
