@@ -39,7 +39,7 @@ filter on `no-reply@web3forms.com` rather than paying for PRO.
 ## 1. Push to GitHub
 
 **Already done** — the repo exists, the remote is configured, and all commits
-are pushed to https://github.com/Vino1705/FreshFrame (public). Future changes
+are pushed to https://github.com/Ganesh-0509/FreshFrame (public). Future changes
 are just:
 
 ```
@@ -122,7 +122,7 @@ fallback message. Add the secret, then re-run the workflow.
 **c. Link-preview URLs — already done**
 
 `index.html` has the `og:`/`twitter:` URLs set to
-`https://Vino1705.github.io/FreshFrame/`. Nothing to change unless you rename
+`https://Ganesh-0509.github.io/FreshFrame/`. Nothing to change unless you rename
 the repo or move to a custom domain, in which case update all three — they must
 be absolute, because link scrapers don't resolve relative paths.
 
@@ -132,7 +132,7 @@ Push, or re-run from the **Actions** tab. First build takes about a minute.
 Your site lands at:
 
 ```
-https://Vino1705.github.io/FreshFrame/
+https://Ganesh-0509.github.io/FreshFrame/
 ```
 
 ---

@@ -6,7 +6,7 @@ Enquiries from the contact form are emailed to **vinoism1703@gmail.com** via
 [Web3Forms](https://web3forms.com). Nothing is stored anywhere.
 
 **Status:** built and ready to deploy. Repo, remote and link-preview URLs are all set
-to https://github.com/Vino1705/FreshFrame. **One thing is outstanding: the Web3Forms
+to https://github.com/Ganesh-0509/FreshFrame. **One thing is outstanding: the Web3Forms
 access key.** See [What's left to do](#whats-left-to-do).
 
 **To put it online:** follow [DEPLOY.md](DEPLOY.md) — GitHub, then Pages, then the
@@ -382,7 +382,7 @@ hop. That's why it isn't on the Work section.
       which is deliberate — see below.
 - [x] **Recipient.** Enquiries go to `vinoism1703@gmail.com` — the key must be
       registered to that inbox. One recipient fits the free plan exactly.
-- [x] **Link-preview URLs** set to `https://Vino1705.github.io/FreshFrame/`.
+- [x] **Link-preview URLs** set to `https://Ganesh-0509.github.io/FreshFrame/`.
 - [x] **Public email address.** `ganesh957kumar@gmail.com`.
 - [x] **WhatsApp number.** `+91 90427 85843`.
 - [ ] **Read the two project descriptions** and correct anything wrong.
