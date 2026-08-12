@@ -1,0 +1,39 @@
+# Fresh Frame
+
+> A two-person studio in Chennai, India, building websites, branding and
+> custom business automation. Founders: Ganesh Kumar (full-stack developer,
+> ML) and Vinothini (frontend developer, product).
+
+Fresh Frame builds a real, working mock of a website before any money
+changes hands — not a PDF, not a template preview — and the client decides
+whether to continue after seeing it, with zero advance owed either way.
+Automations (order/enquiry handling, invoicing, reporting, reminders,
+follow-ups) are scoped on a call instead, since a workflow can't be judged
+in a five-minute browser preview the way a page can.
+
+## Services
+
+- Websites — landing pages, business/portfolio sites, e-commerce stores, custom web apps
+- Business automation — built around how the client's business actually works, not an off-the-shelf tool
+- Branding — logo, visual identity, brand kit, website copywriting
+- Digital solutions — SEO setup, analytics, domain/hosting, maintenance
+
+## Pricing (India, INR)
+
+- Basic: ₹3,000–6,000 — one page
+- Standard: ₹8,000–15,000 — 3–5 pages
+- Premium: ₹15,000–30,000 — online ordering/booking, own domain, branding, 30 days support
+- Care plan (add-on): ₹500–1,500/month — ongoing maintenance
+- Automation and custom products are quoted per job after a scoping call
+
+## Contact
+
+- Email: ganesh957kumar@gmail.com
+- WhatsApp: +91 90427 85843
+- Location: Chennai, India (working remotely)
+- Site: https://Ganesh-0509.github.io/FreshFrame/
+
+## Notable work
+
+- Standard Fireworks, Sivakasi (standardfireworkssivakasi.com) — wholesale/retail cracker storefront with tiered volume discounts
+- Cafe by Cassette (cafe-by-cassette.netlify.app) — cassette-themed café site with WhatsApp reservations
