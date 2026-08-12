@@ -7,10 +7,10 @@
    ══════════════════════════════════════════════════════════ */
 
 export const contact = {
-  // The address shown on the page and used by the mailto: link.
-  // NOTE: this does NOT control where contact-form submissions go. That's
-  // decided by whichever inbox the Web3Forms access key is registered to —
-  // change it at web3forms.com, not here. See README.
+  // Shown on the page and used as the mailto: target — the contact form
+  // opens the visitor's own email client addressed here, so this is the
+  // one place that decides where enquiries land.
+  name: 'Ganesh Kumar',
   email: 'ganesh957kumar@gmail.com',
   whatsapp: '919042785843',                // wa.me format: 91 + 10 digits, no spaces
   whatsappDisplay: '+91 90427 85843',      // what's shown to the visitor

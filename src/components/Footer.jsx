@@ -27,7 +27,8 @@ export default function Footer() {
         </nav>
 
         <p className="footer-copy">
-          © {new Date().getFullYear()} Fresh Frame. Built by hand, by us.
+          © {new Date().getFullYear()} Fresh Frame. Built by hand, by us. ·{' '}
+          <a href="privacy.html">Privacy</a>
         </p>
       </div>
     </footer>

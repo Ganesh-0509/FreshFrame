@@ -2,8 +2,7 @@
 # Build the React site and publish it to GitHub Pages.
 #
 # Runs on every push to main. Nothing to do manually after the
-# one-time setup in DEPLOY.md (Settings → Pages → Source: GitHub Actions,
-# and adding the VITE_WEB3FORMS_KEY secret).
+# one-time setup in DEPLOY.md (Settings → Pages → Source: GitHub Actions).
 # ══════════════════════════════════════════════════════════
 name: Deploy to GitHub Pages
 
@@ -41,15 +40,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Build
-        # Vite inlines VITE_* vars at BUILD time, so the key has to be
-        # present here — setting it anywhere later has no effect.
-        env:
-          VITE_WEB3FORMS_KEY: ${{ secrets.VITE_WEB3FORMS_KEY }}
-        run: |
-          if [ -z "$VITE_WEB3FORMS_KEY" ]; then
-            echo "::warning title=Contact form disabled::VITE_WEB3FORMS_KEY secret is not set. The site will build, but the contact form will show its fallback message instead of sending. Add it under Settings → Secrets and variables → Actions."
-          fi
-          npm run build
+        run: npm run build
 
       - uses: actions/configure-pages@v5
 

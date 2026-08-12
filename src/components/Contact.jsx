@@ -3,29 +3,12 @@ import { contact, contactSection } from '../data/site.js'
 import PhoneDrop from './PhoneDrop.jsx'
 
 /* ══════════════════════════════════════════════════════════
-   The form posts to Web3Forms, not to our own server.
-
-   GitHub Pages serves static files only — it cannot run Node, so the
-   old POST /api/contact would just hit the 404 page. Web3Forms takes
-   the submission and emails it on, which needs no backend at all.
-
-   The access key is PUBLIC by design — it's write-only (it can submit
-   to your form, nothing else) and is visible in the page source of
-   every Web3Forms site. It's in an env var so it isn't committed, not
-   because exposing it is dangerous.
-
-   Set VITE_WEB3FORMS_KEY at BUILD time. Vite inlines VITE_* vars into
-   the bundle, so it must be present when `vite build` runs — see the
-   GitHub Actions workflow.
+   No backend, no third-party form service — the form just builds a
+   mailto: link and hands it to the visitor's own email client,
+   addressed to contact.email. It leaves the browser exactly like
+   clicking the "Email" link in the sidebar; nothing is transmitted to
+   or stored by Fresh Frame or anyone else in between.
    ══════════════════════════════════════════════════════════ */
-const ENDPOINT = 'https://api.web3forms.com/submit'
-const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY
-
-const looksLikeEmail = (s = '') => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s).trim())
-
-/* Shown on every failure path. Names the real channels from site.js so a
-   visitor who can't submit still leaves with a way to reach us. */
-const FALLBACK = `Could not send that — WhatsApp us on ${contact.whatsappDisplay} or email ${contact.email}.`
 
 const EMPTY = {
   name: '',
@@ -33,21 +16,19 @@ const EMPTY = {
   business: '',
   need: contactSection.needs[0],
   message: '',
-  botcheck: '', // Web3Forms' own honeypot field name
 }
 
 export default function Contact() {
   const [form, setForm] = useState(EMPTY)
   const [invalid, setInvalid] = useState({})
   const [status, setStatus] = useState({ text: '', kind: '' })
-  const [sending, setSending] = useState(false)
 
   const set = (key) => (e) => {
     setForm((f) => ({ ...f, [key]: e.target.value }))
     setInvalid((v) => ({ ...v, [key]: false }))
   }
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
 
     const missing = {}
@@ -60,67 +41,24 @@ export default function Contact() {
       return
     }
 
-    /* No key means no email can possibly be sent. Fail loudly rather than
-       showing a success message for a submission that goes nowhere. */
-    if (!ACCESS_KEY) {
-      console.error(
-        'VITE_WEB3FORMS_KEY is not set, so the contact form cannot send. ' +
-          'Add it to client/.env for local dev, or as a repo secret for the Pages build.'
-      )
-      setStatus({ text: FALLBACK, kind: 'err' })
-      return
-    }
+    const subject = `New enquiry: ${form.name.trim()}${
+      form.business.trim() ? ` — ${form.business.trim()}` : ''
+    }`
+    const body = [
+      `Name: ${form.name.trim()}`,
+      `Contact: ${form.contact.trim()}`,
+      `Business: ${form.business.trim() || '—'}`,
+      `Needs: ${form.need}`,
+      '',
+      form.message.trim() || '(No message)',
+    ].join('\n')
 
-    setSending(true)
-    setStatus({ text: 'Sending…', kind: '' })
+    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
-    try {
-      const res = await fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: ACCESS_KEY,
-          subject: `New enquiry: ${form.name.trim()}${
-            form.business.trim() ? ` — ${form.business.trim()}` : ''
-          }`,
-          from_name: 'Fresh Frame website',
-          /* Only set reply-to when they gave an actual email. The contact
-             field also accepts a WhatsApp number, which would make the
-             reply-to header invalid and can get the mail rejected. */
-          ...(looksLikeEmail(form.contact) ? { replyto: form.contact.trim() } : {}),
-
-          // Everything below is forwarded into the email body as-is.
-          Name: form.name.trim(),
-          Contact: form.contact.trim(),
-          Business: form.business.trim() || '—',
-          Needs: form.need,
-          Message: form.message.trim() || '—',
-
-          /* Only send botcheck when it's actually filled. An unchecked HTML
-             checkbox is absent from the payload entirely, so mirroring that
-             avoids any risk of an empty string being read as "checked" —
-             Web3Forms rejects a tripped honeypot with a 400. */
-          ...(form.botcheck ? { botcheck: true } : {}),
-        }),
-      })
-
-      const data = await res.json().catch(() => ({}))
-
-      /* Web3Forms signals failure in the BODY as success:false, and can
-         still return a non-2xx (400 bad key, 429 rate limited). Check both,
-         so we never report a send that didn't happen. */
-      if (!res.ok || data.success !== true) {
-        throw new Error(data.message || data?.body?.message || `HTTP ${res.status}`)
-      }
-
-      setStatus({ text: "Got it — we'll reply today with next steps.", kind: 'ok' })
-      setForm(EMPTY)
-    } catch (err) {
-      console.error('Contact form submit failed:', err?.message)
-      setStatus({ text: FALLBACK, kind: 'err' })
-    } finally {
-      setSending(false)
-    }
+    setStatus({
+      text: `Opening your email app, addressed to ${contact.name}. If nothing happened, WhatsApp us on ${contact.whatsappDisplay} instead.`,
+      kind: 'ok',
+    })
   }
 
   return (
@@ -143,7 +81,9 @@ export default function Contact() {
           <ul className="contact-list">
             <li>
               <span>Email</span>
-              <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              <a href={`mailto:${contact.email}`}>
+                {contact.name} — {contact.email}
+              </a>
             </li>
             <li>
               <span>WhatsApp</span>
@@ -218,16 +158,8 @@ export default function Contact() {
             />
           </div>
 
-          {/* honeypot — hidden from people, catches naive bots.
-              Must be named "botcheck": Web3Forms rejects the submission
-              server-side when it arrives filled in. */}
-          <div className="hp" aria-hidden="true">
-            <label htmlFor="cf-botcheck">Leave this empty</label>
-            <input id="cf-botcheck" name="botcheck" tabIndex={-1} value={form.botcheck} onChange={set('botcheck')} />
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-block" disabled={sending}>
-            {sending ? 'Sending…' : 'Send & get my free mock'}
+          <button type="submit" className="btn btn-primary btn-block">
+            Send & get my free mock
           </button>
 
           <p className={`form-note ${status.kind}`} role="status">

@@ -36,6 +36,8 @@
 .footer-nav a{ font-size:.91rem; color:var(--muted); transition:color .2s; }
 .footer-nav a:hover{ color:var(--red-2); }
 .footer-copy{ font-size:.83rem; color:var(--dim); margin:0; width:100%; padding-top:6px; }
+.footer-copy a{ color:var(--dim); text-decoration:underline; text-underline-offset:2px; transition:color .2s; }
+.footer-copy a:hover{ color:var(--red-2); }
 
 
 /* ─────────── RESPONSIVE ─────────── */
