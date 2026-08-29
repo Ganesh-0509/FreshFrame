@@ -3,36 +3,22 @@
 The site is a static React build published to GitHub Pages by a GitHub Actions
 workflow. Every push to `main` rebuilds and redeploys automatically.
 
-Everything below needs a browser login, which is why it's a list for you to run
-rather than something already done. Run the commands from:
-
-```
-f:\PROJECT\New folder\Website-freelance
-```
+Most of what's below is already done. What's left needs a browser login, which is
+why it's written as steps for you to run rather than done for you.
 
 ---
 
 ## Read this first: what Pages can and can't do
 
 GitHub Pages serves **static files only**. It cannot run Node, so it cannot run
-a mail server. That's why the contact form no longer posts to our own API — it
-posts directly to **Web3Forms**, which takes the submission and emails it to you.
+a mail server. That's why the contact form has no backend at all — it opens the
+visitor's own email client with a `mailto:` link addressed to
+**freshframestud@gmail.com**, pre-filled with what they typed. There's no key,
+no service, and nothing to configure — it works the moment the site is built.
 
 ```
-Browser ──POST──> api.web3forms.com ──email──> your inbox
+Browser ──mailto:──> visitor's own email app ──> freshframestud@gmail.com
 ```
-
-Enquiries go to **vinoism1703@gmail.com** only. That fits the free plan exactly
-— it delivers to one inbox, and a second recipient (`ccemail`) is a PRO feature.
-Nothing to work around.
-
-> **Which inbox is decided by the KEY, not by the code.** Whatever address you
-> typed at web3forms.com is where enquiries land. There is no setting in this
-> repo that changes it. If your key was created with a different address, the
-> only fix is a new key — see step 2.
-
-If you later want Ganesh's inbox on it too, the free route is a Gmail forwarding
-filter on `no-reply@web3forms.com` rather than paying for PRO.
 
 ---
 
@@ -53,30 +39,11 @@ Personal access tokens → Tokens (classic) → Generate new token → tick `rep
 
 > The repo is **public**, which is what free Pages requires — Pages on a private
 > repo needs GitHub Pro. Everything you push is publicly readable, so keep
-> credentials out of it. `.env` is gitignored for exactly this reason;
-> `.env.example` is the one that gets committed.
+> credentials out of it.
 
 ---
 
-## 2. Get a Web3Forms access key
-
-This is the one step that can't be done for you — it needs access to the inbox
-that receives the key.
-
-1. Go to **https://web3forms.com**
-2. Enter **`vinoism1703@gmail.com`** and submit
-3. Web3Forms emails an **access key** to that inbox — copy it (check spam)
-
-That's it. No account, no password, no card. Free plan is 250 submissions/month,
-which is far more than this site will see.
-
-Whichever address you enter here is where enquiries land — it is **not** set
-anywhere in the code. To change it later, get a new key for the other inbox and
-swap the secret in step 3b.
-
----
-
-## 3. Configure the repo
+## 2. Configure the repo
 
 **a. Turn Pages on — DO THIS FIRST, the build fails without it**
 
@@ -102,87 +69,42 @@ the three clicks above.
 After enabling, re-run from **Actions → Deploy to GitHub Pages → Re-run jobs**.
 No new push needed.
 
-**b. Add the access key**
+**b. Link-preview URLs — already done**
 
-Repo → **Settings → Secrets and variables → Actions** → *New repository secret*
+`index.html` has the `og:`/`twitter:`/canonical/schema URLs set to
+`https://freshframe.studio/`. Nothing to change unless the domain moves again,
+in which case update all of them — they must be absolute, because link
+scrapers don't resolve relative paths.
 
-| Name | Value |
-|---|---|
-| `VITE_WEB3FORMS_KEY` | your Web3Forms access key |
-
-The name must match exactly. Vite inlines `VITE_*` variables **at build time**,
-so if this is missing when the workflow runs, the form ships unable to send —
-the build will still succeed, but Actions logs a warning and the form shows its
-fallback message. Add the secret, then re-run the workflow.
-
-> The key ends up readable in the published JavaScript. That's normal for
-> Web3Forms and not a leak: the key is write-only, it can only submit to your
-> own form. It's a secret here so it isn't committed to a public repo.
-
-**c. Link-preview URLs — already done**
-
-`index.html` has the `og:`/`twitter:` URLs set to
-`https://Ganesh-0509.github.io/FreshFrame/`. Nothing to change unless you rename
-the repo or move to a custom domain, in which case update all three — they must
-be absolute, because link scrapers don't resolve relative paths.
-
-**d. Deploy**
+**c. Deploy**
 
 Push, or re-run from the **Actions** tab. First build takes about a minute.
-Your site lands at:
-
-```
-https://Ganesh-0509.github.io/FreshFrame/
-```
 
 ---
 
-## 4. Check it actually worked
+## 3. Check it actually worked
 
 - **Site loads, images appear.** If the page is unstyled or images are broken,
   the base path is wrong — see the troubleshooting note below.
-- **Submit the contact form.** The enquiry should reach
-  **vinoism1703@gmail.com** within a few seconds. Check spam the first time —
-  Gmail often filters the first message from a new sender. If it arrives at a
-  different address, the key is registered to that one; get a new key.
-- **Reply to the email.** It should address the enquirer, not yourself — the form
-  sets `replyto`, but only when they typed an actual email address rather than a
-  phone number.
-- **Test the failure path** by submitting from a blocked network or with the
-  secret removed: you should see *"Could not send that — WhatsApp us on…"*, never
-  a false success. That's deliberate.
+- **Submit the contact form.** It should open your default email app with a
+  message addressed to **freshframestud@gmail.com**, subject and body already
+  filled in from what you typed. If nothing opens, the visitor's browser/OS has
+  no default mail app configured — the WhatsApp link is the fallback for that.
 
 ---
 
-## 5. Custom domain — freshframe.studio
+## 4. Custom domain — freshframe.studio
 
-**Code side is done.** `public/CNAME` contains `freshframe.studio`, and every
-`og:`/canonical/schema URL in `index.html`, `public/robots.txt`,
-`public/sitemap.xml`, `public/llms.txt`, `public/privacy.html` and
-`public/404.html` already points at it instead of the `github.io` URL. Two
-remaining steps need a browser, same as steps 2 and 3a above:
+**Done.** `public/CNAME` contains `freshframe.studio`, every canonical/OG/schema
+URL points at it, DNS is configured at name.com (A records to GitHub's four IPs),
+the domain is set in Settings → Pages, and **Enforce HTTPS is on** — the
+certificate was approved and confirmed live.
 
-**a. DNS at name.com** — add these records for the apex domain
-(`freshframe.studio`, no `www`):
-
-| Type | Host | Value |
-|---|---|---|
-| A | @ | 185.199.108.153 |
-| A | @ | 185.199.109.153 |
-| A | @ | 185.199.110.153 |
-| A | @ | 185.199.111.153 |
-
-(Optional, IPv6: AAAA records at `@` for `2606:50c0:8000::153`,
-`2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`.)
-
-If you also want `www.freshframe.studio` to work, add a CNAME record:
-`www` → `ganesh-0509.github.io.` (trailing dot matters at some registrars).
-DNS changes can take anywhere from a few minutes to a few hours to propagate.
-
-**b. GitHub side** — repo → **Settings → Pages** → under **Custom domain**,
-type `freshframe.studio` and save. GitHub checks the DNS automatically; once
-it goes green, tick **Enforce HTTPS** (it's greyed out until the DNS check
-passes and the certificate is issued, which can take a bit).
+`www.freshframe.studio` also has a CNAME record pointing at
+`ganesh-0509.github.io.`; if GitHub's Pages settings still shows it as
+"improperly configured," that's DNS propagation lag on GitHub's checker, not a
+real problem — the apex domain works regardless and this typically clears on
+its own within a few hours.
 
 A custom domain serves from the root rather than a subfolder — the build
 handles that automatically since `vite.config.js` uses a relative base, so no
@@ -194,27 +116,23 @@ path changes are needed either way.
 
 **Blank page, or CSS and images missing.** Almost always the base path.
 `vite.config.js` sets `base: './'`, which makes every URL relative so the
-build works at any subfolder without hardcoding the repo name. If you ever add
-client-side routing (React Router), relative base stops being safe and you must
-set `base: '/your-repo-name/'` explicitly.
+build works at any subfolder or domain root without hardcoding a path.
 
-**Images 404 but CSS loads.** An image path lost its `asset()` wrapper. Every
-reference to `public/` from JSX must go through
-`asset()` in `src/lib/asset.js` — a bare `src="/assets/x.png"` resolves
-to the domain root and 404s on a project-repo URL.
+**Images 404.** An image path lost its `asset()` wrapper. Every reference to
+`public/` from JSX must go through `asset()` in `src/lib/asset.js` — a bare
+`src="/assets/x.png"` only works when the site is served from the domain root.
 
-**Form says "Could not send".** Open the browser console. Either
-`VITE_WEB3FORMS_KEY` wasn't set at build time, or Web3Forms returned an error —
-the console logs which. A 429 means their rate limit; the free plan allows 250
-submissions a month.
+**Contact form does nothing on click.** The visitor's device has no default
+email client set — genuinely rare, but it's why the WhatsApp link exists as a
+fallback right next to it.
 
 **"Get Pages site failed."** Pages isn't enabled, or isn't set to *GitHub
-Actions* as the source. Step 3a. This is the most common first-deploy failure
+Actions* as the source. Step 2a. This is the most common first-deploy failure
 and the error doesn't say what to click.
 
 **Site 404s but the workflow is green.** Give it a minute on the very first
-deploy. If it persists, check the path case — `/FreshFrame/` is case-sensitive
-and must match the repo name exactly.
+deploy. If it persists on the `github.io` URL specifically, check the path
+case — it's case-sensitive and must match the repo name exactly.
 
 **"Node.js 20 is deprecated" warning.** Harmless. It refers to the runtime the
 GitHub-provided actions use, not the Node that builds your site, and GitHub

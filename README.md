@@ -2,24 +2,17 @@
 
 **Static React (Vite) site, deployed to GitHub Pages.**
 
-Enquiries from the contact form are emailed to **vinoism1703@gmail.com** via
-[Web3Forms](https://web3forms.com). Nothing is stored anywhere.
+The contact form has no backend — it opens the visitor's own email client with a
+`mailto:` addressed to **freshframestud@gmail.com**, pre-filled with what they typed.
+Nothing is submitted to, stored by, or passed through any third-party service.
 
-**Status:** live at [freshframe.studio](https://freshframe.studio/). The contact form
-no longer uses Web3Forms — it opens a `mailto:` addressed to Ganesh directly, so there's
-no access key to configure. Repo is https://github.com/Ganesh-0509/FreshFrame; the custom
-domain is code-complete (`public/CNAME` + every canonical/OG/schema URL updated) but the
-DNS + GitHub Pages settings steps still need a browser login — see
-[DEPLOY.md §5](DEPLOY.md#5-custom-domain--freshframestudio). See
-[What's left to do](#whats-left-to-do) for everything else still open.
+**Status:** live at [freshframe.studio](https://freshframe.studio/). Repo is
+https://github.com/Ganesh-0509/FreshFrame. See
+[What's left to do](#whats-left-to-do) for everything still open.
 
 > **Why there's no backend.** GitHub Pages serves static files only — it can't run
-> Node, so it can't run a mail server. The form posts straight to Web3Forms instead,
-> which is why there is no server in this repo at all.
->
-> The free plan delivers to **one inbox**, which is all this needs — enquiries go to
-> Vinothini, who handles client engagement. A second recipient (`ccemail`) is a PRO
-> feature; if you want Ganesh on it later, a Gmail forwarding filter does it free.
+> Node, so it can't run a mail server. `mailto:` sidesteps that entirely rather than
+> depending on a third-party form service.
 
 ---
 
@@ -31,9 +24,7 @@ DNS + GitHub Pages settings steps still need a browser login — see
 npm install
 ```
 
-Then copy `.env.example` to `.env` and paste in your Web3Forms access
-key. Without it the site still runs, but the form shows its fallback message instead
-of sending — see [Making the contact form send real email](#making-the-contact-form-send-real-email).
+That's it — the contact form needs no setup, so there's no `.env` step here.
 
 ### Every time after that
 
@@ -60,42 +51,20 @@ You don't normally need either — pushing to `main` triggers
 
 ---
 
-## Making the contact form send real email
+## How the contact form works
 
-Until you do this the form shows *"Could not send that — WhatsApp us on…"* on every
-submission. That's deliberate: it never claims to have sent something it hasn't.
-
-1. Go to **https://web3forms.com**
-2. Enter the inbox that should receive enquiries. They email you an **access key**
-3. Copy `.env.example` to `.env` and paste it in:
-
-```
-VITE_WEB3FORMS_KEY=your-access-key-here
-```
-
-4. Restart `npm run dev` — Vite only reads env vars at startup
-5. For the live site, add the same value as a repo secret named
-   `VITE_WEB3FORMS_KEY` (DEPLOY.md step 3b)
-
-**Where enquiries land is set by the key, not by the code.** Register the key to
-`vinoism1703@gmail.com` and that's where they go. Nothing in `site.js` or anywhere
-else controls it — there is no setting in this repo for it. To change the destination
-you get a new key for the other inbox and swap the secret. Editing files does nothing.
-
-> **On the key being public.** It ends up readable in the built JavaScript. That's
-> how Web3Forms works and it isn't a leak — the key is write-only, it can only submit
-> to your own form. It lives in an env var so it isn't committed to a public repo.
+There's nothing to configure — it works as soon as the site is built. Filling in
+the form and hitting send opens the visitor's own email app with a `mailto:`
+addressed to **freshframestud@gmail.com**, subject and body pre-filled from what
+they typed. No third-party service, no key, no backend, nothing stored anywhere.
 
 ### What the form already handles
 
 - Name and contact are required; inline errors if they're missing
-- A hidden `botcheck` honeypot — Web3Forms drops submissions that arrive with it filled
-- `replyto` set to the enquirer, **but only when they typed an actual email address** —
-  a phone number would make the header invalid and can get the mail rejected. So
-  hitting Reply works when they gave an email, and does nothing surprising when they didn't
-- Rate limiting and spam filtering are handled by Web3Forms (free plan: 250/month)
-- Every failure path — no key, network error, bad key, 429 — shows the WhatsApp and
-  email fallback rather than a false success
+- Subject line includes the enquirer's name and business (if given)
+- Body includes their contact info and stated need, formatted for a quick read
+- If the visitor's device has no default email app, nothing opens — the WhatsApp
+  link right next to the form is the fallback for that case
 
 ---
 
@@ -107,7 +76,6 @@ FreshFrame/
 │   └── deploy.yml        builds + publishes to Pages on every push to main
 ├── index.html            page shell, font links, link-preview tags
 ├── vite.config.js        base:'./' — the Pages subfolder fix
-├── .env.example          copy to .env, add your Web3Forms key
 ├── package.json
 ├── public/
 │   ├── .nojekyll         stops Pages running the files through Jekyll
@@ -142,7 +110,7 @@ FreshFrame/
 | Something shared by 2+ sections | `src/styles/base.css` |
 | Section order | `src/App.jsx` |
 | The big section headings (h2) | the individual component in `src/components/` |
-| Where email goes | the inbox on your Web3Forms key — change it at web3forms.com |
+| Where email goes | `contact.email` in `src/data/site.js` — the mailto: target |
 | An image | drop it in `public/assets/`, reference it via `asset()` |
 
 `site.js` holds all the repeating content — services, automation tiles, projects,
@@ -375,14 +343,14 @@ hop. That's why it isn't on the Work section.
 
 ### Blocking — before anyone sees this
 
-- [x] **Contact form.** Now a direct `mailto:` to `ganesh957kumar@gmail.com` —
-      Web3Forms was dropped, so there's no access key to configure anywhere.
+- [x] **Contact form.** A direct `mailto:` to `freshframestud@gmail.com` — no
+      third-party service, no access key to configure anywhere.
 - [x] **Link-preview URLs** set to `https://freshframe.studio/`.
-- [x] **Custom domain code side.** `public/CNAME` + every canonical/OG/schema URL
-      point at `freshframe.studio`. DNS + Pages settings still need doing by hand
-      — see [DEPLOY.md §5](DEPLOY.md#5-custom-domain--freshframestudio).
-- [x] **Public email address.** `ganesh957kumar@gmail.com`.
-- [x] **WhatsApp number.** `+91 90427 85843`.
+- [x] **Custom domain.** `public/CNAME` + every canonical/OG/schema URL point at
+      `freshframe.studio`. DNS is configured, the domain is set in GitHub Pages
+      settings, and Enforce HTTPS is on — see [DEPLOY.md §4](DEPLOY.md#4-custom-domain--freshframestudio).
+- [x] **Public email address.** `freshframestud@gmail.com`.
+- [x] **WhatsApp number.** `+91 78250 83996`.
 - [ ] **Read the two project descriptions** and correct anything wrong.
 
 > **Why an unconfigured form errors instead of pretending.** It used to return

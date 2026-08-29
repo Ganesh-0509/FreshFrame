@@ -10,10 +10,10 @@ export const contact = {
   // Shown on the page and used as the mailto: target — the contact form
   // opens the visitor's own email client addressed here, so this is the
   // one place that decides where enquiries land.
-  name: 'Ganesh Kumar',
-  email: 'ganesh957kumar@gmail.com',
-  whatsapp: '919042785843',                // wa.me format: 91 + 10 digits, no spaces
-  whatsappDisplay: '+91 90427 85843',      // what's shown to the visitor
+  name: 'Fresh Frame',
+  email: 'freshframestud@gmail.com',
+  whatsapp: '917825083996',                // wa.me format: 91 + 10 digits, no spaces
+  whatsappDisplay: '+91 78250 83996',      // what's shown to the visitor
   location: 'Chennai, India · working remotely',
 }
 
