@@ -154,15 +154,39 @@ https://Ganesh-0509.github.io/FreshFrame/
 
 ---
 
-## 5. Optional — a custom domain
+## 5. Custom domain — freshframe.studio
 
-Pages → Settings → Pages → **Custom domain**. Add the domain, create a
-`public/CNAME` file containing just the domain, and point your DNS at
-GitHub. Then update the `og:` URLs again to the new domain.
+**Code side is done.** `public/CNAME` contains `freshframe.studio`, and every
+`og:`/canonical/schema URL in `index.html`, `public/robots.txt`,
+`public/sitemap.xml`, `public/llms.txt`, `public/privacy.html` and
+`public/404.html` already points at it instead of the `github.io` URL. Two
+remaining steps need a browser, same as steps 2 and 3a above:
 
-A custom domain serves from the root rather than a subfolder. The build handles
-that automatically — `vite.config.js` uses a relative base, so no path changes
-are needed either way.
+**a. DNS at name.com** — add these records for the apex domain
+(`freshframe.studio`, no `www`):
+
+| Type | Host | Value |
+|---|---|---|
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+
+(Optional, IPv6: AAAA records at `@` for `2606:50c0:8000::153`,
+`2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`.)
+
+If you also want `www.freshframe.studio` to work, add a CNAME record:
+`www` → `ganesh-0509.github.io.` (trailing dot matters at some registrars).
+DNS changes can take anywhere from a few minutes to a few hours to propagate.
+
+**b. GitHub side** — repo → **Settings → Pages** → under **Custom domain**,
+type `freshframe.studio` and save. GitHub checks the DNS automatically; once
+it goes green, tick **Enforce HTTPS** (it's greyed out until the DNS check
+passes and the certificate is issued, which can take a bit).
+
+A custom domain serves from the root rather than a subfolder — the build
+handles that automatically since `vite.config.js` uses a relative base, so no
+path changes are needed either way.
 
 ---
 

@@ -5,13 +5,13 @@
 Enquiries from the contact form are emailed to **vinoism1703@gmail.com** via
 [Web3Forms](https://web3forms.com). Nothing is stored anywhere.
 
-**Status:** built and ready to deploy. Repo, remote and link-preview URLs are all set
-to https://github.com/Ganesh-0509/FreshFrame. **One thing is outstanding: the Web3Forms
-access key.** See [What's left to do](#whats-left-to-do).
-
-**To put it online:** follow [DEPLOY.md](DEPLOY.md) — GitHub, then Pages, then the
-access key. Those steps need a browser login, so they're written out as instructions
-rather than done for you.
+**Status:** live at [freshframe.studio](https://freshframe.studio/). The contact form
+no longer uses Web3Forms — it opens a `mailto:` addressed to Ganesh directly, so there's
+no access key to configure. Repo is https://github.com/Ganesh-0509/FreshFrame; the custom
+domain is code-complete (`public/CNAME` + every canonical/OG/schema URL updated) but the
+DNS + GitHub Pages settings steps still need a browser login — see
+[DEPLOY.md §5](DEPLOY.md#5-custom-domain--freshframestudio). See
+[What's left to do](#whats-left-to-do) for everything else still open.
 
 > **Why there's no backend.** GitHub Pages serves static files only — it can't run
 > Node, so it can't run a mail server. The form posts straight to Web3Forms instead,
@@ -375,14 +375,12 @@ hop. That's why it isn't on the Work section.
 
 ### Blocking — before anyone sees this
 
-- [ ] **Web3Forms access key.** Go to web3forms.com, enter `vinoism1703@gmail.com`,
-      and they email you a key. Put it in `.env` for local dev, and add it as the
-      repo secret `VITE_WEB3FORMS_KEY` for the Pages build. **This is the only thing
-      standing between you and a working site.** Until then the form shows an error,
-      which is deliberate — see below.
-- [x] **Recipient.** Enquiries go to `vinoism1703@gmail.com` — the key must be
-      registered to that inbox. One recipient fits the free plan exactly.
-- [x] **Link-preview URLs** set to `https://Ganesh-0509.github.io/FreshFrame/`.
+- [x] **Contact form.** Now a direct `mailto:` to `ganesh957kumar@gmail.com` —
+      Web3Forms was dropped, so there's no access key to configure anywhere.
+- [x] **Link-preview URLs** set to `https://freshframe.studio/`.
+- [x] **Custom domain code side.** `public/CNAME` + every canonical/OG/schema URL
+      point at `freshframe.studio`. DNS + Pages settings still need doing by hand
+      — see [DEPLOY.md §5](DEPLOY.md#5-custom-domain--freshframestudio).
 - [x] **Public email address.** `ganesh957kumar@gmail.com`.
 - [x] **WhatsApp number.** `+91 90427 85843`.
 - [ ] **Read the two project descriptions** and correct anything wrong.
@@ -408,11 +406,9 @@ hop. That's why it isn't on the Work section.
 
 ### Technical
 
-- [ ] **Compress the images.** `logo.png` **1.8 MB** (loads twice), `project-2.png`
-      **2.3 MB**, `project-1.png` **1.3 MB** — about 5.4 MB before anything else. On
-      mobile data this will crawl. TinyPNG or Squoosh; screenshots should be well under
-      300 KB each as `.jpg`.
-- [ ] **Favicon.** Reusing the full logo. A 512×512 square crop looks better in a tab.
+- [x] **Compress the images.** Everything in `public/assets/` is WebP now — the
+      biggest file is 116 KB (`project-2.webp`), down from the original ~5.4 MB of PNGs.
+- [x] **Favicon.** Real 32×32/apple-touch-icon crops exist, not the full logo.
 - [x] **Open Graph tags** added to `index.html`, pointing at the real Pages URL.
       The share image is the logo as a stand-in; a 1200×630 JPG is better.
 - [x] **Deleted the duplicate `logo.png`** from the project root.

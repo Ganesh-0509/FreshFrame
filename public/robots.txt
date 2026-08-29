@@ -18,4 +18,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://Ganesh-0509.github.io/FreshFrame/sitemap.xml
+Sitemap: https://freshframe.studio/sitemap.xml
