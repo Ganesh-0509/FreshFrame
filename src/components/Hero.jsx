@@ -27,7 +27,7 @@ export default function Hero() {
             scrollbar drives them apart again — see useSplitScroll. */}
         <h1 className="hero-title" ref={titleRef}>
           <span className="hero-line" data-dir="left">
-            See your website
+            See your Chennai website
           </span>
           <span className="hero-line" data-dir="right">
             <em>before</em> you pay
