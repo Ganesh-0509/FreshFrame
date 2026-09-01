@@ -28,7 +28,9 @@ export default function Footer() {
 
         <p className="footer-copy">
           © {new Date().getFullYear()} Fresh Frame. Built by hand, by us. ·{' '}
-          <a href="privacy.html">Privacy</a>
+          <a href="about.html">About</a> · <a href="contact.html">Contact</a> ·{' '}
+          <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> ·{' '}
+          <a href="refund-policy.html">Refund Policy</a>
         </p>
       </div>
     </footer>

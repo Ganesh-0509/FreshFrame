@@ -18,13 +18,35 @@ in a five-minute browser preview the way a page can.
 - Branding — logo, visual identity, brand kit, website copywriting
 - Digital solutions — SEO setup, analytics, domain/hosting, maintenance
 
+## How engagements work
+
+- Websites: a free working mock is built from your brief first, with zero advance. You only
+  pay if you decide to go ahead after seeing it.
+- Automations and custom products: scoped on a call instead of mocked, since a workflow can't
+  be judged in a browser preview. You get a written feature list and price before any build work
+  (and any payment) begins.
+- After launch: domain, hosting and a handover walkthrough are included so the client owns and
+  can run the site themselves; ongoing help is available via the Care plan add-on.
+
 ## Pricing (India, INR)
 
-- Basic: ₹3,000–6,000 — one page
-- Standard: ₹8,000–15,000 — 3–5 pages
-- Premium: ₹15,000–30,000 — online ordering/booking, own domain, branding, 30 days support
-- Care plan (add-on): ₹500–1,500/month — ongoing maintenance
+- Basic: ₹3,000–6,000 — one page, mobile responsive, WhatsApp/call buttons, photo gallery, basic SEO
+- Standard: ₹8,000–15,000 — 3–5 pages, full gallery, Google Maps/reviews, contact form, 2 revision rounds (most chosen tier)
+- Premium: ₹15,000–30,000 — everything in Standard, online ordering/booking, own domain, branding, 30 days post-launch support
+- Care plan (add-on): ₹500–1,500/month — ongoing maintenance, content changes, cancel anytime
 - Automation and custom products are quoted per job after a scoping call
+
+## Team
+
+- Ganesh Kumar — Full-Stack Developer, ML. Builds the whole stack and trains the models behind
+  the automations. Portfolio: https://ganesh-0509.github.io/
+- Vinothini — Frontend Developer, Product. Scopes client needs and builds the front end herself.
+  Portfolio: https://vinothini-port.vercel.app/
+
+## Notable work
+
+- Standard Fireworks, Sivakasi (standardfireworkssivakasi.com) — wholesale/retail cracker storefront with a product catalogue, full price list, and tiered volume discounts
+- Cafe by Cassette (cafe-by-cassette.netlify.app) — cassette-themed café site in Kattupakkam, Chennai, with menu, bestsellers, and WhatsApp table reservations
 
 ## Contact
 
@@ -33,7 +55,12 @@ in a five-minute browser preview the way a page can.
 - Location: Chennai, India (working remotely)
 - Site: https://freshframe.studio/
 
-## Notable work
+## Pages
 
-- Standard Fireworks, Sivakasi (standardfireworkssivakasi.com) — wholesale/retail cracker storefront with tiered volume discounts
-- Cafe by Cassette (cafe-by-cassette.netlify.app) — cassette-themed café site with WhatsApp reservations
+- Home, services, pricing, work and contact form: https://freshframe.studio/
+- About: https://freshframe.studio/about.html
+- Contact: https://freshframe.studio/contact.html
+- Terms & Conditions: https://freshframe.studio/terms.html
+- Privacy Policy: https://freshframe.studio/privacy.html
+- Cancellation & Refund Policy: https://freshframe.studio/refund-policy.html
+- Sitemap: https://freshframe.studio/sitemap.xml
