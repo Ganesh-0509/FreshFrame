@@ -189,7 +189,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Anton = the heavy poster display face. Caveat = the handwritten
        asides. Both are single-weight, so no weight axis is requested. -->
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;800;900&family=JetBrains+Mono:wght@400;700&display=optional" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;800;900&family=JetBrains+Mono:wght@400;700&display=optional">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;800;900&family=JetBrains+Mono:wght@400;700&display=optional"></noscript>
+  <script src="/assets/font-loader.js" defer></script>
 </head>
 <body>
   <div id="root"></div>
