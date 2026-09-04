@@ -247,6 +247,7 @@ export const team = [
        these ON the sheet rather than inside a plate, so a matted
        background would show as a white box. */
     photo: '/assets/ganesh-cut.webp',
+    photoSmall: '/assets/ganesh-cut-400.webp',
     /* Two sentences. The first says what he does, the second says the
        thing nobody else in the room can do. Nothing else earns its
        place on a poster. */

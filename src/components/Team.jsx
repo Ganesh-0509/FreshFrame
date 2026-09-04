@@ -157,6 +157,10 @@ export default function Team() {
                       <img
                         className="tm-cut"
                         src={asset(person.photo)}
+                        {...(person.photoSmall && {
+                          srcSet: `${asset(person.photoSmall)} 400w, ${asset(person.photo)} 600w`,
+                          sizes: '(max-width: 900px) 45vw, 34vw',
+                        })}
                         alt={person.name}
                         loading="lazy"
                         decoding="async"

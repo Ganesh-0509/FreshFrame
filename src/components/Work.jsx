@@ -32,7 +32,14 @@ export default function Work() {
                    as "link, image" and is unusable on a screen reader. */
                 aria-label={`${p.name} — open the live site in a new tab`}
               >
-                <img src={asset(p.shot)} alt={p.alt} loading="lazy" decoding="async" />
+                <img
+                  src={asset(p.shot)}
+                  srcSet={`${asset(p.shot.replace('.webp', '-600.webp'))} 600w, ${asset(p.shot)} 1200w`}
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                  alt={p.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span className="wk-open" aria-hidden="true">
                   &#8599;
                 </span>
