@@ -6,71 +6,58 @@
    doesn't execute JavaScript (GPTBot, OAI-SearchBot, and plenty of link
    scrapers) sees nothing but the <title> and the JSON-LD in <head>.
 
-   This script runs the real built site in a headless browser, waits for
-   React to render it exactly as a visitor would see it, and writes that
-   rendered markup back into dist/index.html. Real visitors still get the
-   full interactive site — main.jsx mounts on top of this markup exactly
-   like it always did, it just now has real content to start from instead
-   of an empty div.
+   Renders the app via react-dom/server (src/entry-server.jsx, built by
+   the `--ssr` step in package.json's build script) and writes that
+   markup into dist/index.html. Real visitors get the full interactive
+   site — main.jsx HYDRATES this markup (react-dom/client's hydrateRoot)
+   rather than replacing it, so the fast static paint is what sticks
+   instead of getting thrown away and repainted once the JS bundle
+   loads.
 
-   Nothing here is committed; dist/ is rebuilt fresh on every deploy.
+   This used to run the built site in headless Chrome (Puppeteer) and
+   capture the DOM after everything — including GSAP's scroll-driven
+   animations — had already mounted. That worked for no-JS crawlers, but
+   it captured a mid-animation snapshot (specific scroll-loop transform
+   values, viewport-measured widths) that could never match a fresh
+   client render, so React couldn't hydrate it — any real visit fell
+   back to a full client-side re-render anyway. Real SSR renders the
+   component tree once, synchronously, with no effects run (SSR never
+   executes useEffect/useLayoutEffect) — the same state a fresh client
+   render is in before its own effects fire — so the two sides agree and
+   hydration succeeds. GSAP and every other effect-driven animation
+   still starts exactly when and how it always has; nothing about their
+   behavior changes here, only how the initial HTML gets built.
+
+   Nothing here is committed; dist/ and dist-ssr/ are rebuilt fresh on
+   every deploy.
    ══════════════════════════════════════════════════════════ */
 
-import { preview } from 'vite'
-import puppeteer from 'puppeteer'
 import { readFileSync, writeFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
 
 async function main() {
-  const server = await preview({ root, preview: { port: 4173, strictPort: false } })
-  const port = server.config.preview.port
-  const url = `http://localhost:${port}/`
+  const entryPath = resolve(root, 'dist-ssr/entry-server.js')
+  const { render } = await import(pathToFileURL(entryPath))
 
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] })
-  try {
-    const page = await browser.newPage()
-    await page.goto(url, { waitUntil: 'networkidle0' })
-    // Footer is the last thing App.jsx renders — its presence means the
-    // whole component tree has mounted.
-    await page.waitForSelector('.site-footer', { timeout: 10000 })
+  const rootHtml = render()
 
-    let rootHtml = await page.$eval('#root', (el) => el.innerHTML)
+  const indexPath = resolve(root, 'dist/index.html')
+  const shell = readFileSync(indexPath, 'utf-8')
+  const prerendered = shell.replace(
+    '<div id="root"></div>',
+    `<div id="root">${rootHtml}</div>`
+  )
 
-    // GSAP (useSplitScroll, useCoverflow, useFlightArrow) sets transform/
-    // opacity/filter directly on DOM nodes outside React, so whatever
-    // these elements happen to be mid-animation at capture time (hero
-    // lines mid-slide, carousel tiles mid-scroll, at whatever opacity/
-    // scale that moment caught them at) gets baked into the "static"
-    // snapshot. That's misleading for anyone who only ever sees this
-    // markup — a crawler, or a real visitor for the brief window before
-    // main.jsx takes over — since it can show content half-transparent
-    // or offset. Strip it: it's GSAP's signature, so this never touches
-    // the deterministic style attrs React itself renders (e.g. Services'
-    // `--i` custom property), only GSAP-owned ones — which GSAP
-    // overwrites the instant it runs anyway.
-    rootHtml = rootHtml.replace(/ style="translate: none; rotate: none; scale: none;[^"]*"/g, '')
-
-    const indexPath = resolve(root, 'dist/index.html')
-    const shell = readFileSync(indexPath, 'utf-8')
-    const prerendered = shell.replace(
-      '<div id="root"></div>',
-      `<div id="root">${rootHtml}</div>`
-    )
-
-    if (prerendered === shell) {
-      throw new Error('Prerender did not find <div id="root"></div> to replace — check dist/index.html output.')
-    }
-
-    writeFileSync(indexPath, prerendered)
-    console.log(`Prerendered ${rootHtml.length.toLocaleString()} chars of markup into dist/index.html`)
-  } finally {
-    await browser.close()
-    await new Promise((resolvePromise) => server.httpServer.close(resolvePromise))
+  if (prerendered === shell) {
+    throw new Error('Prerender did not find <div id="root"></div> to replace — check dist/index.html output.')
   }
+
+  writeFileSync(indexPath, prerendered)
+  console.log(`Prerendered ${rootHtml.length.toLocaleString()} chars of markup into dist/index.html`)
 }
 
 main().catch((err) => {
