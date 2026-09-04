@@ -38,7 +38,21 @@ async function main() {
     // whole component tree has mounted.
     await page.waitForSelector('.site-footer', { timeout: 10000 })
 
-    const rootHtml = await page.$eval('#root', (el) => el.innerHTML)
+    let rootHtml = await page.$eval('#root', (el) => el.innerHTML)
+
+    // GSAP (useSplitScroll, useCoverflow, useFlightArrow) sets transform/
+    // opacity/filter directly on DOM nodes outside React, so whatever
+    // these elements happen to be mid-animation at capture time (hero
+    // lines mid-slide, carousel tiles mid-scroll, at whatever opacity/
+    // scale that moment caught them at) gets baked into the "static"
+    // snapshot. That's misleading for anyone who only ever sees this
+    // markup — a crawler, or a real visitor for the brief window before
+    // main.jsx takes over — since it can show content half-transparent
+    // or offset. Strip it: it's GSAP's signature, so this never touches
+    // the deterministic style attrs React itself renders (e.g. Services'
+    // `--i` custom property), only GSAP-owned ones — which GSAP
+    // overwrites the instant it runs anyway.
+    rootHtml = rootHtml.replace(/ style="translate: none; rotate: none; scale: none;[^"]*"/g, '')
 
     const indexPath = resolve(root, 'dist/index.html')
     const shell = readFileSync(indexPath, 'utf-8')
