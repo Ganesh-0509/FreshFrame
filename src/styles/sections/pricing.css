@@ -184,21 +184,28 @@
    lands on it last and highest.
    ───────────────────────────────────────────────────────── */
 
-@keyframes pr-deal{
-  from{ opacity:0; transform:translateY(34px) rotate(-1.4deg); }
-  to  { opacity:1; transform:none; }
-}
 /* `.in` is added by Reveal to each CARD, not to .pricing-grid — that is
-   a plain div. Selecting on the grid matched nothing. */
-.price-card.in{ animation:pr-deal .75s var(--ease) both; }
-.price-card.in:nth-child(1){ animation-delay:.05s; }
-.price-card.in:nth-child(2){ animation-delay:.17s; }
-.price-card.in:nth-child(3){ animation-delay:.29s; }
+   a plain div. Selecting on the grid matched nothing.
 
-/* No infinite pulse on the featured tier: `animation` is one property,
-   so a second rule would replace pr-deal rather than run alongside it,
-   and the card would never deal in. The featured tier is already
-   carried by its accent border and warmer glass. */
+   Was a @keyframes `animation`, not a `transition`. Reveal toggles `.in`
+   off and on again on every enter/leave (it replays), and a CSS
+   `animation` restarted by re-adding a class can get stuck holding its
+   `from` keyframe (opacity:0) if the class is removed and re-added
+   again before the browser paints a frame in between — confirmed live
+   on mobile, where a fast scroll left the Basic tier's card frozen at
+   opacity:0 permanently. A `transition` can't get stuck that way: it
+   always eases toward whatever `.in` currently says, from wherever it
+   currently is, so an interrupted entrance just resumes instead of
+   freezing invisible. */
+.price-card{
+  opacity:0;
+  transform:translateY(34px) rotate(-1.4deg);
+  transition:opacity .75s var(--ease), transform .75s var(--ease);
+}
+.price-card:nth-child(1){ transition-delay:.05s; }
+.price-card:nth-child(2){ transition-delay:.17s; }
+.price-card:nth-child(3){ transition-delay:.29s; }
+.price-card.in{ opacity:1; transform:none; }
 
 /* ─────────────────────────────────────────────────────────
    (original notes)

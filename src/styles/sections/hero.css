@@ -134,6 +134,17 @@
 
 /* ─────────── RESPONSIVE ─────────── */
 
+/* Common laptop viewports (1366x768 and similar) are wide enough to
+   miss the 1024px breakpoint below but short enough that the full
+   desktop hero pushes the CTA buttons past the fold. Trim vertical
+   rhythm only here — layout is unchanged, just shorter. */
+@media (max-width:1440px) and (max-height:850px){
+  .hero{ padding:128px 0 84px; }
+  .hero-title{ font-size:clamp(2.9rem,7.2vw,6.1rem); margin:0 0 20px; }
+  .lede{ margin:0 0 24px; }
+  .hero-actions{ margin-bottom:28px; }
+}
+
 @media (max-width:1024px){
   .hero{ padding:150px 0 84px; }
   .hero-ghost{ top:112px; }

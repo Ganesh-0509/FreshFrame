@@ -9,17 +9,17 @@ import { useEffect, useRef, useState } from 'react'
    CSS animation keyed off `.in` restarts for free: removing and
    re-adding a class restarts an animation.
 
-   Two thresholds, deliberately different:
+   ENTER/LEAVE both key off isIntersecting (any overlap at all) against
+   a root shrunk 60px at the bottom — not an intersectionRatio threshold.
 
-     ENTER at 0.16 — a sliver at the edge of the screen should not
-                     start a sequence the reader cannot see yet.
-     LEAVE at 0    — only reset once the element is fully gone.
-                     Resetting the moment it dropped below 0.16
-                     would re-trigger while it was still half on
-                     screen, and flicker as you scrolled.
-
-   The enter threshold stays low because an element taller than
-   the viewport can never reach a high ratio.
+   A ratio threshold (this used to require 16% of the element visible)
+   fails on anything taller than roughly 6x the viewport: on a phone,
+   the price cards, team stage and automation flow can each run well
+   past that, so the ratio never climbed high enough and those sections
+   stayed invisible for large stretches of scroll. Firing on first
+   overlap fixes that regardless of element height, at the cost of the
+   entrance sometimes starting a few px earlier on short elements —
+   not a visible difference in practice.
    ══════════════════════════════════════════════════════════ */
 export default function Reveal({ as: Tag = 'div', className = '', children, ...rest }) {
   const ref = useRef(null)
@@ -39,11 +39,8 @@ export default function Reveal({ as: Tag = 'div', className = '', children, ...r
     }
 
     const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) setShown(false)
-        else if (entry.intersectionRatio >= 0.16) setShown(true)
-      },
-      { threshold: [0, 0.16], rootMargin: '0px 0px -60px 0px' }
+      ([entry]) => setShown(entry.isIntersecting),
+      { threshold: 0, rootMargin: '0px 0px -60px 0px' }
     )
 
     io.observe(el)
