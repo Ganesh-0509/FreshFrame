@@ -57,3 +57,28 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # Tells Bing/Yandex/Naver about every URL on every deploy instead of
+      # waiting for their own crawl schedule to notice something changed.
+      # Best-effort: a failure here shouldn't fail the deploy, since the
+      # site is already live by this point.
+      - name: Submit sitemap to IndexNow
+        continue-on-error: true
+        run: |
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "host": "freshframe.studio",
+              "key": "c0d439439caeafa5355177672b478ada",
+              "keyLocation": "https://freshframe.studio/c0d439439caeafa5355177672b478ada.txt",
+              "urlList": [
+                "https://freshframe.studio/",
+                "https://freshframe.studio/web-design.html",
+                "https://freshframe.studio/automation.html",
+                "https://freshframe.studio/about.html",
+                "https://freshframe.studio/contact.html",
+                "https://freshframe.studio/terms.html",
+                "https://freshframe.studio/privacy.html",
+                "https://freshframe.studio/refund-policy.html"
+              ]
+            }'
