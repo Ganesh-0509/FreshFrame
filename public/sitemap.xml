@@ -2,32 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://freshframe.studio/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-09-04</lastmod>
+  </url>
+  <url>
+    <loc>https://freshframe.studio/web-design.html</loc>
+    <lastmod>2026-09-04</lastmod>
+  </url>
+  <url>
+    <loc>https://freshframe.studio/automation.html</loc>
+    <lastmod>2026-09-04</lastmod>
   </url>
   <url>
     <loc>https://freshframe.studio/about.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-09-04</lastmod>
   </url>
   <url>
     <loc>https://freshframe.studio/contact.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-09-01</lastmod>
   </url>
   <url>
     <loc>https://freshframe.studio/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <lastmod>2026-09-01</lastmod>
   </url>
   <url>
     <loc>https://freshframe.studio/privacy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <lastmod>2026-09-01</lastmod>
   </url>
   <url>
     <loc>https://freshframe.studio/refund-policy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <lastmod>2026-09-01</lastmod>
   </url>
 </urlset>

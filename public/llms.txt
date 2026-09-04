@@ -34,7 +34,9 @@ in a five-minute browser preview the way a page can.
 - Standard: ₹8,000–15,000 — 3–5 pages, full gallery, Google Maps/reviews, contact form, 2 revision rounds (most chosen tier)
 - Premium: ₹15,000–30,000 — everything in Standard, online ordering/booking, own domain, branding, 30 days post-launch support
 - Care plan (add-on): ₹500–1,500/month — ongoing maintenance, content changes, cancel anytime
-- Automation and custom products are quoted per job after a scoping call
+- Automation: not a fixed rate card, scoped on a call — recent build (252-product ordering
+  platform, tiered discounts, delivery-zone logic, full admin panel) came to ₹15,000–30,000,
+  with ongoing care from ₹1,500/month; simpler automations run well under that
 
 ## Team
 
@@ -58,6 +60,8 @@ in a five-minute browser preview the way a page can.
 ## Pages
 
 - Home, services, pricing, work and contact form: https://freshframe.studio/
+- Website design & development (Chennai): https://freshframe.studio/web-design.html
+- Business automation (Chennai): https://freshframe.studio/automation.html
 - About: https://freshframe.studio/about.html
 - Contact: https://freshframe.studio/contact.html
 - Terms & Conditions: https://freshframe.studio/terms.html

@@ -328,8 +328,11 @@ export const pricing = {
     body: 'Ongoing maintenance — hosting, content changes, edits and support whenever you need. Cancel anytime.',
   },
   note:
-    'Automations and custom products are quoted per job after the call — it depends entirely on what the ' +
-    'task is. You get the feature list and the number in writing before we build anything.',
+    "Automation pricing isn't a fixed rate card — every business's workflow is different, so we scope it " +
+    'honestly on a call before any number gets attached. As a reference point: our most recent build — a ' +
+    'full ordering platform with a 252-product catalogue, tiered volume discounts, delivery-zone logic, and ' +
+    'a complete self-serve admin panel — came to ₹15,000–30,000 for the build, with ongoing care from ' +
+    '₹1,500/month. Simpler automations (a single workflow, a form-to-WhatsApp pipeline) run well under that.',
 }
 
 export const faq = [
