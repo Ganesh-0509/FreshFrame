@@ -81,8 +81,14 @@ export const automation = {
   title: ['If you do it twice a day,', "it shouldn't need a person."],
   lede:
     "Every business has a job someone does by hand because that's just how it's always been done. " +
-    'Copying orders into a sheet. Typing the same invoice. Chasing the same follow-up. ' +
-    'We find those, and we build something that does them for you.',
+    'Copying orders into a sheet. Typing the same invoice. Chasing the same follow-up. We find ' +
+    'those, and we build something that does them for you — order and enquiry handling, invoices ' +
+    'and quotes, daily reports, stock and deadline alerts, reminders and follow-ups. Not a ' +
+    'subscription to an off-the-shelf tool you have to bend your business around: we build it to ' +
+    'match how you actually work, so nothing about your process has to change to fit the software. ' +
+    "Every automation starts with a call, not a mock — a workflow isn't something you can judge by " +
+    'looking at it in a browser for five minutes — and you get the feature list and the price in ' +
+    'writing before anything gets built.',
   ledeStrong: 'Built around your business, whatever it is.',
   tiles: [
     {
