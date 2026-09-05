@@ -41,6 +41,10 @@ export default function useSplitScroll(ref, { travel = 0.75, drift = 0.16 } = {}
     const lines = Array.from(root.querySelectorAll('[data-dir]'))
     if (!lines.length) return
 
+    // Tells the safety-net timeout in index.html the bundle actually got
+    // here, so it doesn't un-hide a headline this hook is about to animate.
+    window.__heroAnimReady = true
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       gsap.set(lines, { x: 0, opacity: 1 })
       return

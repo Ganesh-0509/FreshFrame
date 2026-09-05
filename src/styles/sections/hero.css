@@ -97,6 +97,14 @@
   display:block;
   will-change:transform;
 }
+/* Pre-hide the entrance targets the instant JS is confirmed present (see
+   the inline script in index.html <head>), so the first painted frame
+   already matches GSAP's "from" state in useSplitScroll.js instead of
+   showing the headline at rest and then yanking it away on mount.
+   useSplitScroll always ends by setting an explicit opacity (1 on both
+   the reduced-motion bail-out and the entrance's own "to"), so this never
+   gets stuck hidden if JS throws before the tween runs. */
+.js .hero-line{ opacity:0; }
 /* The one word carrying the whole proposition.
    NOT --red-core, despite being display-sized. The ghost wordmark sits
    directly behind this, and --red-core on that blend measures 2.60:1 —

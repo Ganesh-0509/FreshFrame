@@ -3,6 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Marks JS-capable browsers before first paint so hero.css can hide the
+       GSAP entrance targets from frame one — see useSplitScroll.js. Without
+       this, SSR paints the headline at rest, then GSAP snaps it off-screen
+       the instant it mounts: a visible flash-then-yank, and exactly the
+       kind of already-rendered-element move Cumulative Layout Shift counts.
+       No-JS/non-executing crawlers never get this class, so they keep
+       seeing the SSR content at rest, unhidden.
+       The timeout is a safety net, not the common case: if the main bundle
+       never sets window.__heroAnimReady (network failure, ad-blocker,
+       an unrelated script error), this un-hides the headline instead of
+       leaving it invisible forever. -->
+  <script>
+    document.documentElement.classList.add('js');
+    setTimeout(function () {
+      if (!window.__heroAnimReady) document.documentElement.classList.remove('js');
+    }, 2000);
+  </script>
   <title>Fresh Frame — Website Design &amp; Automation Studio in Chennai</title>
   <meta name="description" content="Fresh Frame is a Chennai-based two-person studio building websites, branding and business automation — see a real working mock, free, before you decide.">
   <meta name="google-site-verification" content="vEGmWgzd6wJEZ6o_IXwX_MU4VBNey8xDl7Tx95iO_9M" />
